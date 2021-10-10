@@ -1,12 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+
 import App from './App';
+
+import ServerContextProvider from './contexts/ServerContext'
+import AuthenticationContextProvider from './contexts/AuthenticationContext'
+import UserContextProvider from './contexts/UserContext'
+
 import reportWebVitals from './reportWebVitals';
+
+import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <AuthenticationContextProvider>
+          <ServerContextProvider>
+              <UserContextProvider>
+                <App />
+            </UserContextProvider>
+        </ServerContextProvider>
+    </AuthenticationContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
