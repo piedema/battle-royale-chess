@@ -21,7 +21,7 @@ public class GamesController {
     }
 
     @GetMapping(value = "/games/{id}/status")
-    public ResponseEntity getGameStatusPerId(@PathVariable int id){
+    public ResponseEntity getGameStatusById(@PathVariable int id){
         try {
             return ResponseEntity.ok("game status of game with id:" + id);
         }
@@ -31,7 +31,7 @@ public class GamesController {
     }
 
     @GetMapping(value = "/games/{id}/gamedata")
-    public ResponseEntity getGameDataPerId(@PathVariable int id){
+    public ResponseEntity getGameDataById(@PathVariable int id){
         try {
             return ResponseEntity.ok("gamedata of game with id:" + id);
         }
@@ -41,7 +41,7 @@ public class GamesController {
     }
 
     @GetMapping(value = "/games/{id}/players")
-    public ResponseEntity getGamePlayersPerId(@PathVariable int id){
+    public ResponseEntity getGamePlayersById(@PathVariable int id){
         try {
             return ResponseEntity.ok("players of game with id:" + id);
         }

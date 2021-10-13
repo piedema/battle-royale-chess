@@ -1,4 +1,4 @@
 package com.battleroyalechess.backend.controller;
 
-public class ProfileController {
+public class AdminController {
 }
