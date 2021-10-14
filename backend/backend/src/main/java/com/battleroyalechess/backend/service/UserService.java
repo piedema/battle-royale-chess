@@ -55,7 +55,7 @@ public class UserService {
             user.setPassword(encryptedPassword);
             user.setEmail(userPostRequest.getEmail());
             user.setEnabled(true);
-            user.addAuthority("ROLE_USER");
+            user.addAuthority("ROLE_PLAYER");
             for (String s : userPostRequest.getAuthorities()) {
                 if (!s.startsWith("ROLE_")) {
                     s = "ROLE_" + s;

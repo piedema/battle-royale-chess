@@ -1,9 +1,9 @@
 package com.battleroyalechess.backend.security;
 
+import com.battleroyalechess.backend.config.JwtSecret;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +14,6 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
-
-    private final static String SECRET_KEY = "secret";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -31,6 +29,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
+        String SECRET_KEY = JwtSecret.getKey();
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
@@ -44,6 +43,7 @@ public class JwtUtil {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
+        String SECRET_KEY = JwtSecret.getKey();
         long validPeriod = 1000 * 60 * 60 * 24 * 10;   // 10 days in ms
         long currentTime = System.currentTimeMillis();
         return Jwts.builder()

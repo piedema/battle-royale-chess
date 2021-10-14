@@ -69,7 +69,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers(PATCH,"/users/{^[\\w]$}/password").authenticated()
                 .antMatchers("/users/**").hasRole("ADMIN")
-                .antMatchers("/customers/**").hasRole("USER")
+                .antMatchers("/customers/**").hasRole("PLAYER")
                 .antMatchers(POST,"/authenticate").permitAll()
                 .antMatchers(GET,"/public").permitAll()
                 .anyRequest().denyAll()
