@@ -11,7 +11,9 @@ public class GameController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> getGame() {
+
         return ResponseEntity.ok("Placeholder for game endpoints");
+
     }
 
 }

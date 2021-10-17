@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "games")
+public class Game {
 
     @Id
     @Column(nullable = false, unique = true)
