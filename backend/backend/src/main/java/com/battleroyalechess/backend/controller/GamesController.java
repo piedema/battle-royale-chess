@@ -1,49 +1,35 @@
 package com.battleroyalechess.backend.controller;
 
 import com.battleroyalechess.backend.exception.RecordNotFoundException;
+import com.battleroyalechess.backend.service.GameService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(value = "/games")
 public class GamesController {
 
-    @GetMapping(value = "/games/status")
-    public ResponseEntity getGamesStatus(@RequestParam(required = false) Boolean finished){
+    private GameService gameService;
+
+    public GamesController(GameService gameService){
+        this.gameService = gameService;
+    }
+
+    @GetMapping(value = "")
+    public ResponseEntity getGames(@RequestParam(required = false) Boolean finished){
         if(finished == null || !finished){
             return ResponseEntity.ok("all games which are not finished");
         }
         else{
-            return ResponseEntity.ok("all games which are finished");
+            return ResponseEntity.ok("all games");
         }
     }
 
-    @GetMapping(value = "/games/{id}/status")
-    public ResponseEntity getGameStatusById(@PathVariable int id){
+    @GetMapping(value = "/{gameId}")
+    public ResponseEntity getGame(@PathVariable("gameId") Long gameId){
         try {
-            return ResponseEntity.ok("game status of game with id:" + id);
-        }
-        catch (Exception ex){
-            throw new RecordNotFoundException();
-        }
-    }
-
-    @GetMapping(value = "/games/{id}/gamedata")
-    public ResponseEntity getGameDataById(@PathVariable int id){
-        try {
-            return ResponseEntity.ok("gamedata of game with id:" + id);
-        }
-        catch (Exception ex){
-            throw new RecordNotFoundException();
-        }
-    }
-
-    @GetMapping(value = "/games/{id}/players")
-    public ResponseEntity getGamePlayersById(@PathVariable int id){
-        try {
-            return ResponseEntity.ok("players of game with id:" + id);
+            return ResponseEntity.ok().body(gameService.getGame(gameId));
         }
         catch (Exception ex){
             throw new RecordNotFoundException();

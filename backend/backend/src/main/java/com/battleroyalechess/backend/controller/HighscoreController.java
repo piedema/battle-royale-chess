@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/highscores")
 public class HighscoreController {
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     public ResponseEntity<Object> getHighscores() {
         return ResponseEntity.ok("Placeholder for highscores endpoints");
     }

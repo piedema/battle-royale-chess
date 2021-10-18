@@ -41,13 +41,13 @@ public class UserController {
     }
 
     @PutMapping(value = "/{username}")
-    public ResponseEntity<Object> updateKlant(@PathVariable("username") String username, @RequestBody User user) {
+    public ResponseEntity<Object> updateUser(@PathVariable("username") String username, @RequestBody User user) {
         userService.updateUser(username, user);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{username}")
-    public ResponseEntity<Object> deleteKlant(@PathVariable("username") String username) {
+    public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }

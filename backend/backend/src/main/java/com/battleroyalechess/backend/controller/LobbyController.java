@@ -1,8 +1,11 @@
 package com.battleroyalechess.backend.controller;
 
 import com.battleroyalechess.backend.dto.request.QueuePostRequest;
+import com.battleroyalechess.backend.exception.BadRequestException;
+import com.battleroyalechess.backend.exception.GameNotFoundException;
+import com.battleroyalechess.backend.exception.UserNotFoundException;
+import com.battleroyalechess.backend.service.GameService;
 import com.battleroyalechess.backend.service.LobbyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,21 +13,45 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/lobby")
 public class LobbyController {
 
-    @Autowired
-    private LobbyService lobbyService;
+    private final LobbyService lobbyService;
+    private final GameService gameService;
 
-    @GetMapping(value = "")
-    public ResponseEntity<Object> getLobbies() {
-        return ResponseEntity.ok("Placeholder for lobbies endpoints");
+    public LobbyController(LobbyService lobbyService, GameService gameService){
+        this.lobbyService = lobbyService;
+        this.gameService = gameService;
     }
 
-    @PostMapping(value = "")
-    public ResponseEntity<Object> addToQueue(@RequestBody QueuePostRequest queuePostRequest) {
+    @PostMapping(value = "/addInQueue")
+    public ResponseEntity<Object> addInQueue(@RequestBody QueuePostRequest queuePostRequest) {
+//        try {
+//            lobbyService.addInQueue(queuePostRequest);
+//            return ResponseEntity.noContent().build();
+//        }
+//        catch (Exception ex) {
+//            throw new BadRequestException();
+//        }
 
-        lobbyService.addToQueue(queuePostRequest);
+        try {
+            lobbyService.addInQueue(queuePostRequest);
+            return ResponseEntity.noContent().build();
+        }
+        catch (UserNotFoundException ex) {
 
-        return ResponseEntity.ok("Player put in queue");
+            throw ex;
+        }
+        catch (GameNotFoundException ex) {
 
+            throw ex;
+        }
+        catch (Exception ex) {
+
+            throw new BadRequestException();
+        }
+    }
+
+    @GetMapping(value = "/getPlayerGameStatus/{username}")
+    public ResponseEntity<Object> getPlayerGameStatus(@PathVariable("username") String username) {
+        return ResponseEntity.ok().body(gameService.findGameIdByUsername(username));
     }
 
 }

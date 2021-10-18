@@ -2,10 +2,11 @@ package com.battleroyalechess.backend.service;
 
 import com.battleroyalechess.backend.dto.request.QueuePostRequest;
 import com.battleroyalechess.backend.exception.*;
-import com.battleroyalechess.backend.model.Authority;
+import com.battleroyalechess.backend.model.Gametype;
+import com.battleroyalechess.backend.model.QueuedPlayer;
 import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.repository.UserRepository;
-import com.battleroyalechess.backend.repository.GameRepository;
+import com.battleroyalechess.backend.repository.GametypeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,17 @@ import java.util.Optional;
 @Service
 public class LobbyService {
 
-    private UserRepository userRepository;
-    private ArrayList<String> twoPlayersQueue = new ArrayList();
-    private ArrayList<String> fourPlayersQueue = new ArrayList();
+    private final UserRepository userRepository;
+    private final GametypeRepository gametypeRepository;
+    private final ArrayList<QueuedPlayer> queue = new ArrayList<QueuedPlayer>();
 
     @Autowired
-    public LobbyService(UserRepository userRepository) {
+    public LobbyService(UserRepository userRepository, GametypeRepository gametypeRepository) {
         this.userRepository = userRepository;
+        this.gametypeRepository = gametypeRepository;
     }
 
-    public void addToQueue(QueuePostRequest queuePostRequest) {
+    public void addInQueue(QueuePostRequest queuePostRequest) {
 
         String gametype = queuePostRequest.getGametype();
         String username = queuePostRequest.getUsername();
@@ -36,53 +38,44 @@ public class LobbyService {
             throw new UserNotFoundException(username);
         }
 
-        if(!userOptional.isEmpty()){
+        // get number of players for gametype
+        Optional<Gametype> gametypeOptional = gametypeRepository.findById(gametype);
 
-            if(gametype == "2players"){
-
-                if(twoPlayersQueue.size() > 0){
-
-                    String player1 = twoPlayersQueue.remove(0);
-
-                    String[] players = new String[]{ player1, username};
-
-                    startGame(players);
-                }
-
-                if(twoPlayersQueue.size() == 0) {
-
-                    twoPlayersQueue.add(username);
-
-                }
-            }
-
-            if(gametype == "4players") {
-
-                if(fourPlayersQueue.size() >= 3){
-
-                    String player1 = fourPlayersQueue.remove(0);
-                    String player2 = fourPlayersQueue.remove(0);
-                    String player3 = fourPlayersQueue.remove(0);
-
-                    String[] players = new String[]{ player1, player2, player3, username};
-
-                    startGame(players);
-                }
-
-                if(fourPlayersQueue.size() < 3) {
-
-                    fourPlayersQueue.add(username);
-
-                }
-            }
+        if (gametypeOptional.isEmpty()) {
+            throw new GametypeNotFoundException(gametype);
         }
 
-    }
+        Gametype currentGametype = gametypeOptional.get();
 
-    private void startGame(String[] players){
+        int nPlayersNeededForGameType = currentGametype.getNumberOfPlayers();
 
-        System.out.println("Game starting with players:");
-        System.out.println(players);
+        int nPlayersQueuedForGameType = 0;
+
+        // get number players in queue with this gametype
+        for (QueuedPlayer queuedPlayer : queue) {
+
+            if (queuedPlayer.getGametype() == gametype) nPlayersQueuedForGameType++;
+
+        }
+
+        // if there are enough players to start the game then remove players from queue and start game
+        if (nPlayersQueuedForGameType == nPlayersNeededForGameType) {
+
+            // remove players from queue
+
+            // start game with players
+
+            System.out.println("Game starting with players:");
+
+        } else {
+
+            // else add this player to queue
+            QueuedPlayer queuedPlayer = new QueuedPlayer();
+            queuedPlayer.setUsername(username);
+            queuedPlayer.setGametype(gametype);
+            queue.add(queuedPlayer);
+
+        }
 
     }
 
