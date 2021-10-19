@@ -3,7 +3,6 @@ package com.battleroyalechess.backend.service;
 import com.battleroyalechess.backend.dto.request.GametypePostRequest;
 import com.battleroyalechess.backend.exception.BadRequestException;
 import com.battleroyalechess.backend.model.Gametype;
-import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.repository.GametypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class GametypeService {
             gametypeRepository.save(gametype);
         }
         catch (Exception ex) {
-            throw new BadRequestException("Cannot create user.");
+            throw new BadRequestException("Cannot create gametype.");
         }
 
     }

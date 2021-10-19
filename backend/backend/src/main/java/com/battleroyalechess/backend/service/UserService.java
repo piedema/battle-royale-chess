@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -39,15 +40,33 @@ public class UserService {
     }
 
     public Optional<User> getUser(String username) {
-        return userRepository.findById(username);
+
+        Optional<User> userOptional = userRepository.findById(username);
+
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+
+        return userOptional;
     }
 
     public boolean userExists(String username) {
         return userRepository.existsById(username);
     }
 
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     public String createUser(UserPostRequest userPostRequest) {
         try {
+
+            String username = userPostRequest.getUsername();
+            String email = userPostRequest.getEmail();
+
+            if(userExists(username)) throw new UsernameNotAvailableException();
+            if(emailExists(email)) throw new EmailNotAvailableException();
+
             String encryptedPassword = passwordEncoder.encode(userPostRequest.getPassword());
 
             User user = new User();
@@ -56,35 +75,46 @@ public class UserService {
             user.setEmail(userPostRequest.getEmail());
             user.setEnabled(true);
             user.addAuthority("ROLE_USER");
-            for (String s : userPostRequest.getAuthorities()) {
-                if (!s.startsWith("ROLE_")) {
-                    s = "ROLE_" + s;
-                }
+
+            for (String s : userPostRequest.getAuthorities()){
                 user.addAuthority(s);
             }
 
             User newUser = userRepository.save(user);
             return newUser.getUsername();
         }
+        catch(UsernameNotAvailableException | EmailNotAvailableException ex) {
+
+            throw ex;
+
+        }
         catch (Exception ex) {
-            throw new BadRequestException("Cannot create user.");
+
+            throw new BadRequestException("Cannot create user");
+
         }
 
     }
 
     public void deleteUser(String username) {
-        if (userRepository.existsById(username)) {
-            userRepository.deleteById(username);
-        }
-        else {
-            throw new UserNotFoundException(username);
-        }
+        if (userExists(username)) userRepository.deleteById(username);
+        else throw new UserNotFoundException(username);
     }
 
-    public void updateUser(String username, User newUser) {
+    public void updateUser(User newUser) {
+
+        /// to check later: password does not seem to be changed on update
+
+        String username = newUser.getUsername();
+        String email = newUser.getEmail();
+
         Optional<User> userOptional = userRepository.findById(username);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(username);
+        Optional<User> userWithThisEmailOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) throw new UserNotFoundException(username);
+        else if(userWithThisEmailOptional.isPresent()){
+            String otherUserUsername = userWithThisEmailOptional.get().getUsername();
+            if(otherUserUsername != username) throw new EmailNotAvailableException(email);
         }
         else {
             User user = userOptional.get();
@@ -97,36 +127,44 @@ public class UserService {
 
     public Set<Authority> getAuthorities(String username) {
         Optional<User> userOptional = userRepository.findById(username);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
+        if (userOptional.isEmpty())  throw new UserNotFoundException(username);
         else {
             User user = userOptional.get();
             return user.getAuthorities();
         }
     }
 
-    public void addAuthority(String username, String authorityString) {
-        Optional<User> userOptional = userRepository.findById(username);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(username);
+    public void addAuthority(String username, Authority authority) {
+        try {
+            Optional<User> userOptional = userRepository.findById(username);
+            if (userOptional.isEmpty()) throw new UserNotFoundException(username);
+            else {
+                User user = userOptional.get();
+                user.addAuthority(authority.getAuthority());
+                userRepository.save(user);
+            }
         }
-        else {
-            User user = userOptional.get();
-            user.addAuthority(authorityString);
-            userRepository.save(user);
+        catch (Exception ex) {
+
+            throw new BadRequestException("Cannot add authority");
+
         }
     }
 
-    public void removeAuthority(String username, String authorityString) {
-        Optional<User> userOptional = userRepository.findById(username);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(username);
+    public void removeAuthority(String username, String authority) {
+        try {
+            Optional<User> userOptional = userRepository.findById(username);
+            if (userOptional.isEmpty()) throw new UserNotFoundException(username);
+            else {
+                User user = userOptional.get();
+                user.removeAuthority(authority);
+                userRepository.save(user);
+            }
         }
-        else {
-            User user = userOptional.get();
-            user.removeAuthority(authorityString);
-            userRepository.save(user);
+        catch (Exception ex) {
+
+            throw new BadRequestException("Cannot add authority");
+
         }
     }
 
@@ -158,6 +196,7 @@ public class UserService {
             if (isValidPassword(password)) {
                 Optional<User> userOptional = userRepository.findById(username);
                 if (userOptional.isPresent()) {
+                    System.out.println(password);
                     User user = userOptional.get();
                     user.setPassword(passwordEncoder.encode(password));
                     userRepository.save(user);

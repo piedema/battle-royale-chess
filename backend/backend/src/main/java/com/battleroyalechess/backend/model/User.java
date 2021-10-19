@@ -18,7 +18,7 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = true;
 
-    @Column
+    @Column(unique = true)
     private String email;
 
     @OneToMany(

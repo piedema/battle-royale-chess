@@ -13,7 +13,7 @@ public class ExceptionController {
 
     @ExceptionHandler(value = RecordNotFoundException.class)
     public ResponseEntity<Object> exception(RecordNotFoundException exception) {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
     @ExceptionHandler(value = BadRequestException.class)
@@ -23,7 +23,17 @@ public class ExceptionController {
 
     @ExceptionHandler(value = UserNotFoundException.class)
     public ResponseEntity<Object> exception(UserNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(value = GametypeNotFoundException.class)
+    public ResponseEntity<Object> exception(GametypeNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(value = GameNotFoundException.class)
+    public ResponseEntity<Object> exception(GameNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
     @ExceptionHandler(value = InvalidPasswordException.class)
@@ -36,4 +46,18 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
 
+    @ExceptionHandler(value = UsernameNotAvailableException.class)
+    public ResponseEntity<Object> exception(UsernameNotAvailableException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(value = EmailNotAvailableException.class)
+    public ResponseEntity<Object> exception(EmailNotAvailableException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(value = InvalidAuthorityException.class)
+    public ResponseEntity<Object> exception(InvalidAuthorityException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 }

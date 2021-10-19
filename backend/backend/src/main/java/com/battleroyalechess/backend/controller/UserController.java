@@ -1,6 +1,7 @@
 package com.battleroyalechess.backend.controller;
 
 import com.battleroyalechess.backend.exception.BadRequestException;
+import com.battleroyalechess.backend.model.Authority;
 import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.dto.request.UserPostRequest;
 import com.battleroyalechess.backend.service.UserService;
@@ -40,9 +41,9 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/{username}")
-    public ResponseEntity<Object> updateUser(@PathVariable("username") String username, @RequestBody User user) {
-        userService.updateUser(username, user);
+    @PutMapping(value = "")
+    public ResponseEntity<Object> updateUser(@RequestBody User user) {
+        userService.updateUser(user);
         return ResponseEntity.noContent().build();
     }
 
@@ -58,15 +59,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
-        try {
-            String authorityName = (String) fields.get("authority");
-            userService.addAuthority(username, authorityName);
-            return ResponseEntity.noContent().build();
-        }
-        catch (Exception ex) {
-            throw new BadRequestException();
-        }
+    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Authority authority) {
+        userService.addAuthority(username, authority);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")

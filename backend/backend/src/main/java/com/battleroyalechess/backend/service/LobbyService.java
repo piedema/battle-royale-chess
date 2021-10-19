@@ -7,6 +7,7 @@ import com.battleroyalechess.backend.model.QueuedPlayer;
 import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.repository.UserRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
+import com.battleroyalechess.backend.service.GameService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,14 @@ public class LobbyService {
 
     private final UserRepository userRepository;
     private final GametypeRepository gametypeRepository;
+    private final GameService gameService;
     private final ArrayList<QueuedPlayer> queue = new ArrayList<QueuedPlayer>();
 
     @Autowired
-    public LobbyService(UserRepository userRepository, GametypeRepository gametypeRepository) {
+    public LobbyService(UserRepository userRepository, GametypeRepository gametypeRepository, GameService gameService) {
         this.userRepository = userRepository;
         this.gametypeRepository = gametypeRepository;
+        this.gameService = gameService;
     }
 
     public void addInQueue(QueuePostRequest queuePostRequest) {
@@ -61,11 +64,25 @@ public class LobbyService {
         // if there are enough players to start the game then remove players from queue and start game
         if (nPlayersQueuedForGameType == nPlayersNeededForGameType) {
 
+            ArrayList<String> players = new ArrayList<String>();
+
+            players.add(username);
+
             // remove players from queue
+            for (QueuedPlayer queuedPlayer : queue) {
+
+                if (queuedPlayer.getGametype() == gametype){
+
+                    queue.remove(queuedPlayer);
+
+                    players.add(queuedPlayer.getUsername());
+
+                }
+
+            }
 
             // start game with players
-
-            System.out.println("Game starting with players:");
+            gameService.createGame(gametype, players);
 
         } else {
 

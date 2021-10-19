@@ -1,7 +1,5 @@
 package com.battleroyalechess.backend.dto.request;
 
-import org.springframework.beans.factory.annotation.Required;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -15,6 +13,7 @@ public class AuthenticationRequest {
 
     public AuthenticationRequest() {
     }
+
     public AuthenticationRequest(String username, String password) {
         this.username = username;
         this.password = password;

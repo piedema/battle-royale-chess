@@ -1,7 +1,10 @@
 package com.battleroyalechess.backend.model;
 
+import com.battleroyalechess.backend.exception.InvalidAuthorityException;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
 
 @Entity
 @IdClass(AuthorityKey.class)
@@ -16,10 +19,19 @@ public class Authority implements Serializable {
     @Column(nullable = false)
     private String authority;
 
+    public static final String[] availableAuthorities = new String[] { "ROLE_ADMIN", "ROLE_USER" };
+
     public Authority() {}
     public Authority(String username, String authority) {
-        this.username = username;
-        this.authority = authority;
+        if(authorityExists(authority)) {
+            this.username = username;
+            this.authority = authority;
+        }
+    }
+
+    public Boolean authorityExists(String authorityString){
+        if(!Arrays.toString(availableAuthorities).contains(authorityString)) throw new InvalidAuthorityException(authorityString);
+        return true;
     }
 
     public String getUsername() {
@@ -32,7 +44,9 @@ public class Authority implements Serializable {
         return authority;
     }
     public void setAuthority(String authority) {
-        this.authority = authority;
+        if(authorityExists(authority)) {
+            this.authority = authority;
+        }
     }
 
 }

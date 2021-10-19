@@ -5,6 +5,7 @@ import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -26,8 +27,6 @@ public class GameService {
 
         }
 
-        System.out.println("This gets printed");
-
         return game;
     }
 
@@ -35,13 +34,19 @@ public class GameService {
 
         Iterable<Game> unfinishedGames = gameRepository.findByFinished(false);
 
-//        for (Game game: unfinishedGames){
-//
-//            if(game.getPlayers().contains(username)) return game.getGameId();
-//
-//        }
+        for (Game game: unfinishedGames){
 
-        return null;
+            if(game.getPlayers().contains(username)) return game.getGameId();
+
+        }
+
+        throw new GameNotFoundException();
+
+    }
+
+    public void createGame(String gametype, ArrayList<String> players){
+
+        System.out.println("Create a new game with gametype " + gametype + " and players " + players);
 
     }
 

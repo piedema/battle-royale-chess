@@ -2,7 +2,7 @@ package com.battleroyalechess.backend.controller;
 
 import com.battleroyalechess.backend.dto.request.QueuePostRequest;
 import com.battleroyalechess.backend.exception.BadRequestException;
-import com.battleroyalechess.backend.exception.GameNotFoundException;
+import com.battleroyalechess.backend.exception.GametypeNotFoundException;
 import com.battleroyalechess.backend.exception.UserNotFoundException;
 import com.battleroyalechess.backend.service.GameService;
 import com.battleroyalechess.backend.service.LobbyService;
@@ -23,30 +23,8 @@ public class LobbyController {
 
     @PostMapping(value = "/addInQueue")
     public ResponseEntity<Object> addInQueue(@RequestBody QueuePostRequest queuePostRequest) {
-//        try {
-//            lobbyService.addInQueue(queuePostRequest);
-//            return ResponseEntity.noContent().build();
-//        }
-//        catch (Exception ex) {
-//            throw new BadRequestException();
-//        }
-
-        try {
-            lobbyService.addInQueue(queuePostRequest);
-            return ResponseEntity.noContent().build();
-        }
-        catch (UserNotFoundException ex) {
-
-            throw ex;
-        }
-        catch (GameNotFoundException ex) {
-
-            throw ex;
-        }
-        catch (Exception ex) {
-
-            throw new BadRequestException();
-        }
+        lobbyService.addInQueue(queuePostRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/getPlayerGameStatus/{username}")
