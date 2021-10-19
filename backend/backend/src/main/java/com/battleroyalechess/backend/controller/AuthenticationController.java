@@ -19,19 +19,8 @@ public class AuthenticationController {
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
-
-        try {
-
-            System.out.println(authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
-
             AuthenticationResponse authenticationResponse = userAuthenticateService.authenticateUser(authenticationRequest);
-
             return ResponseEntity.ok(authenticationResponse);
-        }
-        catch (Exception ex){
-            System.out.println(ex);
-            throw ex;
-        }
     }
 
 }
