@@ -30,7 +30,7 @@ public class GamesController {
     @GetMapping(value = "/{gameId}")
     public ResponseEntity getGame(@PathVariable("gameId") Long gameId){
         try {
-            return ResponseEntity.ok().body(lobbyService.getGame(gameId));
+            return ResponseEntity.ok().body(lobbyService.getGamedata(gameId));
         }
         catch (Exception ex){
             throw new RecordNotFoundException();

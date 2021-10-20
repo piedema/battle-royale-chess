@@ -109,7 +109,7 @@ public class LobbyService {
 
     }
 
-    public Optional<Game> getGame(long gameId){
+    public Optional<Game> getGamedata(long gameId){
 
         Optional<Game> game = gameRepository.findById(gameId);
 
