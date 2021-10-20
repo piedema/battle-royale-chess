@@ -47,7 +47,7 @@ public class GamesService {
 
         for (Game game: unfinishedGames){
 
-            if(game.getPlayers().contains(username)) return game.getGameId();
+            if(game.hasPlayer(username)) return game.getGameId();
 
         }
 
@@ -60,8 +60,6 @@ public class GamesService {
         System.out.println("Create a new game with gametype " + gametype + " and players " + players);
 
         GameService game = new GameService(gametype, players);
-//        game.setGametype(gametype);
-//        game.setPlayers(players);
 
         Long gameId = game.getGameId();
 

@@ -1,25 +1,18 @@
 package com.battleroyalechess.backend.service;
 
-import com.battleroyalechess.backend.exception.GameNotFoundException;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.repository.GameRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+
 @Component
 public class GameService {
 
 
-    private String gametype;
-    private ArrayList<String> players;
-    private Long gameId;
+    private final String gametype;
+    private final ArrayList<String> players;
+    private final Long gameId;
 
     public GameService(String gametype, ArrayList<String> players) {
         this.gametype = gametype;
@@ -37,7 +30,9 @@ public class GameService {
         if(players.size() >= 6) game.setPlayer7(players.get(6));
         if(players.size() >= 7) game.setPlayer8(players.get(7));
 
-        gameRepository.save(game);
+        Game savedGame = gameRepository.save(game);
+
+        this.gameId = savedGame.getGameId();
     }
 
     public String getGametype() {

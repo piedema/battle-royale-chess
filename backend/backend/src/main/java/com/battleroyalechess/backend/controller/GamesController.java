@@ -14,14 +14,14 @@ import java.util.Map;
 @RequestMapping(value = "/games")
 public class GamesController {
 
-    private GamesService gamesService;
+    private final GamesService gamesService;
 
     public GamesController(GamesService gamesService){
         this.gamesService = gamesService;
     }
 
     @GetMapping(value = "")
-    public ResponseEntity getGames(@RequestParam(required = false) Boolean finished){
+    public ResponseEntity<Object> getGames(@RequestParam(required = false) Boolean finished){
         if(finished == null || !finished){
             return ResponseEntity.ok("all games which are not finished");
         }
@@ -36,7 +36,7 @@ public class GamesController {
     }
 
     @GetMapping(value = "/{gameId}")
-    public ResponseEntity getGame(@PathVariable("gameId") Long gameId){
+    public ResponseEntity<Object> getGame(@PathVariable("gameId") Long gameId){
         try {
             return ResponseEntity.ok().body(gamesService.getGamedata(gameId));
         }

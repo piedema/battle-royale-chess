@@ -129,4 +129,17 @@ public class Game {
     public void setPlayer8(String player8) {
         this.player8 = player8;
     }
+
+    public Boolean hasPlayer(String player){
+        if(this.player1.equals(player)) return true;
+        if(this.player2.equals(player)) return true;
+        if(this.player3.equals(player)) return true;
+        if(this.player4.equals(player)) return true;
+        if(this.player5.equals(player)) return true;
+        if(this.player6.equals(player)) return true;
+        if(this.player7.equals(player)) return true;
+        if(this.player8.equals(player)) return true;
+
+        return false;
+    }
 }
