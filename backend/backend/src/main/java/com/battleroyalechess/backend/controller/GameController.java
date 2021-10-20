@@ -1,6 +1,6 @@
 package com.battleroyalechess.backend.controller;
 
-import com.battleroyalechess.backend.service.GameService;
+import com.battleroyalechess.backend.service.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/game")
 public class GameController {
 
-    private GameService gameService;
+    private LobbyService lobbyService;
 
-    public GameController(GameService gameService){
-        this.gameService = gameService;
+    public GameController(LobbyService lobbyService){
+        this.lobbyService = lobbyService;
     }
 
     @GetMapping(value = "/{gameId}")
     public ResponseEntity<Object> getGame(@PathVariable("gameId") Long gameId) {
-        return ResponseEntity.ok().body(gameService.getGame(gameId));
+        return ResponseEntity.ok().body(lobbyService.getGame(gameId));
     }
 
 }

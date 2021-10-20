@@ -29,7 +29,7 @@ public class LobbyController {
 
     @GetMapping(value = "/getPlayerGameStatus/{username}")
     public ResponseEntity<Object> getPlayerGameStatus(@PathVariable("username") String username) {
-        return ResponseEntity.ok().body(gameService.findGameIdByUsername(username));
+        return ResponseEntity.ok().body(lobbyService.findGameIdByUsername(username));
     }
 
 }

@@ -2,6 +2,7 @@ package com.battleroyalechess.backend.controller;
 
 import com.battleroyalechess.backend.exception.RecordNotFoundException;
 import com.battleroyalechess.backend.service.GameService;
+import com.battleroyalechess.backend.service.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/games")
 public class GamesController {
 
-    private GameService gameService;
+    private LobbyService lobbyService;
 
-    public GamesController(GameService gameService){
-        this.gameService = gameService;
+    public GamesController(LobbyService lobbyService){
+        this.lobbyService = lobbyService;
     }
 
     @GetMapping(value = "")
@@ -29,7 +30,7 @@ public class GamesController {
     @GetMapping(value = "/{gameId}")
     public ResponseEntity getGame(@PathVariable("gameId") Long gameId){
         try {
-            return ResponseEntity.ok().body(gameService.getGame(gameId));
+            return ResponseEntity.ok().body(lobbyService.getGame(gameId));
         }
         catch (Exception ex){
             throw new RecordNotFoundException();
