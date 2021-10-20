@@ -21,17 +21,15 @@ import java.util.Optional;
 public class LobbyService {
 
     private final UserRepository userRepository;
-    private final GameRepository gameRepository;
     private final GametypeRepository gametypeRepository;
-    private final GameService gameService;
+    private final GamesService gamesService;
     private final ArrayList<QueuedPlayer> queue = new ArrayList<QueuedPlayer>();
 
     @Autowired
-    public LobbyService(UserRepository userRepository, GameRepository gameRepository, GametypeRepository gametypeRepository, GameService gameService) {
+    public LobbyService(UserRepository userRepository, GametypeRepository gametypeRepository, GamesService gamesService){
         this.userRepository = userRepository;
-        this.gameRepository = gameRepository;
         this.gametypeRepository = gametypeRepository;
-        this.gameService = gameService;
+        this.gamesService = gamesService;
     }
 
     public void addInQueue(QueuePostRequest queuePostRequest) {
@@ -95,7 +93,7 @@ public class LobbyService {
             queue.removeAll(queuedPlayersToRemove);
 
             // start game with players
-            createGame(gametype, players);
+            gamesService.createGame(gametype, players);
 
         } else {
 
@@ -109,42 +107,5 @@ public class LobbyService {
 
     }
 
-    public Optional<Game> getGamedata(long gameId){
-
-        Optional<Game> game = gameRepository.findById(gameId);
-
-        if(game.isEmpty()){
-
-            throw new GameNotFoundException(gameId);
-
-        }
-
-        return game;
-    }
-
-    public Long findGameIdByUsername(String username){
-
-        Iterable<Game> unfinishedGames = gameRepository.findByFinished(false);
-
-        for (Game game: unfinishedGames){
-
-            if(game.getPlayers().contains(username)) return game.getGameId();
-
-        }
-
-        throw new GameNotFoundException();
-
-    }
-
-    public void createGame(String gametype, ArrayList<String> players){
-
-        System.out.println("Create a new game with gametype " + gametype + " and players " + players);
-        System.out.println("Current queue " + queue);
-        GameService game = new GameService();
-        game.setGametype(gametype);
-
-        System.out.println(game.getGametype());
-
-    }
 
 }

@@ -18,9 +18,4 @@ public class GameController {
         this.lobbyService = lobbyService;
     }
 
-    @GetMapping(value = "/{gameId}")
-    public ResponseEntity<Object> getGame(@PathVariable("gameId") Long gameId) {
-        return ResponseEntity.ok().body(lobbyService.getGame(gameId));
-    }
-
 }
