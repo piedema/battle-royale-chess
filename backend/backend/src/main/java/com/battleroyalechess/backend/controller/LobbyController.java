@@ -1,10 +1,6 @@
 package com.battleroyalechess.backend.controller;
 
 import com.battleroyalechess.backend.dto.request.QueuePostRequest;
-import com.battleroyalechess.backend.exception.BadRequestException;
-import com.battleroyalechess.backend.exception.GametypeNotFoundException;
-import com.battleroyalechess.backend.exception.UserNotFoundException;
-import com.battleroyalechess.backend.service.GameService;
 import com.battleroyalechess.backend.service.LobbyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

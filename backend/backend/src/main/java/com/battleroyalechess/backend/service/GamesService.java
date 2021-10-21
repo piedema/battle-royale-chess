@@ -1,31 +1,30 @@
 package com.battleroyalechess.backend.service;
 
+import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
 import com.battleroyalechess.backend.exception.GameNotFoundException;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.repository.GameRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
-import com.battleroyalechess.backend.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Component
 public class GamesService {
 
-    private Map<Long, Object> activeGames;
-
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final GameRepository gameRepository;
     private final GametypeRepository gametypeRepository;
-    private final GameService gameService;
 
-    public GamesService(UserRepository userRepository, GameRepository gameRepository, GametypeRepository gametypeRepository, GameService gameService) {
-        this.userRepository = userRepository;
+    private final Map<Long, GameEngineService> activeGames = new HashMap<>();
+
+    public GamesService(UserService userService, GameRepository gameRepository, GametypeRepository gametypeRepository) {
+        this.userService = userService;
         this.gameRepository = gameRepository;
         this.gametypeRepository = gametypeRepository;
-        this.gameService = gameService;
     }
 
     public Optional<Game> getGamedata(long gameId){
@@ -59,14 +58,23 @@ public class GamesService {
 
         System.out.println("Create a new game with gametype " + gametype + " and players " + players);
 
-        GameService game = new GameService(gametype, players);
+        GameEngineService game = new GameEngineService(userService, gameRepository, gametypeRepository);
+        Long gameId = game.initialize(gametype, players, this);
 
-        Long gameId = game.getGameId();
+        this.activeGames.put(gameId, game);
 
-        activeGames.put(gameId, game);
+    }
 
-        System.out.println(game.getGametype());
+    public void newMove(Long gameId, NewMovePostRequest newMovePostRequest){
 
+        GameEngineService game = this.activeGames.get(gameId);
+
+        game.newMove(newMovePostRequest);
+
+    }
+
+    public void orphanGame(Long gameId){
+        this.activeGames.remove(gameId);
     }
 
 }

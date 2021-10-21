@@ -60,4 +60,9 @@ public class ExceptionController {
     public ResponseEntity<Object> exception(InvalidAuthorityException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
+
+    @ExceptionHandler(value = UserInGameAlreadyException.class)
+    public ResponseEntity<Object> exception(UserInGameAlreadyException exception) {
+        return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(exception.getMessage());
+    }
 }

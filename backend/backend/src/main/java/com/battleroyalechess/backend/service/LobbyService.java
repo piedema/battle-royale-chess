@@ -9,7 +9,6 @@ import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.repository.GameRepository;
 import com.battleroyalechess.backend.repository.UserRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
-import com.battleroyalechess.backend.service.GameService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +20,15 @@ import java.util.Optional;
 public class LobbyService {
 
     private final UserRepository userRepository;
+    private final GameRepository gameRepository;
     private final GametypeRepository gametypeRepository;
     private final GamesService gamesService;
     private final ArrayList<QueuedPlayer> queue = new ArrayList<QueuedPlayer>();
 
     @Autowired
-    public LobbyService(UserRepository userRepository, GametypeRepository gametypeRepository, GamesService gamesService){
+    public LobbyService(UserRepository userRepository, GameRepository gameRepository, GametypeRepository gametypeRepository, GamesService gamesService){
         this.userRepository = userRepository;
+        this.gameRepository = gameRepository;
         this.gametypeRepository = gametypeRepository;
         this.gamesService = gamesService;
     }
@@ -39,17 +40,35 @@ public class LobbyService {
 
         Optional<User> userOptional = userRepository.findById(username);
 
+        // check if user exists
         if (userOptional.isEmpty()) {
             throw new UserNotFoundException(username);
         }
 
-        // get number of players for gametype
+        Iterable<Game> activeGames = gameRepository.findByFinished(false);
+
+        // check if user is not in a game already
+        for( Game game: activeGames) {
+            if(game.hasPlayer(username)){
+                throw new UserInGameAlreadyException(username);
+            }
+        }
+
+        // check if user is not in the lobby already
+        for( QueuedPlayer queuedPlayer: queue) {
+            if(queuedPlayer.getUsername().equals(username)){
+                throw new UserInGameAlreadyException(username);
+            }
+        }
+
+        // check if gametype exists
         Optional<Gametype> gametypeOptional = gametypeRepository.findById(gametype);
 
         if (gametypeOptional.isEmpty()) {
             throw new GametypeNotFoundException(gametype);
         }
 
+        // get gametype model
         Gametype currentGametype = gametypeOptional.get();
 
         int nPlayersNeededForGameType = currentGametype.getNumberOfPlayers();
@@ -66,7 +85,6 @@ public class LobbyService {
             }
 
         }
-
 
         // if there are enough players to start the game then remove players from queue and add to players list
         if (nPlayersQueuedForGameType == nPlayersNeededForGameType) {

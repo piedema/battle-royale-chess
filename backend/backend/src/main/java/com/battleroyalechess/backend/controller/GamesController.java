@@ -1,14 +1,10 @@
 package com.battleroyalechess.backend.controller;
 
+import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
 import com.battleroyalechess.backend.exception.RecordNotFoundException;
-import com.battleroyalechess.backend.service.GameService;
 import com.battleroyalechess.backend.service.GamesService;
-import com.battleroyalechess.backend.service.LobbyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/games")
@@ -43,6 +39,12 @@ public class GamesController {
         catch (Exception ex){
             throw new RecordNotFoundException();
         }
+    }
+
+    @PostMapping(value = "/{gameId}/newMove}")
+    public ResponseEntity<Object> newMove(@PathVariable("gameId") Long gameId, @RequestBody NewMovePostRequest newMovePostRequest) {
+        gamesService.newMove(gameId, newMovePostRequest);
+        return ResponseEntity.noContent().build();
     }
 
 }

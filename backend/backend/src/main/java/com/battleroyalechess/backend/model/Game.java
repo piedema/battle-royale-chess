@@ -1,8 +1,7 @@
 package com.battleroyalechess.backend.model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "games")
@@ -42,6 +41,30 @@ public class Game {
     @Column
     public String player8;
 
+    @Column
+    public String player1Moves;
+
+    @Column
+    public String player2Moves;
+
+    @Column
+    public String player3Moves;
+
+    @Column
+    public String player4Moves;
+
+    @Column
+    public String player5Moves;
+
+    @Column
+    public String player6Moves;
+
+    @Column
+    public String player7Moves;
+
+    @Column
+    public String player8Moves;
+
     public long getGameId() {
         return gameId;
     }
@@ -70,75 +93,121 @@ public class Game {
         return player1;
     }
 
-    public void setPlayer1(String player1) {
-        this.player1 = player1;
-    }
-
     public String getPlayer2() {
         return player2;
-    }
-
-    public void setPlayer2(String player2) {
-        this.player2 = player2;
     }
 
     public String getPlayer3() {
         return player3;
     }
 
-    public void setPlayer3(String player3) {
-        this.player3 = player3;
-    }
-
     public String getPlayer4() {
         return player4;
-    }
-
-    public void setPlayer4(String player4) {
-        this.player4 = player4;
     }
 
     public String getPlayer5() {
         return player5;
     }
 
-    public void setPlayer5(String player5) {
-        this.player5 = player5;
-    }
-
     public String getPlayer6() {
         return player6;
-    }
-
-    public void setPlayer6(String player6) {
-        this.player6 = player6;
     }
 
     public String getPlayer7() {
         return player7;
     }
 
-    public void setPlayer7(String player7) {
-        this.player7 = player7;
-    }
-
     public String getPlayer8() {
         return player8;
     }
 
-    public void setPlayer8(String player8) {
-        this.player8 = player8;
+    public String getPlayer1Moves() {
+        return player1Moves;
+    }
+
+    public void setPlayer1Moves(String from, String to) {
+        this.player1Moves = this.player1Moves + from + ">" + to + ";";
+    }
+
+    public String getPlayer2Moves() {
+        return player2Moves;
+    }
+
+    public void setPlayer2Moves(String from, String to) {
+        this.player2Moves = this.player2Moves + from + ">" + to + ";";
+    }
+
+    public String getPlayer3Moves() {
+        return player3Moves;
+    }
+
+    public void setPlayer3Moves(String from, String to) {
+        this.player3Moves = this.player3Moves + from + ">" + to + ";";
+    }
+
+    public String getPlayer4Moves() {
+        return player4Moves;
+    }
+
+    public void setPlayer4Moves(String from, String to) {
+        this.player4Moves = this.player4Moves + from + ">" + to + ";";
+    }
+
+    public String getPlayer5Moves() {
+        return player5Moves;
+    }
+
+    public void setPlayer5Moves(String from, String to) {
+        this.player5Moves = this.player5Moves + from + ">" + to + ";";
+    }
+
+    public String getPlayer6Moves() {
+        return player6Moves;
+    }
+
+    public void setPlayer6Moves(String from, String to) {
+        this.player6Moves = this.player6Moves + from + ">" + to + ";";
+    }
+
+    public String getPlayer7Moves() {
+        return player7Moves;
+    }
+
+    public void setPlayer7Moves(String from, String to) {
+        this.player7Moves = this.player7Moves + from + ">" + to + ";";
+    }
+
+    public String getPlayer8Moves() {
+        return player8Moves;
+    }
+
+    public void setPlayer8Moves(String from, String to) {
+        this.player8Moves = this.player8Moves + from + ">" + to + ";";
+    }
+
+    public void setPlayers(ArrayList<String> players){
+
+        this.player1 = players.get(0);
+        this.player2 = players.get(1);
+
+        if(players.size() > 2) this.player3 = players.get(2);
+        if(players.size() > 3) this.player4 = players.get(3);
+        if(players.size() > 4) this.player5 = players.get(4);
+        if(players.size() > 5) this.player6 = players.get(5);
+        if(players.size() > 6) this.player7 = players.get(6);
+        if(players.size() > 7) this.player8 = players.get(7);
     }
 
     public Boolean hasPlayer(String player){
+
         if(this.player1.equals(player)) return true;
         if(this.player2.equals(player)) return true;
-        if(this.player3.equals(player)) return true;
-        if(this.player4.equals(player)) return true;
-        if(this.player5.equals(player)) return true;
-        if(this.player6.equals(player)) return true;
-        if(this.player7.equals(player)) return true;
-        if(this.player8.equals(player)) return true;
+        if(this.player3 != null && this.player3.equals(player)) return true;
+        if(this.player4 != null && this.player4.equals(player)) return true;
+        if(this.player5 != null && this.player5.equals(player)) return true;
+        if(this.player6 != null && this.player6.equals(player)) return true;
+        if(this.player7 != null && this.player7.equals(player)) return true;
+        if(this.player8 != null && this.player8.equals(player)) return true;
 
         return false;
     }
