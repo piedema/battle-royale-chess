@@ -2,6 +2,7 @@ package com.battleroyalechess.backend.service;
 
 import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
 import com.battleroyalechess.backend.exception.GameNotFoundException;
+import com.battleroyalechess.backend.gameEngine.GameEngine;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.repository.GameRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
@@ -19,7 +20,7 @@ public class GamesService {
     private final GameRepository gameRepository;
     private final GametypeRepository gametypeRepository;
 
-    private final Map<Long, GameEngineService> activeGames = new HashMap<>();
+    private final Map<Long, GameEngine> activeGames = new HashMap<>();
 
     public GamesService(UserService userService, GameRepository gameRepository, GametypeRepository gametypeRepository) {
         this.userService = userService;
@@ -58,7 +59,7 @@ public class GamesService {
 
         System.out.println("Create a new game with gametype " + gametype + " and players " + players);
 
-        GameEngineService game = new GameEngineService(userService, gameRepository, gametypeRepository);
+        GameEngine game = new GameEngine(userService, gameRepository, gametypeRepository);
         Long gameId = game.initialize(gametype, players, this);
 
         if(gameId != null) this.activeGames.put(gameId, game);
@@ -67,7 +68,7 @@ public class GamesService {
 
     public void newMove(Long gameId, NewMovePostRequest newMovePostRequest){
 
-        GameEngineService game = this.activeGames.get(gameId);
+        GameEngine game = this.activeGames.get(gameId);
 
         game.newMove(newMovePostRequest);
 

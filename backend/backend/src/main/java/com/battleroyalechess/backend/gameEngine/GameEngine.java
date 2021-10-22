@@ -1,10 +1,12 @@
-package com.battleroyalechess.backend.service;
+package com.battleroyalechess.backend.gameEngine;
 
 import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.model.Gametype;
 import com.battleroyalechess.backend.repository.GameRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
+import com.battleroyalechess.backend.service.GamesService;
+import com.battleroyalechess.backend.service.UserService;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class GameEngineService {
+public class GameEngine {
 
     private Game game;
     private Gametype gametype;
@@ -33,7 +35,7 @@ public class GameEngineService {
     private final GameRepository gameRepository;
     private final GametypeRepository gametypeRepository;
 
-    public GameEngineService(UserService userService, GameRepository gameRepository, GametypeRepository gametypeRepository) {
+    public GameEngine(UserService userService, GameRepository gameRepository, GametypeRepository gametypeRepository) {
         this.userService = userService;
         this.gameRepository = gameRepository;
         this.gametypeRepository = gametypeRepository;
@@ -74,14 +76,14 @@ public class GameEngineService {
         int timePerRound = optionalTimePerRound.get().getTimePerRound();
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        GameEngineTimerService gameEngineTimerService = new GameEngineTimerService(this.userService, this.gameRepository, this.gametypeRepository, this);
+        GameEngineTimer gameEngineTimerService = new GameEngineTimer(this.userService, this.gameRepository, this.gametypeRepository, this);
         this.scheduledTask = executor.scheduleAtFixedRate(gameEngineTimerService, initialDelay, timePerRound, TimeUnit.SECONDS);
 
         return this.gameId;
     }
 
     public String getGametype() {
-        return gametype;
+        return this.getGametype();
     }
 
     public ArrayList<String> getPlayers() {
