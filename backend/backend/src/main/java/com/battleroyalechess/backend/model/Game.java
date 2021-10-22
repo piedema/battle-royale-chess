@@ -3,6 +3,8 @@ package com.battleroyalechess.backend.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "games")
@@ -68,6 +70,30 @@ public class Game {
 
     @Column
     public String player8Moves;
+
+    @Column
+    public int player1Score;
+
+    @Column
+    public int player2Score;
+
+    @Column
+    public int player3Score;
+
+    @Column
+    public int player4Score;
+
+    @Column
+    public int player5Score;
+
+    @Column
+    public int player6Score;
+
+    @Column
+    public int player7Score;
+
+    @Column
+    public int player8Score;
 
     public long getGameId() {
         return gameId;
@@ -194,14 +220,34 @@ public class Game {
         this.players = players;
 
         this.player1 = players.get(0);
+        this.player1Score = 0;
         this.player2 = players.get(1);
+        this.player2Score = 0;
 
-        if(players.size() > 2) this.player3 = players.get(2);
-        if(players.size() > 3) this.player4 = players.get(3);
-        if(players.size() > 4) this.player5 = players.get(4);
-        if(players.size() > 5) this.player6 = players.get(5);
-        if(players.size() > 6) this.player7 = players.get(6);
-        if(players.size() > 7) this.player8 = players.get(7);
+        if(players.size() > 2){
+            this.player3 = players.get(2);
+            this.player3Score = 0;
+        }
+        if(players.size() > 3){
+            this.player4 = players.get(3);
+            this.player4Score = 0;
+        }
+        if(players.size() > 4){
+            this.player5 = players.get(4);
+            this.player5Score = 0;
+        }
+        if(players.size() > 5){
+            this.player6 = players.get(5);
+            this.player6Score = 0;
+        }
+        if(players.size() > 6){
+            this.player7 = players.get(6);
+            this.player7Score = 0;
+        }
+        if(players.size() > 7){
+            this.player8 = players.get(7);
+            this.player8Score = 0;
+        }
     }
 
     public Boolean hasPlayer(String player){
@@ -220,5 +266,67 @@ public class Game {
 
     public int getPlayerId(String username){
         return this.players.indexOf(username);
+    }
+
+    public void incrementPlayerScore(String player, int points){
+        int playerId = getPlayerId(player);
+
+        switch (playerId) {
+            case 0:
+                this.player1Score += points;
+                break;
+            case 1:
+                this.player2Score += points;
+                break;
+            case 2:
+                this.player3Score += points;
+                break;
+            case 3:
+                this.player4Score += points;
+                break;
+            case 4:
+                this.player5Score += points;
+                break;
+            case 5:
+                this.player6Score += points;
+                break;
+            case 6:
+                this.player7Score += points;
+                break;
+            case 7:
+                this.player8Score += points;
+                break;
+        }
+    }
+
+    public void decrementPlayerScore(String player, int points){
+        int playerId = getPlayerId(player);
+
+        switch (playerId) {
+            case 0:
+                this.player1Score -= points;
+                break;
+            case 1:
+                this.player2Score -= points;
+                break;
+            case 2:
+                this.player3Score -= points;
+                break;
+            case 3:
+                this.player4Score -= points;
+                break;
+            case 4:
+                this.player5Score -= points;
+                break;
+            case 5:
+                this.player6Score -= points;
+                break;
+            case 6:
+                this.player7Score -= points;
+                break;
+            case 7:
+                this.player8Score -= points;
+                break;
+        }
     }
 }

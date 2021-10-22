@@ -61,7 +61,7 @@ public class GamesService {
         GameEngineService game = new GameEngineService(userService, gameRepository, gametypeRepository);
         Long gameId = game.initialize(gametype, players, this);
 
-        this.activeGames.put(gameId, game);
+        if(gameId != null) this.activeGames.put(gameId, game);
 
     }
 

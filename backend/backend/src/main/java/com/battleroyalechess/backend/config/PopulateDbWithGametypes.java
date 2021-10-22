@@ -20,11 +20,11 @@ public class PopulateDbWithGametypes implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         ArrayList<String> board1 = new ArrayList<>();
-        createGametype("gametype1", 2, 100, 5, 10, board1);
+        createGametype("gametype1", 2, 100, 5, 10, 10, 30, board1);
 
     }
 
-    private void createGametype(String name, int numberOfPlayers, int numberOfRounds, int circleShrinkAfterNRounds, int circleShrinkOffset, ArrayList<String> board){
+    private void createGametype(String name, int numberOfPlayers, int numberOfRounds, int circleShrinkAfterNRounds, int circleShrinkOffset, int timePerRound, int initialDelay, ArrayList<String> board){
 
         GametypePostRequest gametypePostRequest = new GametypePostRequest();
 

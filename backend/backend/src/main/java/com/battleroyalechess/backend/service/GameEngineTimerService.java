@@ -16,7 +16,7 @@ public class GameEngineTimerService extends GameEngineService implements Runnabl
     public void run(){
 
         if(!this.gameEngineService.hasGameStarted()) this.gameEngineService.startGame();
-        if(this.gameEngineService.hasGameStarted()) this.gameEngineService.endRound();
+        if(this.gameEngineService.hasGameStarted()) this.gameEngineService.finishRound();
 
     }
 

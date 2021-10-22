@@ -9,5 +9,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     Iterable <Game> findByFinished(Boolean finished);
     int getPlayerId(String username);
+    void incrementPlayerScore(String username, int points);
+    void decrementPlayerScore(String username, int points);
 
 }

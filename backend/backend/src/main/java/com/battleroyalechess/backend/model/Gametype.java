@@ -24,6 +24,12 @@ public class Gametype {
     public int circleShrinkOffset;
 
     @Column(nullable = false)
+    public int timePerRound;
+
+    @Column(nullable = false)
+    public int initialDelay;
+
+    @Column(nullable = false)
     public ArrayList<String> board;
 
     @Column(nullable = false)
@@ -69,6 +75,22 @@ public class Gametype {
         this.circleShrinkOffset = circleShrinkOffset;
     }
 
+    public int getTimePerRound() {
+        return timePerRound;
+    }
+
+    public void setTimePerRound(int timePerRound) {
+        this.timePerRound = timePerRound;
+    }
+
+    public int getInitialDelay() {
+        return initialDelay;
+    }
+
+    public void setInitialDelay(int initialDelay) {
+        this.initialDelay = initialDelay;
+    }
+
     public ArrayList<String> getBoard() {
         return board;
     }
@@ -77,7 +99,11 @@ public class Gametype {
         this.board = board;
     }
 
-    public String getPlayerDirection(int playerId){
-        return this.playerDirections.get(playerId-1);
+    public ArrayList<String> getPlayerDirections() {
+        return playerDirections;
+    }
+
+    public void setPlayerDirections(ArrayList<String> playerDirections) {
+        this.playerDirections = playerDirections;
     }
 }
