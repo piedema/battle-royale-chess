@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     Iterable <Game> findByFinished(Boolean finished);
+    int getPlayerId(String username);
 
 }

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class GameEngineService {
 
+    private Game game;
     private String gametype;
     private ArrayList<String> players;
     private Long gameId;
@@ -23,6 +24,7 @@ public class GameEngineService {
     private final Map<String, List<String>> nextMoves = new HashMap<>();
     private ScheduledFuture<?> scheduledTask;
     private GamesService gamesService;
+    private Map<String, Integer> pieces;
 
     private final UserService userService;
     private final GameRepository gameRepository;
@@ -39,12 +41,20 @@ public class GameEngineService {
         this.players = players;
         this.gamesService = gamesService;
 
+        this.pieces.put("Pawn", 1);
+        this.pieces.put("Knight", 2);
+        this.pieces.put("Bishop", 3);
+        this.pieces.put("Tower", 5);
+        this.pieces.put("Queen", 9);
+        this.pieces.put("King", 18);
+
         Game game = new Game();
         game.setGametype(gametype);
         game.setPlayers(players);
 
         Game savedGame = gameRepository.save(game);
 
+        this.game = savedGame;
         this.gameId = savedGame.getGameId();
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -81,7 +91,9 @@ public class GameEngineService {
 
         // create list with path for piece. list must be empty if path is not possible, then return
         String piece = board.get(from).get(1);
-        List<String> path = createPath(piece, from, to);
+        int playerId = this.gameRepository.getPlayerId(username);
+        String direction = this.gametypeRepository.getPlayerDirection(playerId);
+        List<String> path = createPath(piece, from, to, username, direction);
 
         // check if whole path are tiles
         if(!isWholePathTiles(path)){
@@ -106,9 +118,7 @@ public class GameEngineService {
     }
 
     public void startGame(){
-
         this.hasGameStarted = true;
-
     }
 
     // store results of this round
@@ -121,6 +131,7 @@ public class GameEngineService {
         // calculate scores
 
         // store game in db
+        this.gameRepository.save(this.game);
 
         // create a new empty list of moves
         nextMoves.clear();
@@ -151,27 +162,112 @@ public class GameEngineService {
 
     }
 
-    public List<String> createPath(String piece, String from, String to){
+    public List<String> createPath(String piece, String from, String to, String username, String direction){
         ArrayList<String> path = new ArrayList<>();
+
+        int fromH = Integer.parseInt(from.split(":")[0]);
+        int fromV = Integer.parseInt(from.split(":")[1]);
+        int toH = Integer.parseInt(to.split(":")[0]);
+        int toV = Integer.parseInt(to.split(":")[1]);
+
+        boolean horizontalPath = fromH == toH;
+        boolean verticalPath = fromV == toV;
+        boolean diagonalPath = fromH - toH == fromV - toV;
 
         switch (piece){
             case "King":
-
+                path.add(from);
+                path.add(to);
                 break;
             case "Queen":
-
+                if(horizontalPath){
+                    path.add(from);
+                    path.add(to);
+                }
+                if(verticalPath){
+                    path.add(from);
+                    path.add(to);
+                }
+                if(diagonalPath){
+                    path.add(from);
+                    path.add(to);
+                }
                 break;
             case "Tower":
-
+                if(horizontalPath){
+                    path.add(from);
+                    path.add(to);
+                }
+                if(verticalPath){
+                    path.add(from);
+                    path.add(to);
+                }
                 break;
             case "Bishop":
-
+                if(diagonalPath){
+                    path.add(from);
+                    path.add(to);
+                }
                 break;
             case "Knight":
-
+                if((fromH - toH == 2 || fromH - toH == -2) && (fromV - toV == 1 || fromV - toV == -1)){
+                    path.add(from);
+                    path.add(to);
+                }
+                if((fromV - toV == 2 || fromV - toV == -2) && (fromH - toH == 1 || fromH - toH == -1)){
+                    path.add(from);
+                    path.add(to);
+                }
                 break;
             case "Pawn":
-
+                if(direction.equals("north")){
+                    if(fromH == toH && fromV - toV == 1 && !isTileOccupied(to)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
+                if(direction.equals("north")){
+                    if((fromH - toH == -1 || fromH - toH == 1) && fromV - toV == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
+                if(direction.equals("east")){
+                    if(fromV == toV && fromH - toH == -1 && !isTileOccupied(to)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
+                if(direction.equals("east")){
+                    if((fromV - toV == -1 || fromV - toV == 1) && fromH - toH == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
+                if(direction.equals("south")){
+                    if(fromH == toH && fromV - toV == -1 && !isTileOccupied(to)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
+                if(direction.equals("south")){
+                    if((fromH - toH == -1 || fromH - toH == 1) && fromV - toV == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
+                if(direction.equals("west")){
+                    if(fromV == toV && fromH - toH == 1 && !isTileOccupied(to)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
+                if(direction.equals("west")){
+                    if((fromV - toV == -1 || fromV - toV == 1) && fromH - toH == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                        path.add(from);
+                        path.add(to);
+                    }
+                }
                 break;
         }
 
@@ -196,6 +292,17 @@ public class GameEngineService {
             }
         }
         return true;
+    }
+
+    public String getPlayerOnTile(String tile){
+        return board.get(tile).get(0);
+    }
+
+    public Boolean isTileOccupied(String tile){
+        if(board.containsKey(tile)){
+            return board.get(tile).size() != 0;
+        }
+        return false;
     }
 
 }

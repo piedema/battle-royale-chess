@@ -26,6 +26,9 @@ public class Gametype {
     @Column(nullable = false)
     public ArrayList<String> board;
 
+    @Column(nullable = false)
+    public ArrayList<String> playerDirections;
+
     public String getName() {
         return name;
     }
@@ -72,5 +75,9 @@ public class Gametype {
 
     public void setBoard(ArrayList<String> board) {
         this.board = board;
+    }
+
+    public String getPlayerDirection(int playerId){
+        return this.playerDirections.get(playerId-1);
     }
 }

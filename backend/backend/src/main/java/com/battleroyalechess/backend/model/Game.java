@@ -2,6 +2,7 @@ package com.battleroyalechess.backend.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Entity
 @Table(name = "games")
@@ -16,6 +17,9 @@ public class Game {
 
     @Column(nullable = false)
     public String gametype;
+
+    @Column(nullable = false)
+    public ArrayList<String> players;
 
     @Column(nullable = false)
     public String player1;
@@ -187,6 +191,8 @@ public class Game {
 
     public void setPlayers(ArrayList<String> players){
 
+        this.players = players;
+
         this.player1 = players.get(0);
         this.player2 = players.get(1);
 
@@ -210,5 +216,9 @@ public class Game {
         if(this.player8 != null && this.player8.equals(player)) return true;
 
         return false;
+    }
+
+    public int getPlayerId(String username){
+        return this.players.indexOf(username);
     }
 }
