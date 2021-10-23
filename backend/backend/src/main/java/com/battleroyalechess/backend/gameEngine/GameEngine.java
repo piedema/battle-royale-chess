@@ -20,7 +20,6 @@ public class GameEngine {
 
     private Game game;
     private Gametype gametype;
-    private ArrayList<String> players;
     private Long gameId;
     private Boolean hasGameStarted = false;
     private final Map<String, List<String>> board = new HashMap<>();
@@ -46,7 +45,6 @@ public class GameEngine {
         Optional<Gametype> gametypeFromDb = this.gametypeRepository.findById(gametype);
         gametypeFromDb.ifPresent(value -> this.gametype = value);
 
-        this.players = players;
         this.gamesService = gamesService;
 
         this.pieces.put("Pawn", 1);
@@ -82,18 +80,6 @@ public class GameEngine {
         return this.gameId;
     }
 
-    public String getGametype() {
-        return this.getGametype();
-    }
-
-    public ArrayList<String> getPlayers() {
-        return players;
-    }
-
-    public Long getGameId(){
-        return gameId;
-    }
-
     public void newMove(NewMovePostRequest newMovePostRequest){
 
         if(!hasGameStarted()) return;
@@ -115,6 +101,9 @@ public class GameEngine {
         String direction = this.gametypeRepository.getPlayerDirection(playerId);
         List<String> path = createPath(piece, from, to, username, direction);
 
+        // if path list is empty then there was no legal path found, then discard move
+        if(path.size() == 0) return;
+
         // check if whole path are tiles
         if(!isWholePathTiles(path)){
             return;
@@ -130,6 +119,9 @@ public class GameEngine {
         currentMove.add(from);
         currentMove.add(to);
 
+        // if user already has a move registered for this round, throw away old move
+        nextMoves.remove(username);
+
         nextMoves.put(username, currentMove);
     }
 
@@ -141,7 +133,6 @@ public class GameEngine {
         this.hasGameStarted = true;
     }
 
-    // store results of this round
     public void finishRound(){
 
         currentRound++;
@@ -250,6 +241,12 @@ public class GameEngine {
         // decrease board in finishing x amounts of round and decrease players score for pieces removed
         if(currentRound % this.setCircleShrinkAfterNRounds == 0){
             // make board smaller
+            for(Map.Entry<String, List<String>> tile: board.entrySet()){
+                int xIndex = Integer.parseInt(tile.getKey().split(":")[0]);
+                int yIndex = Integer.parseInt(tile.getKey().split(":")[0]);
+
+                if(xIndex == currentRound || yIndex == currentRound ) board.remove(tile.getKey());
+            }
         }
 
         // store game in db
@@ -344,8 +341,6 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                }
-                if(direction.equals("north")){
                     if((fromH - toH == -1 || fromH - toH == 1) && fromV - toV == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
@@ -356,8 +351,6 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                }
-                if(direction.equals("east")){
                     if((fromV - toV == -1 || fromV - toV == 1) && fromH - toH == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
@@ -368,8 +361,6 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                }
-                if(direction.equals("south")){
                     if((fromH - toH == -1 || fromH - toH == 1) && fromV - toV == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
@@ -380,8 +371,6 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                }
-                if(direction.equals("west")){
                     if((fromV - toV == -1 || fromV - toV == 1) && fromH - toH == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
