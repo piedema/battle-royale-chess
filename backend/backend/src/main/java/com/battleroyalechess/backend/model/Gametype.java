@@ -2,6 +2,7 @@ package com.battleroyalechess.backend.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Entity
 @Table(name = "gametypes")
@@ -9,7 +10,7 @@ public class Gametype {
 
     @Id
     @Column(nullable = false)
-    public String name;
+    public String gametype;
 
     @Column(nullable = false)
     public int numberOfPlayers;
@@ -30,17 +31,17 @@ public class Gametype {
     public int initialDelay;
 
     @Column(nullable = false)
-    public ArrayList<String> board;
+    public HashMap<String, ArrayList<String>> board;
 
     @Column(nullable = false)
     public ArrayList<String> playerDirections;
 
-    public String getName() {
-        return name;
+    public String getGametype() {
+        return gametype;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGametype(String gametype) {
+        this.gametype = gametype;
     }
 
     public int getNumberOfPlayers() {
@@ -80,6 +81,7 @@ public class Gametype {
     }
 
     public void setTimePerRound(int timePerRound) {
+        System.out.println("timePerRound " + timePerRound);
         this.timePerRound = timePerRound;
     }
 
@@ -91,16 +93,24 @@ public class Gametype {
         this.initialDelay = initialDelay;
     }
 
-    public ArrayList<String> getBoard() {
+    public HashMap<String, ArrayList<String>> getBoard() {
         return board;
     }
 
-    public void setBoard(ArrayList<String> board) {
+    public ArrayList<String> getBoard(String tile) {
+        return board.get(tile);
+    }
+
+    public void setBoard(HashMap<String, ArrayList<String>> board) {
         this.board = board;
     }
 
     public ArrayList<String> getPlayerDirections() {
         return playerDirections;
+    }
+
+    public String getPlayerDirections(int index) {
+        return playerDirections.get(index);
     }
 
     public void setPlayerDirections(ArrayList<String> playerDirections) {

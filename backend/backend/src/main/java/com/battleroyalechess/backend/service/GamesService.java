@@ -6,6 +6,7 @@ import com.battleroyalechess.backend.gameEngine.GameEngine;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.repository.GameRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
+import com.battleroyalechess.backend.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,13 +19,15 @@ public class GamesService {
 
     private final UserService userService;
     private final GameRepository gameRepository;
+    private final UserRepository userRepository;
     private final GametypeRepository gametypeRepository;
 
     private final Map<Long, GameEngine> activeGames = new HashMap<>();
 
-    public GamesService(UserService userService, GameRepository gameRepository, GametypeRepository gametypeRepository) {
+    public GamesService(UserService userService, GameRepository gameRepository, UserRepository userRepository, GametypeRepository gametypeRepository) {
         this.userService = userService;
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
         this.gametypeRepository = gametypeRepository;
     }
 
@@ -47,7 +50,7 @@ public class GamesService {
 
         for (Game game: unfinishedGames){
 
-            if(game.hasPlayer(username)) return game.getGameId();
+            if(game.getPlayers().contains(username)) return game.getGameId();
 
         }
 
@@ -59,7 +62,7 @@ public class GamesService {
 
         System.out.println("Create a new game with gametype " + gametype + " and players " + players);
 
-        GameEngine game = new GameEngine(userService, gameRepository, gametypeRepository);
+        GameEngine game = new GameEngine(userService, gameRepository, userRepository, gametypeRepository);
         Long gameId = game.initialize(gametype, players, this);
 
         if(gameId != null) this.activeGames.put(gameId, game);

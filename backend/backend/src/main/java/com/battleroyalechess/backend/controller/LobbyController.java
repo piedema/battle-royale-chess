@@ -1,6 +1,5 @@
 package com.battleroyalechess.backend.controller;
 
-import com.battleroyalechess.backend.dto.request.QueuePostRequest;
 import com.battleroyalechess.backend.service.LobbyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +14,14 @@ public class LobbyController {
         this.lobbyService = lobbyService;
     }
 
-    @PostMapping(value = "/addInQueue")
-    public ResponseEntity<Object> addInQueue(@RequestBody QueuePostRequest queuePostRequest) {
-        lobbyService.addInQueue(queuePostRequest);
+    @GetMapping(value = "/queue")
+    public ResponseEntity<Object> getQueue() {
+        return ResponseEntity.ok().body(lobbyService.getQueue());
+    }
+
+    @GetMapping(value = "/queue/{gametype}")
+    public ResponseEntity<Object> addInQueue(@PathVariable String gametype) {
+        lobbyService.addInQueue(gametype);
         return ResponseEntity.noContent().build();
     }
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GametypeService {
 
-    private final GametypeRepository gametypeRepository;
+    private GametypeRepository gametypeRepository;
 
     @Autowired
     public GametypeService(GametypeRepository gametypeRepository) {
@@ -21,12 +21,15 @@ public class GametypeService {
         try {
 
             Gametype gametype = new Gametype();
-            gametype.setName(gametypePostRequest.getName());
+            gametype.setGametype(gametypePostRequest.getGametype());
             gametype.setNumberOfPlayers(gametypePostRequest.getNumberOfPlayers());
             gametype.setNumberOfRounds(gametypePostRequest.getNumberOfRounds());
             gametype.setCircleShrinkAfterNRounds(gametypePostRequest.getCircleShrinkAfterNRounds());
             gametype.setCircleShrinkOffset(gametypePostRequest.getCircleShrinkOffset());
+            gametype.setTimePerRound(gametypePostRequest.getTimePerRound());
+            gametype.setInitialDelay(gametypePostRequest.getInitialDelay());
             gametype.setBoard(gametypePostRequest.getBoard());
+            gametype.setPlayerDirections(gametypePostRequest.getPlayerDirections());
 
             gametypeRepository.save(gametype);
         }

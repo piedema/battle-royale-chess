@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Data
 @Builder
@@ -13,11 +14,14 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class GametypePostRequest {
 
-    private String name;
+    private String gametype;
     private int numberOfPlayers;
     private int numberOfRounds;
     private int circleShrinkAfterNRounds;
     private int circleShrinkOffset;
-    private ArrayList<String> board;
+    private int timePerRound;
+    private int initialDelay;
+    private HashMap<String, ArrayList<String>> board;
+    private ArrayList<String> playerDirections;
 
 }

@@ -1,11 +1,9 @@
 package com.battleroyalechess.backend.service;
 
-import com.battleroyalechess.backend.dto.request.QueuePostRequest;
 import com.battleroyalechess.backend.exception.*;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.model.Gametype;
 import com.battleroyalechess.backend.model.QueuedPlayer;
-import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.repository.GameRepository;
 import com.battleroyalechess.backend.repository.UserRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
@@ -23,33 +21,31 @@ public class LobbyService {
     private final GameRepository gameRepository;
     private final GametypeRepository gametypeRepository;
     private final GamesService gamesService;
+    private final UserService userService;
     private final ArrayList<QueuedPlayer> queue = new ArrayList<QueuedPlayer>();
 
     @Autowired
-    public LobbyService(UserRepository userRepository, GameRepository gameRepository, GametypeRepository gametypeRepository, GamesService gamesService){
+    public LobbyService(UserRepository userRepository, GameRepository gameRepository, GametypeRepository gametypeRepository, GamesService gamesService, UserService userService){
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.gametypeRepository = gametypeRepository;
         this.gamesService = gamesService;
+        this.userService = userService;
     }
 
-    public void addInQueue(QueuePostRequest queuePostRequest) {
+    public ArrayList<QueuedPlayer> getQueue() {
+        return queue;
+    }
 
-        String gametype = queuePostRequest.getGametype();
-        String username = queuePostRequest.getUsername();
+    public void addInQueue(String gametype) {
 
-        Optional<User> userOptional = userRepository.findById(username);
-
-        // check if user exists
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
+        String username = userService.getCurrentUserName();
 
         Iterable<Game> activeGames = gameRepository.findByFinished(false);
 
         // check if user is not in a game already
         for( Game game: activeGames) {
-            if(game.hasPlayer(username)){
+            if(game.getPlayers().contains(username)){
                 throw new UserInGameAlreadyException(username);
             }
         }

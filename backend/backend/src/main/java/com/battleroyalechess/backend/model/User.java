@@ -1,8 +1,11 @@
 package com.battleroyalechess.backend.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 @Entity
 @Table(name = "users")
@@ -20,6 +23,12 @@ public class User {
 
     @Column(unique = true)
     private String email;
+
+    @Column
+    private Integer score;
+
+    @Column
+    private ArrayList<Integer> scores = new ArrayList<>();
 
     @OneToMany(
             targetEntity = Authority.class,
@@ -64,6 +73,25 @@ public class User {
 
     public void removeAuthority(String authorityString) {
         this.authorities.removeIf(authority -> authority.getAuthority().equalsIgnoreCase(authorityString));
+    }
+
+    public Integer getScore(){
+        return score;
+    }
+
+    public Integer setScore(int points){
+        if(this.scores.size() == 50) this.scores.remove(0);
+        this.scores.add(points);
+
+        int sum = 0;
+
+        for(int i = 0; i < this.scores.size() - 1; i++){
+            sum += this.scores.get(i);
+        }
+
+        this.score = sum / this.scores.size();
+
+        return this.score;
     }
 
 }

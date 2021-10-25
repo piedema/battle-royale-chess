@@ -3,12 +3,15 @@ package com.battleroyalechess.backend.gameEngine;
 import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.model.Gametype;
+import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.repository.GameRepository;
 import com.battleroyalechess.backend.repository.GametypeRepository;
+import com.battleroyalechess.backend.repository.UserRepository;
 import com.battleroyalechess.backend.service.GamesService;
 import com.battleroyalechess.backend.service.UserService;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,28 +25,33 @@ public class GameEngine {
     private Gametype gametype;
     private Long gameId;
     private Boolean hasGameStarted = false;
-    private final Map<String, List<String>> board = new HashMap<>();
-    private final Map<String, List<String>> nextMoves = new HashMap<>();
+    private Map<String, ArrayList<String>> board = new HashMap<>();
+    private Map<String, String> nextMoves = new HashMap<>();
     private ScheduledFuture<?> scheduledTask;
     private GamesService gamesService;
-    private Map<String, Integer> pieces;
-    private int currentRound = 0;
-    private int setCircleShrinkAfterNRounds;
+    private final Map<String, Integer> pieces = new HashMap<>();
+    private int currentRound = 1;
 
     private final UserService userService;
     private final GameRepository gameRepository;
+    private final UserRepository userRepository;
     private final GametypeRepository gametypeRepository;
 
-    public GameEngine(UserService userService, GameRepository gameRepository, GametypeRepository gametypeRepository) {
+    public GameEngine(UserService userService, GameRepository gameRepository, UserRepository userRepository, GametypeRepository gametypeRepository) {
         this.userService = userService;
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
         this.gametypeRepository = gametypeRepository;
     }
 
     public Long initialize(String gametype, ArrayList<String> players, GamesService gamesService){
 
+        System.out.println("Game initialized at " + LocalDateTime.now());
+
         Optional<Gametype> gametypeFromDb = this.gametypeRepository.findById(gametype);
         gametypeFromDb.ifPresent(value -> this.gametype = value);
+
+        this.board = this.gametype.getBoard();
 
         this.gamesService = gamesService;
 
@@ -62,20 +70,15 @@ public class GameEngine {
 
         this.game = savedGame;
         this.gameId = savedGame.getGameId();
-        this.setCircleShrinkAfterNRounds = this.gametype.circleShrinkAfterNRounds;
 
-        Optional<Gametype> optionalInitialDelay = this.gametypeRepository.findById(gametype);
-        Optional<Gametype> optionalTimePerRound = this.gametypeRepository.findById(gametype);
+        int initialDelay = this.gametype.getInitialDelay();
+        int timePerRound = this.gametype.getTimePerRound();
 
-        if(optionalInitialDelay.isEmpty()) return null;
-        if(optionalTimePerRound.isEmpty()) return null;
-
-        int initialDelay = optionalInitialDelay.get().getInitialDelay();
-        int timePerRound = optionalTimePerRound.get().getTimePerRound();
+        System.out.println("initialDelay " + initialDelay + " timePerRound " + timePerRound);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        GameEngineTimer gameEngineTimerService = new GameEngineTimer(this.userService, this.gameRepository, this.gametypeRepository, this);
-        this.scheduledTask = executor.scheduleAtFixedRate(gameEngineTimerService, initialDelay, timePerRound, TimeUnit.SECONDS);
+        GameEngineTimer gameEngineTimerService = new GameEngineTimer(this.userService, this.gameRepository, this.userRepository, this.gametypeRepository, this);
+        this.scheduledTask = executor.scheduleWithFixedDelay(gameEngineTimerService, initialDelay, timePerRound, TimeUnit.SECONDS);
 
         return this.gameId;
     }
@@ -89,7 +92,7 @@ public class GameEngine {
         String to = newMovePostRequest.getTo();
 
         // check if players king is still alive
-        for (Map.Entry<String, List<String>> tile : board.entrySet()) {
+        for (Map.Entry<String, ArrayList<String>> tile : board.entrySet()) {
             if(tile.getValue().contains(username) && tile.getValue().contains("King")){
                 return;
             }
@@ -97,8 +100,8 @@ public class GameEngine {
 
         // create list with path for piece. list must be empty if path is not possible, then return
         String piece = board.get(from).get(1);
-        int playerId = this.gameRepository.getPlayerId(username);
-        String direction = this.gametypeRepository.getPlayerDirection(playerId);
+        int playerIndex = this.gameRepository.findPlayersByGameId(this.gameId).indexOf(username);
+        String direction = this.gametype.playerDirections.get(playerIndex);
         List<String> path = createPath(piece, from, to, username, direction);
 
         // if path list is empty then there was no legal path found, then discard move
@@ -115,9 +118,7 @@ public class GameEngine {
         }
 
         // store move locally. at end of round moves are stored in db. Not before, so other users cant see move before end of round
-        ArrayList<String> currentMove = new ArrayList<>();
-        currentMove.add(from);
-        currentMove.add(to);
+        String currentMove = from + ">" + to;
 
         // if user already has a move registered for this round, throw away old move
         nextMoves.remove(username);
@@ -131,48 +132,51 @@ public class GameEngine {
 
     public void startGame(){
         this.hasGameStarted = true;
+
+        System.out.println("Game starting at " + LocalDateTime.now());
     }
 
     public void finishRound(){
 
-        currentRound++;
+        System.out.println("Current round " + currentRound + " ending at " + LocalDateTime.now());
 
         // perform and store all moves
         // if a piece moves to a tile which is occupied already, it removes that piece
         // if 2 pieces move to the same tile the weakest gets removed. If they are of same value they both get removed
         ArrayList<Map<String, String>> removals = new ArrayList<Map<String, String>>();
-        Map<String, List<String>> movingTo = new HashMap<>();
+        Map<String, ArrayList<String>> movingTo = new HashMap<>();
 
-        for (Map.Entry<String, List<String>> move : nextMoves.entrySet()) {
+        for (Map.Entry<String, String> move : nextMoves.entrySet()) {
 
-            String from = move.getValue().get(0);
-            String to = move.getValue().get(1);
-            String tile = move.getValue().get(1);
-            String piece = getPieceOnTile(tile);
+            String from = move.getValue().split(">")[0];
+            String to = move.getValue().split(">")[1];
+            String piece = getPieceOnTile(to);
             String removedBy = move.getKey();
-            String removedFrom = getPlayerOnTile(tile);
+            String removedFrom = getPlayerOnTile(to);
 
             // processing moving to occupied tile
             if(isTileOccupied(to)){
                 Map<String, String> removed = new HashMap<>();
-                removed.put("tile", tile);
+                removed.put("tile", to);
                 removed.put("piece", piece);
                 removed.put("removedBy", removedBy);
                 removed.put("removedFrom", removedFrom);
                 removals.add(removed);
             }
+
+            // if moved piece would have been removed from tile it was on, remove that removal since it moved
             removals.removeIf(removal -> removal.get("tile").equals(from));
 
             // if there isnt any move planned to new tile then queue this move
             if(!movingTo.containsKey(to)){
-                ArrayList<String> details = new ArrayList<String>();
+                ArrayList<String> details = new ArrayList<>();
                 details.add(removedBy);
                 details.add(piece);
                 movingTo.put(to, details);
             }
 
             // processing multiple moves to same tile where own move has better piece than other persons moved piece
-            if(!movingTo.get(tile).get(0).equals(removedBy) && this.pieces.get(piece) > this.pieces.get(movingTo.get(to).get(1))){
+            if(!movingTo.get(to).get(0).equals(removedBy) && this.pieces.get(piece) > this.pieces.get(movingTo.get(to).get(1))){
                 ArrayList<String> details = new ArrayList<String>();
                 details.add(removedBy);
                 details.add(piece);
@@ -188,7 +192,7 @@ public class GameEngine {
             }
 
             // processing multiple moves to same tile where other piece has better piece then current players move
-            if(!movingTo.get(tile).get(0).equals(removedBy) && this.pieces.get(piece) < this.pieces.get(movingTo.get(to).get(1))){
+            if(!movingTo.get(to).get(0).equals(removedBy) && this.pieces.get(piece) < this.pieces.get(movingTo.get(to).get(1))){
 
                 Map<String, String> removed = new HashMap<>();
                 removed.put("tile", to);
@@ -200,7 +204,7 @@ public class GameEngine {
             }
 
             // processing multiple moves to same tile where both pieces are of same worth
-            if(!movingTo.get(tile).get(0).equals(removedBy) && this.pieces.get(piece).equals(this.pieces.get(movingTo.get(to).get(1)))){
+            if(!movingTo.get(to).get(0).equals(removedBy) && this.pieces.get(piece).equals(this.pieces.get(movingTo.get(to).get(1)))){
 
                 Map<String, String> removedCurrentUser = new HashMap<>();
                 removedCurrentUser.put("tile", to);
@@ -223,6 +227,9 @@ public class GameEngine {
         // process all legitimate moves on the board
         board.putAll(movingTo);
 
+        // store all moves in database
+        this.game.storeMoves(currentRound, nextMoves);
+
         // create a new empty list of moves
         nextMoves.clear();
 
@@ -231,22 +238,47 @@ public class GameEngine {
             // award points to removedBy player
             int pieceWorth = this.pieces.get(removal.get("piece"));
             String winningPlayer = removal.get("removedBy");
-            int winningScore = this.pieces.get(removal.get("piece")) * 2;
+            int winningScore = pieceWorth * 2;
             String losingPlayer = removal.get("removedFrom");
-            int losingScore = this.pieces.get(removal.get("piece"));
-            this.gameRepository.incrementPlayerScore(winningPlayer, winningScore);
-            this.gameRepository.decrementPlayerScore(losingPlayer, losingScore);
+
+            this.game.incrementPlayerScore(winningPlayer, winningScore);
+            this.game.decrementPlayerScore(losingPlayer, pieceWorth);
         }
 
         // decrease board in finishing x amounts of round and decrease players score for pieces removed
-        if(currentRound % this.setCircleShrinkAfterNRounds == 0){
+        if(currentRound % this.gametype.getCircleShrinkAfterNRounds() == 0){
             // make board smaller
-            for(Map.Entry<String, List<String>> tile: board.entrySet()){
-                int xIndex = Integer.parseInt(tile.getKey().split(":")[0]);
-                int yIndex = Integer.parseInt(tile.getKey().split(":")[0]);
 
-                if(xIndex == currentRound || yIndex == currentRound ) board.remove(tile.getKey());
+            int topLine = 0;
+            int bottomLine = 0;
+            int leftLine = 0;
+            int rightLine = 0;
+
+            Set<String> tilesToRemove = new HashSet<>();
+
+            for(Map.Entry<String, ArrayList<String>> tile: board.entrySet()){
+
+                int xIndex = Integer.parseInt(tile.getKey().split(":")[0]);
+                int yIndex = Integer.parseInt(tile.getKey().split(":")[1]);
+
+                if(topLine == 0 || yIndex < topLine) topLine = yIndex;
+                if(bottomLine == 0 || yIndex > bottomLine) bottomLine = yIndex;
+                if(leftLine == 0 || xIndex < leftLine) leftLine = xIndex;
+                if(rightLine == 0 || xIndex > rightLine) rightLine = xIndex;
             }
+
+            for(Map.Entry<String, ArrayList<String>> tile: board.entrySet()){
+
+                int xIndex = Integer.parseInt(tile.getKey().split(":")[0]);
+                int yIndex = Integer.parseInt(tile.getKey().split(":")[1]);
+
+                if(yIndex == topLine && board.containsKey(tile.getKey()) && topLine != bottomLine) tilesToRemove.add(tile.getKey());
+                if(yIndex == bottomLine && board.containsKey(tile.getKey()) && topLine != bottomLine) tilesToRemove.add(tile.getKey());
+                if(xIndex == leftLine && board.containsKey(tile.getKey()) && leftLine != rightLine) tilesToRemove.add(tile.getKey());
+                if(xIndex == rightLine && board.containsKey(tile.getKey()) && leftLine != rightLine) tilesToRemove.add(tile.getKey());
+            }
+
+            board.keySet().removeAll(tilesToRemove);
         }
 
         // store game in db
@@ -254,8 +286,9 @@ public class GameEngine {
 
         // if there is only 1 king or 0 kings left end game
         int numberOfKingsAlive = 0;
+        System.out.println(board);
 
-        for (Map.Entry<String, List<String>> tile : board.entrySet()) {
+        for (Map.Entry<String, ArrayList<String>> tile : board.entrySet()) {
             if(tile.getValue().contains("King")){
                 numberOfKingsAlive++;
             }
@@ -265,11 +298,34 @@ public class GameEngine {
             endGame();
         }
 
+        currentRound++;
+
+        System.out.println("Current round ending finished " + currentRound);
+
     }
 
     public void endGame(){
-        // remove all references (timer and instance) to apply for garbage collection
 
+        System.out.println("Ending game");
+
+        // calculate new total scores for players (add this score to their previous scores)
+
+        // setting game on finished
+        this.game.setFinished();
+        this.gameRepository.save(this.game);
+
+        // calculate new average scores for players in user table
+        ArrayList<String> players = this.game.getPlayers();
+        for(int i = 0; i < players.size(); i++) {
+            Optional<User> userOptional = this.userRepository.findById(players.get(i));
+            if(userOptional.isPresent()){
+                User user = userOptional.get();
+                user.setScore(this.game.getScore(i));
+                this.userRepository.save(user);
+            }
+        }
+
+        // remove all references (timer and instance) to apply for garbage collection
         // remove timer
         this.scheduledTask.cancel(true);
 
