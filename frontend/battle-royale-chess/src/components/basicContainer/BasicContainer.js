@@ -1,10 +1,10 @@
 import styles from './BasicContainer.module.css';
 
-export default function basicContainer({ children }){
+export default function BasicContainer({ children }){
 
     return (
-        <div style={styles.outerContainer}>
-            <div style={styles.innerContainer}>
+        <div className={styles.outerContainer}>
+            <div className={styles.innerContainer}>
                 { children }
             </div>
         </div>

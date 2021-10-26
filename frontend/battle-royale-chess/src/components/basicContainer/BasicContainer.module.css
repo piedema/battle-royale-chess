@@ -1,10 +1,9 @@
-.outercontainer {
+.outerContainer {
     background: rgb(255,255,255);
     width: fit-content;
     margin: 0px auto 10px auto;
     border: 1px solid white;
     border-radius: 6px;
-    background-color: red;
 }
 
 .innerContainer {

@@ -7,7 +7,7 @@ import { UserContext } from '../../contexts/UserContext'
 import { authenticate } from '../../services/AuthenticationService'
 import { register } from '../../services/UserService'
 
-import basicContainer from '../../components/basicContainer/BasicContainer.js'
+import BasicContainer from '../../components/basicContainer/BasicContainer.js'
 
 import './index.css'
 
@@ -66,27 +66,27 @@ export default function Login() {
         <div className="login">
             <div id="title">Battle Royale Chess</div>
             <div id="login">
-                <basicContainer>
+                <BasicContainer>
                     <input id="login_username" type="text" placeholder="username" /><br />
                     <input id="login_password" type="password" placeholder="password" /><br />
                     <button className="button" onClick={loginAsPlayer}>Login</button><br />
-                </basicContainer>
+                </BasicContainer>
             </div>
             <br />
-            <div id="register" className="container">
-                <div className="innerContainer">
+            <div id="register">
+                <BasicContainer>
                     <input id="register_username" type="text" placeholder="username" /><br />
                     <input id="register_password1" type="password" placeholder="password" /><br />
                     <input id="register_password2" type="password" placeholder="repeat password" /><br />
                     <input id="register_email" type="text" placeholder="email" /><br />
                     <button className="button" onClick={register}>Register</button><br />
-                </div>
+                </BasicContainer>
             </div>
             <br />
-            <div id="spectator" className="container">
-                <div className="innerContainer">
+            <div id="spectator">
+                <BasicContainer>
                     <button className="button" onClick={continueAsSpectator}>Continue as Spectator</button><br />
-                </div>
+                </BasicContainer>
             </div>
         </div>
     )
