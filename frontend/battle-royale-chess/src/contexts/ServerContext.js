@@ -4,7 +4,7 @@ export const ServerContext = createContext({})
 
 export default function ServerContextProvider({ children }){
 
-    const [serverAddress, setServerAddress] = useState('http://h2886030.stratoserver.net:45458')
+    const [serverAddress, setServerAddress] = useState('http://localhost:8080')
 
     const contextData = {
         serverAddress:serverAddress

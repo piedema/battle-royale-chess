@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class AuthenticationController {
 
@@ -18,9 +21,15 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
-            AuthenticationResponse authenticationResponse = userAuthenticateService.authenticateUser(authenticationRequest);
-            return ResponseEntity.ok(authenticationResponse);
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse res) {
+        AuthenticationResponse authenticationResponse = userAuthenticateService.authenticateUser(authenticationRequest);
+        Cookie cookie = new Cookie("jwt", authenticationResponse.getJwt());
+        cookie.setPath("/");
+        //cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+        res.addCookie(cookie);
+        return ResponseEntity.ok(authenticationResponse);
     }
 
 }

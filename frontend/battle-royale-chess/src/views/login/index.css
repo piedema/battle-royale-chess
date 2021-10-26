@@ -7,74 +7,114 @@
     --titleColor: rgba(255,255,255, 0.4);
 
     margin: 100px auto 100px auto;
-    color: black;
+    color: white;
     font-family: 'Playfair Display', 'Georgia', serif;
     font-size: 120px;
     font-weight: 900;
     user-select: none;
-    text-shadow: -20px 0 var(--titleColor), 0 20px var(--titleColor), 20px 0 var(--titleColor), 0 -20px var(--titleColor);
+    /* text-shadow: -20px 0 var(--titleColor), 0 20px var(--titleColor), 20px 0 var(--titleColor), 0 -20px var(--titleColor); */
 }
 
-.login .container {
-    background-color: rgba(255, 255, 255, 0.4);
-    padding: 20px 20px 0px 20px;
+/* .login .container {
+    background: rgb(255,255,255);
     width: fit-content;
-    margin: 0px auto 20px auto;
+    margin: 0px auto 10px auto;
     border: 1px solid white;
     border-radius: 6px;
 }
 
+.login .container .innerContainer {
+    margin: 3px;
+    padding: 10px;
+    border-radius: 6px;
+    background: rgb(240,240,240);
+    background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(39,57,35,0.2) 100%);
+    border: 1px solid white;
+} */
+
 .login input {
-    font-size: 20px;
-    padding: 5px;
+    font-size: 14px;
+    padding: 10px;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
     box-sizing: border-box;         /* Opera/IE 8+ */
     border-radius: 6px;
     border: 0px;
-    margin: 10px;
+    margin-bottom: 10px;
+    width: 254px;
 }
 
 .login input:focus {
     outline: 0 none;
-    box-shadow: 0 0 10px black;
+    box-shadow: 0 0 10px #a4e271;
     border-radius: 6px;
 }
 
-.login #loginBtn {
-    background-color: green;
-    border: 0px;
-    color: white;
-    font-size: 20px;
-    padding: 10px;
-    border-radius: 6px;
-    margin-top: 20px;
-    width: 280px;
-    cursor: pointer;
+#login .button {
+	box-shadow:inset 0px 1px 0px 0px #a4e271;
+	background:linear-gradient(to bottom, #89c403 5%, #77a809 100%);
+	background-color:#89c403;
+	border-radius:6px;
+	border:1px solid #74b807;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #528009;
+    width: 254px;
 }
 
-.login #loginBtn:hover {
-    background-color: black;
+#login .button:hover {
+    background:linear-gradient(to bottom, #77a809 5%, #89c403 100%);
+	background-color:#77a809;
 }
 
-.login #spectatorBtn {
-    background-color: blue;
-    border: 0px;
-    color: white;
-    font-size: 20px;
-    padding: 10px;
-    border-radius: 6px;
-    width: 280px;
-    cursor: pointer;
+#register .button {
+	box-shadow:inset 0px 1px 0px 0px #a4e271;
+	background:linear-gradient(to bottom, #89c403 5%, #77a809 100%);
+	background-color:#89c403;
+	border-radius:6px;
+	border:1px solid #74b807;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #528009;
+    width: 254px;
 }
 
-.login #spectatorBtn:hover {
-    background-color: black;
+#register .button:hover {
+    background:linear-gradient(to bottom, #77a809 5%, #89c403 100%);
+	background-color:#77a809;
 }
 
-.login #orDiv {
-    color: white;
-    font-size: 30px;
-    font-weight: 100;
-    font-style: italic;
+#spectator .button {
+	box-shadow:inset 0px 1px 0px 0px #a4e271;
+	background:linear-gradient(to bottom, #89c403 5%, #77a809 100%);
+	background-color:#89c403;
+	border-radius:6px;
+	border:1px solid #74b807;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #528009;
+    width: 254px;
+}
+
+#spectator .button:hover {
+    background:linear-gradient(to bottom, #77a809 5%, #89c403 100%);
+	background-color:#77a809;
 }

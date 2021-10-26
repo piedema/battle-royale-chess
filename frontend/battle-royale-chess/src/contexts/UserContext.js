@@ -1,52 +1,29 @@
 import { createContext, useState, useContext } from 'react'
 
-import axios from 'axios'
-
-import { ServerContext } from './ServerContext'
+import { getUserdata } from '../services/UserService'
 
 export const UserContext = createContext({})
 
 export default function UserContextProvider({ children }){
 
-    const { serverAddress } = useContext(ServerContext)
-
-    const [id, setId] = useState(undefined)
     const [username, setUsername] = useState(undefined)
-    const [role, setRole] = useState('spectator')
+    const [email, setEmail] = useState(undefined)
+    const [role, setRole] = useState("SPECTATOR")
 
     const contextData = {
-        id:setId,
         username:username,
+        email:email,
         role:role,
-        setRole:setRole,
-        getUserData:getUserData
+        loadUserdata:loadUserdata
     }
 
-    async function getUserData(userId){
+    async function loadUserdata(){
 
-        // fetch userdata from backend
-        const options = {
-            url:serverAddress + '/s/userdata/' + userId,
-            method:'GET'
-        }
+        const response = await getUserdata()
 
-        try {
-
-            // make api call
-            const res = await axios(options)
-
-            // put userdata in UserContext
-            const { id, role, username } = res.data
-
-            setId(id)
-            setUsername(username)
-            setRole(role)
-
-        } catch (error) {
-
-            alert(error)
-
-        }
+        setUsername(response.username)
+        setEmail(response.email)
+        setRole(response.role)
 
     }
 

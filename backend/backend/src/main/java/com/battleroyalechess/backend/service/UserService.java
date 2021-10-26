@@ -13,10 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -39,12 +36,37 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUser(String username) {
+    public Optional<User> getUser() {
+
+        String username = getCurrentUserName();
 
         Optional<User> userOptional = userRepository.findById(username);
 
         if (userOptional.isEmpty()) {
             throw new UserNotFoundException(username);
+        }
+
+        return userOptional;
+    }
+
+    public Optional<User> getUser(String username) {
+
+        String ownUsername = getCurrentUserName();
+
+        Set<Authority> authorities = getAuthorities(ownUsername);
+
+        Optional<User> userOptional = Optional.empty();
+
+        for(Authority authority : authorities){
+            if(authority.getAuthority().equals("ROLE_ADMIN")){
+
+                userOptional = userRepository.findById(username);
+
+                if (userOptional.isEmpty()) {
+                    throw new UserNotFoundException(username);
+                }
+
+            }
         }
 
         return userOptional;

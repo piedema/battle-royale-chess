@@ -9,7 +9,7 @@ public class JwtSecret {
 
     public JwtSecret(){
 
-        this.key = "qd7978tWhZbtnM80LC24";
+        key = "qd7978tWhZbtnM80LC24";
 
     }
 

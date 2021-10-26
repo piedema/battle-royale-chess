@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.battleroyalechess.backend.config.JwtSecret;
 
 import javax.sql.DataSource;
 
@@ -24,8 +25,8 @@ import static org.springframework.http.HttpMethod.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private DataSource dataSource;
-    private JwtRequestFilter jwtRequestFilter;
+    private final DataSource dataSource;
+    private final JwtRequestFilter jwtRequestFilter;
 
     @Autowired
     WebSecurityConfiguration(DataSource dataSource, JwtRequestFilter jwtRequestFilter) {
@@ -68,6 +69,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers(PATCH,"/users/{^[\\w]$}/password").authenticated()
+                .antMatchers(GET,"/users").hasRole("USER")
+                .antMatchers("/users").hasRole("USER")
                 .antMatchers("/users/**").hasRole("ADMIN")
                 .antMatchers("/game/**").hasRole("USER")
                 .antMatchers("/lobby/**").hasRole("USER")
@@ -79,6 +82,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
+                .rememberMe()
+                .alwaysRemember(true)
+                .tokenValiditySeconds(60 * 60 * 24 * 7)
+                .rememberMeCookieName("jwt")
+                .key(JwtSecret.getKey())
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

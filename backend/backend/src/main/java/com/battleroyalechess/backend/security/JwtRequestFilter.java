@@ -30,14 +30,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authorizationHeader = request.getHeader("Cookie");
 
         String username = null;
         String jwt = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
+        if (authorizationHeader != null && authorizationHeader.startsWith("jwt=")) {
+            jwt = authorizationHeader.substring(4);
+            System.out.println(jwt);
             username = jwtUtil.extractUsername(jwt);
+            System.out.println(username);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

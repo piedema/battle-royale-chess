@@ -20,13 +20,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "")
+    @GetMapping(value = "/all")
     public ResponseEntity<Object> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
+    @GetMapping(value = "")
+    public ResponseEntity<Object> getUser() {
+        return ResponseEntity.ok().body(userService.getUser());
+    }
+
     @GetMapping(value = "/{username}")
-    public ResponseEntity<Object> getUser(@PathVariable("username") String username) {
+    public ResponseEntity<Object> getUser(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getUser(username));
     }
 
