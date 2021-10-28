@@ -13,13 +13,13 @@ import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-      <AuthenticationContextProvider>
-          <ServerContextProvider>
-              <UserContextProvider>
-                <App />
-            </UserContextProvider>
-        </ServerContextProvider>
-    </AuthenticationContextProvider>
+      <UserContextProvider>
+          <AuthenticationContextProvider>
+              <ServerContextProvider>
+                    <App />
+            </ServerContextProvider>
+        </AuthenticationContextProvider>
+    </UserContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

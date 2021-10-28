@@ -7,7 +7,6 @@ export default function ServerContextProvider({ children }){
     const [serverAddress, setServerAddress] = useState('http://localhost:8080')
 
     const contextData = {
-        serverAddress:serverAddress
     }
 
     return (

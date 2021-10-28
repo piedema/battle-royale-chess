@@ -1,38 +1,26 @@
-.login {
+.loginContainer {
     text-align:center;
  }
 
-.login #title {
+ .formContainer {
+     display: flex;
+     justify-content: center;
+ }
+
+.title {
 
     --titleColor: rgba(255,255,255, 0.4);
 
     margin: 100px auto 100px auto;
     color: white;
     font-family: 'Playfair Display', 'Georgia', serif;
-    font-size: 120px;
+    font-size: 60px;
     font-weight: 900;
     user-select: none;
     /* text-shadow: -20px 0 var(--titleColor), 0 20px var(--titleColor), 20px 0 var(--titleColor), 0 -20px var(--titleColor); */
 }
 
-/* .login .container {
-    background: rgb(255,255,255);
-    width: fit-content;
-    margin: 0px auto 10px auto;
-    border: 1px solid white;
-    border-radius: 6px;
-}
-
-.login .container .innerContainer {
-    margin: 3px;
-    padding: 10px;
-    border-radius: 6px;
-    background: rgb(240,240,240);
-    background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(39,57,35,0.2) 100%);
-    border: 1px solid white;
-} */
-
-.login input {
+.input {
     font-size: 14px;
     padding: 10px;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -44,13 +32,13 @@
     width: 254px;
 }
 
-.login input:focus {
+.input:focus {
     outline: 0 none;
     box-shadow: 0 0 10px #a4e271;
     border-radius: 6px;
 }
 
-#login .button {
+.loginSubmitBtn {
 	box-shadow:inset 0px 1px 0px 0px #a4e271;
 	background:linear-gradient(to bottom, #89c403 5%, #77a809 100%);
 	background-color:#89c403;
@@ -68,12 +56,12 @@
     width: 254px;
 }
 
-#login .button:hover {
+.loginSubmitBtn:hover {
     background:linear-gradient(to bottom, #77a809 5%, #89c403 100%);
 	background-color:#77a809;
 }
 
-#register .button {
+.registerSubmitBtn {
 	box-shadow:inset 0px 1px 0px 0px #a4e271;
 	background:linear-gradient(to bottom, #89c403 5%, #77a809 100%);
 	background-color:#89c403;
@@ -91,12 +79,12 @@
     width: 254px;
 }
 
-#register .button:hover {
+.registerSubmitBtn:hover {
     background:linear-gradient(to bottom, #77a809 5%, #89c403 100%);
 	background-color:#77a809;
 }
 
-#spectator .button {
+.spectatorBtn {
 	box-shadow:inset 0px 1px 0px 0px #a4e271;
 	background:linear-gradient(to bottom, #89c403 5%, #77a809 100%);
 	background-color:#89c403;
@@ -114,7 +102,7 @@
     width: 254px;
 }
 
-#spectator .button:hover {
+.spectatorBtn:hover {
     background:linear-gradient(to bottom, #77a809 5%, #89c403 100%);
 	background-color:#77a809;
 }

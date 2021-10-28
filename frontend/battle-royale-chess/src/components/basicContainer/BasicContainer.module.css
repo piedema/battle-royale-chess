@@ -1,16 +1,18 @@
 .outerContainer {
     background: rgb(255,255,255);
     width: fit-content;
-    margin: 0px auto 10px auto;
+    margin: 10px;
     border: 1px solid white;
     border-radius: 6px;
+    padding: 3px;
 }
 
 .innerContainer {
-    margin: 3px;
-    padding: 10px;
     border-radius: 6px;
     background: rgb(240,240,240);
     background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(39,57,35,0.2) 100%);
     border: 1px solid white;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
 }

@@ -14,6 +14,7 @@ export default function UserContextProvider({ children }){
         username:username,
         email:email,
         role:role,
+        setRole:setRole,
         loadUserdata:loadUserdata
     }
 
