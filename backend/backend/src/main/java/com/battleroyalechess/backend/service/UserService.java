@@ -80,44 +80,6 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public String createUser(UserPostRequest userPostRequest) {
-        try {
-
-            String username = userPostRequest.getUsername();
-            String email = userPostRequest.getEmail();
-
-            if(userExists(username)) throw new UsernameNotAvailableException();
-            if(emailExists(email)) throw new EmailNotAvailableException();
-
-            String encryptedPassword = passwordEncoder.encode(userPostRequest.getPassword());
-
-            User user = new User();
-            user.setUsername(userPostRequest.getUsername());
-            user.setPassword(encryptedPassword);
-            user.setEmail(userPostRequest.getEmail());
-            user.setEnabled(true);
-            user.addAuthority("ROLE_USER");
-
-            for (String s : userPostRequest.getAuthorities()){
-                user.addAuthority(s);
-            }
-
-            User newUser = userRepository.save(user);
-            return newUser.getUsername();
-        }
-        catch(UsernameNotAvailableException | EmailNotAvailableException ex) {
-
-            throw ex;
-
-        }
-        catch (Exception ex) {
-
-            throw new BadRequestException("Cannot create user");
-
-        }
-
-    }
-
     public void deleteUser(String username) {
         if (userExists(username)) userRepository.deleteById(username);
         else throw new UserNotFoundException(username);

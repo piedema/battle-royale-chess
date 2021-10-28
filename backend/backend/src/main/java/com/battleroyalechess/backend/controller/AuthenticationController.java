@@ -26,7 +26,7 @@ public class AuthenticationController {
         Cookie cookie = new Cookie("jwt", authenticationResponse.getJwt());
         cookie.setPath("/");
         //cookie.setSecure(true);
-        cookie.setHttpOnly(true);
+        //cookie.setHttpOnly(true);
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.addCookie(cookie);
         return ResponseEntity.ok(authenticationResponse);

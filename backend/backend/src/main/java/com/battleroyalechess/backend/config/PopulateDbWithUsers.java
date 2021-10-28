@@ -1,6 +1,7 @@
 package com.battleroyalechess.backend.config;
 
 import com.battleroyalechess.backend.dto.request.UserPostRequest;
+import com.battleroyalechess.backend.service.RegisterService;
 import com.battleroyalechess.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -16,12 +17,12 @@ import java.util.Set;
 public class PopulateDbWithUsers implements CommandLineRunner {
 
     @Autowired
-    UserService userService;
+    RegisterService registerService;
 
     @Override
     public void run(String... args) throws Exception {
 
-        createUser("user", "password", "user@email.com", new HashSet<>(Arrays.asList("ROLE_ADMIN")));
+        createUser("user", "password", "user@email.com", new HashSet<>(Arrays.asList("ADMIN")));
         createUser("player1", "password", "player1@email.com", new HashSet<>(Arrays.asList()));
         createUser("player2", "password", "player2@email.com", new HashSet<>(Arrays.asList()));
         createUser("player3", "password", "player3@email.com", new HashSet<>(Arrays.asList()));
@@ -39,7 +40,7 @@ public class PopulateDbWithUsers implements CommandLineRunner {
         userPostRequest.setEmail(email);
         userPostRequest.setAuthorities(authorities);
 
-        userService.createUser(userPostRequest);
+        registerService.createUser(userPostRequest);
 
     }
 }

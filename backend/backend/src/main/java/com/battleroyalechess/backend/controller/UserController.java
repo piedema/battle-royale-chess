@@ -35,17 +35,6 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUser(username));
     }
 
-    @PostMapping(value = "")
-    public ResponseEntity<Object> createUser(@RequestBody UserPostRequest userPostRequest) {
-
-        String newUsername = userService.createUser(userPostRequest);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-                .buildAndExpand(newUsername).toUri();
-
-        return ResponseEntity.created(location).build();
-    }
-
     @PutMapping(value = "")
     public ResponseEntity<Object> updateUser(@RequestBody User user) {
         userService.updateUser(user);

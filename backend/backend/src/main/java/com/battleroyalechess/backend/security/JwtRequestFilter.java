@@ -1,5 +1,6 @@
 package com.battleroyalechess.backend.security;
 
+import com.battleroyalechess.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +24,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private JwtUtil jwtUtil;
+
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -37,12 +42,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("jwt=")) {
             jwt = authorizationHeader.substring(4);
-            System.out.println(jwt);
             username = jwtUtil.extractUsername(jwt);
-            System.out.println(username);
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null && userService.userExists(username)) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
