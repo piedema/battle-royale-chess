@@ -1,45 +1,54 @@
 import { useContext } from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import Login from './views/login/Login'
 import Lobby from './views/lobby/Lobby'
+import Games from './views/games/Games'
+import Highscores from './views/highscores/Highscores'
+import Settings from './views/settings/Settings'
+import Rules from './views/rules/Rules'
+import Game from './views/game/Game'
 
 import { AuthenticationContext } from './contexts/AuthenticationContext'
-//import { UserContext } from './contexts/UserContext'
 
-import './App.css'
+import styles from './App.module.css'
 
 export default function App() {
 
     const { authState } = useContext(AuthenticationContext)
-    //const { loadUserdata } = useContext(UserContext)
-
-    // const jwt = Cookies.get('jwt')
-    //
-    // if(isAuthenticated === false && jwt !== undefined) loadData()
-    //
-    // async function loadData(){
-    //
-    //     try {
-    //
-    //         await loadUserdata()
-    //         setIsAuthenticated(true)
-    //
-    //     } catch (error) {
-    //         //alert(error.response || error)
-    //         //setIsAuthenticated(false)
-    //     }
-    //
-    // }
 
     return (
-        <div className="App">
+        <div className={styles.app}>
+            <div className={styles.container}>
 
-            {
-                authState === "success"
-                ? <Lobby />
-                : <Login />
-            }
+                {
+                    authState === "success"
+                    ?   <Router>
+                            <Switch>
+                                <Route exact path="/">
+                                    <Lobby />
+                                </Route>
+                                <Route path="/games">
+                                    <Games />
+                                </Route>
+                                <Route path="/highscores">
+                                    <Highscores />
+                                </Route>
+                                <Route path="/settings">
+                                    <Settings />
+                                </Route>
+                                <Route path="/rules">
+                                    <Rules />
+                                </Route>
+                                <Route path="/game">
+                                    <Game />
+                                </Route>
+                            </Switch>
+                        </Router>
+                    : <Login />
+                }
 
+            </div>
         </div>
     )
 }

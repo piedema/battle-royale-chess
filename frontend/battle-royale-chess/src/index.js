@@ -3,25 +3,31 @@ import ReactDOM from 'react-dom';
 
 import App from './App';
 
-import ServerContextProvider from './contexts/ServerContext'
+import GamesContextProvider from './contexts/GamesContext'
+import GametypesContextProvider from './contexts/GametypesContext'
 import AuthenticationContextProvider from './contexts/AuthenticationContext'
 import UserContextProvider from './contexts/UserContext'
+import LobbytypesContextProvider from './contexts/LobbyContext'
 
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
 
 ReactDOM.render(
-  <React.StrictMode>
-      <UserContextProvider>
-          <AuthenticationContextProvider>
-              <ServerContextProvider>
-                    <App />
-            </ServerContextProvider>
-        </AuthenticationContextProvider>
-    </UserContextProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <UserContextProvider>
+            <AuthenticationContextProvider>
+                <GamesContextProvider>
+                    <GametypesContextProvider>
+                        <LobbytypesContextProvider>
+                            <App />
+                        </LobbytypesContextProvider>
+                    </GametypesContextProvider>
+                </GamesContextProvider>
+            </AuthenticationContextProvider>
+        </UserContextProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

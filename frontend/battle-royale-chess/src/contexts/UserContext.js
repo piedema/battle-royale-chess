@@ -1,31 +1,20 @@
-import { createContext, useState, useContext } from 'react'
-
-import { getUserdata } from '../services/UserService'
+import { createContext, useState } from 'react'
 
 export const UserContext = createContext({})
 
 export default function UserContextProvider({ children }){
 
-    const [username, setUsername] = useState(undefined)
-    const [email, setEmail] = useState(undefined)
-    const [role, setRole] = useState("SPECTATOR")
+    const [username, setUsername] = useState(null)
+    const [email, setEmail] = useState(null)
+    const [role, setRole] = useState()
 
     const contextData = {
         username:username,
         email:email,
         role:role,
-        setRole:setRole,
-        loadUserdata:loadUserdata
-    }
-
-    async function loadUserdata(){
-
-        const response = await getUserdata()
-
-        setUsername(response.username)
-        setEmail(response.email)
-        setRole(response.role)
-
+        setUsername:setUsername,
+        setEmail:setEmail,
+        setRole:setRole
     }
 
     return (

@@ -1,0 +1,7 @@
+.menu {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    padding: 10px;
+    flex: 0 1 auto;
+}

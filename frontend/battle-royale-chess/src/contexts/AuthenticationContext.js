@@ -5,59 +5,63 @@ import Cookies from 'js-cookie'
 import { UserContext } from './UserContext'
 
 import { authenticate } from '../services/AuthenticationService'
+import { getUserdata } from '../services/UserService'
 
 export const AuthenticationContext = createContext({})
 
 export default function AuthenticationContextProvider({ children }){
 
-    //const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [authState, setAuthState] = useState("pending")
-    const { loadUserdata, setRole } = useContext(UserContext)
+    const { setUsername, setEmail, setRole, username, email, role } = useContext(UserContext)
 
     const contextData = {
         authState:authState,
         authenticate:authenticateWithCredentials,
-        authenticateAsSpectator:authenticateAsSpectator
+        authenticateAsSpectator:authenticateAsSpectator,
+        logout:logout
     }
 
     useEffect(() => {
-
         if(Cookies.get('jwt') === undefined) return setAuthState("failed")
-        fetchUserdata()
-
+        loadUserdata()
     }, [])
 
-    async function fetchUserdata(){
+    useEffect(() => {
+        console.log(username, email, role)
+    }, [username, email, role])
 
-        try {
-
-            await loadUserdata()
+    async function loadUserdata(){
+        try{
+            const result = await getUserdata()
             setAuthState("success")
+            setUsername(result.username)
+            setEmail(result.email)
 
-        } catch (error) {
+            if(result.authorities.includes("ROLE_ADMIN")) return setRole("ADMIN")
+            setRole("USER")
+            console.log("loading data is succes", result)
+        } catch (error){
             setAuthState("failed")
-            alert(error.response || error)
+            console.log(error)
         }
-
     }
 
     async function authenticateWithCredentials(username, password){
-
-        try {
-            await authenticate(username, password)
-            await loadUserdata()
-            setAuthState("success")
-
-        } catch (error) {
-            setAuthState("failed")
-            alert(error.response || error)
-        }
+        await authenticate(username, password)
+        loadUserdata()
 
     }
 
     function authenticateAsSpectator(){
+        setUsername("Spectator")
         setRole("SPECTATOR")
         setAuthState("success")
+
+    }
+
+    function logout(){
+        Cookies.remove('jwt')
+        setAuthState("failed")
     }
 
     return (

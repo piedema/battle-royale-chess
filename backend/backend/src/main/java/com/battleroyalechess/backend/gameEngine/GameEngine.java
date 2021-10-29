@@ -25,12 +25,17 @@ public class GameEngine {
     private Gametype gametype;
     private Long gameId;
     private Boolean hasGameStarted = false;
-    private Map<String, ArrayList<String>> board = new HashMap<>();
+    private HashMap<String, ArrayList<String>> board = new HashMap<>();
     private Map<String, String> nextMoves = new HashMap<>();
     private ScheduledFuture<?> scheduledTask;
     private GamesService gamesService;
     private final Map<String, Integer> pieces = new HashMap<>();
-    private int currentRound = 1;
+    private int currentRound = 0;
+    private int initialDelay;
+    private int timePerRound;
+//    private GameEngineTimer gameEngineTimerService;
+//    private ScheduledExecutorService executor;
+    //private final Timer timer = new Timer();
 
     private final UserService userService;
     private final GameRepository gameRepository;
@@ -46,8 +51,6 @@ public class GameEngine {
 
     public Long initialize(String gametype, ArrayList<String> players, GamesService gamesService){
 
-        System.out.println("Game initialized at " + LocalDateTime.now());
-
         Optional<Gametype> gametypeFromDb = this.gametypeRepository.findById(gametype);
         gametypeFromDb.ifPresent(value -> this.gametype = value);
 
@@ -62,23 +65,33 @@ public class GameEngine {
         this.pieces.put("Queen", 9);
         this.pieces.put("King", 18);
 
+        this.initialDelay = this.gametype.getInitialDelay() * 1000;
+        this.timePerRound = this.gametype.getTimePerRound() * 1000;
+
         Game game = new Game();
         game.setGametype(gametype);
         game.setPlayers(players);
+        game.setBoard(this.board);
+        game.setGameStartedAt(new Date().getTime());
+        game.setCurrentRoundFinishedAt(new Date().getTime() + initialDelay);
 
         Game savedGame = gameRepository.save(game);
 
         this.game = savedGame;
         this.gameId = savedGame.getGameId();
 
-        int initialDelay = this.gametype.getInitialDelay();
-        int timePerRound = this.gametype.getTimePerRound();
 
-        System.out.println("initialDelay " + initialDelay + " timePerRound " + timePerRound);
+        Timer timer = new Timer();
+        timer.schedule(
+                new TimerTask(){
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        GameEngineTimer gameEngineTimerService = new GameEngineTimer(this.userService, this.gameRepository, this.userRepository, this.gametypeRepository, this);
-        this.scheduledTask = executor.scheduleWithFixedDelay(gameEngineTimerService, initialDelay, timePerRound, TimeUnit.SECONDS);
+                    @Override
+                    public void run(){
+                        startGame();
+                        timer.cancel();
+                    }
+                }, initialDelay
+        );
 
         return this.gameId;
     }
@@ -133,12 +146,26 @@ public class GameEngine {
     public void startGame(){
         this.hasGameStarted = true;
 
-        System.out.println("Game starting at " + LocalDateTime.now());
+        currentRound = 1;
+        game.setRound(currentRound);
+        game.setCurrentRoundFinishedAt(this.game.getCurrentRoundFinishedAt() + timePerRound);
+        this.gameRepository.save(this.game);
+
+        //this.scheduledTask = executor.schedule(gameEngineTimerService, timePerRound, TimeUnit.SECONDS);timer.schedule(
+        Timer timer = new Timer();
+        timer.schedule(
+                new TimerTask(){
+
+                    @Override
+                    public void run(){
+                        finishRound();
+                        timer.cancel();
+                    }
+                }, timePerRound
+        );
     }
 
     public void finishRound(){
-
-        System.out.println("Current round " + currentRound + " ending at " + LocalDateTime.now());
 
         // perform and store all moves
         // if a piece moves to a tile which is occupied already, it removes that piece
@@ -281,12 +308,19 @@ public class GameEngine {
             board.keySet().removeAll(tilesToRemove);
         }
 
+        currentRound++;
+
+        Long finishTime = this.game.getCurrentRoundFinishedAt() + timePerRound;
+
+        this.game.setRound(currentRound);
+        this.game.setBoard(board);
+        this.game.setCurrentRoundFinishedAt(finishTime);
+
         // store game in db
         this.gameRepository.save(this.game);
 
         // if there is only 1 king or 0 kings left end game
         int numberOfKingsAlive = 0;
-        System.out.println(board);
 
         for (Map.Entry<String, ArrayList<String>> tile : board.entrySet()) {
             if(tile.getValue().contains("King")){
@@ -298,20 +332,30 @@ public class GameEngine {
             endGame();
         }
 
-        currentRound++;
+        if(numberOfKingsAlive > 1) {
 
-        System.out.println("Current round ending finished " + currentRound);
+            Timer timer = new Timer();
+            timer.schedule(
+                    new TimerTask(){
+
+                        @Override
+                        public void run(){
+                            finishRound();
+                            timer.cancel();
+                        }
+                    }, timePerRound
+            );
+        }
 
     }
 
     public void endGame(){
 
-        System.out.println("Ending game");
-
         // calculate new total scores for players (add this score to their previous scores)
 
         // setting game on finished
         this.game.setFinished();
+        this.game.setGameEndedAt(new Date().getTime());
         this.gameRepository.save(this.game);
 
         // calculate new average scores for players in user table
@@ -324,10 +368,6 @@ public class GameEngine {
                 this.userRepository.save(user);
             }
         }
-
-        // remove all references (timer and instance) to apply for garbage collection
-        // remove timer
-        this.scheduledTask.cancel(true);
 
         // orphan Game instance
         this.gamesService.orphanGame(this.gameId);

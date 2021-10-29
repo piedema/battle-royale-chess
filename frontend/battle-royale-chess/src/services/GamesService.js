@@ -1,53 +1,10 @@
 import handleError from '../helpers/errorHandler'
 import apiCaller from '../helpers/apiCaller'
 
-export async function getUserdata(errorHandler = false){
+export async function getGames(){
 
     const options = {
-        url:'/users',
-        method:'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials:true
-    }
-
-    return apiCaller(
-        options,
-        error => {
-            if(errorHandler !== false) errorHandler()
-            handleError(error)
-            return {}
-        }
-    )
-
-}
-
-export async function getSpecificUserdata(username){
-
-    const options = {
-        url:`/users/${username}`,
-        method:'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials:true
-    }
-
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return {}
-        }
-    )
-
-}
-
-export async function getAllUserdata(){
-
-    const options = {
-        url:'/users/all',
+        url:'/games',
         method:'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -65,38 +22,66 @@ export async function getAllUserdata(){
 
 }
 
-export async function doRegister(username, password, email){
+export async function getGamedata(gameId){
 
     const options = {
-        url:'/register',
+        url:'/games/' + gameId,
+        method:'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials:true
+    }
+
+    return apiCaller(
+        options,
+        error => {
+            handleError(error)
+            return {}
+        }
+    )
+
+}
+
+export async function getGameIdForPlayer(username){
+
+    const options = {
+        url:'/games/getGameIdForPlayer/' + username,
+        method:'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials:true
+    }
+
+    return apiCaller(
+        options,
+        error => {
+            handleError(error)
+            return undefined
+        }
+    )
+
+}
+
+export async function postNewMove(gameId, from, to){
+
+    const options = {
+        url:'/games/' + gameId + "/newMove",
         method:'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         withCredentials:true,
-        data:{
-            username,
-            password,
-            email,
-            authorities:["ROLE_USER"]
-        }
+        data:{ from, to }
     }
 
-    return apiCaller(options)
-
-}
-
-function transformUser(user){
-
-    const { username, email, authorities } = user
-    let role = "USER"
-
-    authorities.forEach(a => {
-        if(a.authority === "ROLE_ADMIN"){
-            role = "ADMIN"
+    return apiCaller(
+        options,
+        error => {
+            handleError(error)
+            return {}
         }
-    })
-
-    return { username, email, role }
+    )
 
 }

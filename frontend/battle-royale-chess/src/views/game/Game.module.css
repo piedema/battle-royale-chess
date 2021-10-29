@@ -1,0 +1,76 @@
+.playerInfoContainer {
+    width: 100%;
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    margin: 10px;
+}
+
+.playerInfo {
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: lightgreen;
+    display: inline-block;
+}
+
+.tile {
+
+}
+
+.black {
+
+}
+
+.white {
+
+}
+
+.topLeft {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+}
+
+.topMiddle {
+    position: fixed;
+    left: calc(50vw - 100px);
+    top: 20px;
+}
+
+.topRight {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+}
+
+.middleLeft {
+    position: fixed;
+    left: 20px;
+    top:  calc(50vh - 100px);
+}
+
+.middleRight {
+    position: fixed;
+    right: 20px;
+    top:  calc(50vh - 100px);
+}
+
+.bottomLeft {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+}
+
+.bottomMiddle {
+    position: fixed;
+    left:  calc(50vw - 100px);
+    bottom: 20px;
+}
+
+.bottomRight {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}

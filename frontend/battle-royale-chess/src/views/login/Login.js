@@ -3,9 +3,8 @@ import { useContext, useState } from 'react'
 import { useForm } from "react-hook-form"
 
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
-import { UserContext } from '../../contexts/UserContext'
 
-import { register } from '../../services/UserService'
+import { doRegister } from '../../services/UserService'
 
 import BasicContainer from '../../components/basicContainer/BasicContainer.js'
 
@@ -34,12 +33,8 @@ export default function Login() {
     }
 
     async function handleRegister(){
-        try{
-            await register(registerUsernameValue, registerPasswordValue, registerEmailValue)
-            authenticate(registerUsernameValue, registerPasswordValue)
-        } catch (error) {
-            console.log(error.response || error)
-        }
+        await doRegister(registerUsernameValue, registerPasswordValue, registerEmailValue)
+        authenticate(registerUsernameValue, registerPasswordValue)
     }
 
     return (

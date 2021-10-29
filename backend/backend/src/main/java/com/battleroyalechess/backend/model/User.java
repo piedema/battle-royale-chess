@@ -28,7 +28,10 @@ public class User {
     private Integer score;
 
     @Column
-    private ArrayList<Integer> scores = new ArrayList<>();
+    private Integer gamesPlayed;
+
+    @Column
+    private final ArrayList<Integer> scores = new ArrayList<>();
 
     @OneToMany(
             targetEntity = Authority.class,
@@ -55,6 +58,22 @@ public class User {
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email;}
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Integer getGamesPlayed() {
+        return gamesPlayed;
+    }
+
+    public void setGamesPlayed(Integer gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
+    }
+
+    public ArrayList<Integer> getScores() {
+        return scores;
+    }
 
     public Set<Authority> getAuthorities() { return authorities; }
 

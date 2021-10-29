@@ -1,10 +1,8 @@
 package com.battleroyalechess.backend.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Entity
 @Table(name = "games")
@@ -21,6 +19,18 @@ public class Game {
     public String gametype;
 
     @Column(nullable = false)
+    public Integer round = 0;
+
+    @Column(nullable = false)
+    public Long currentRoundFinishedAt;
+
+    @Column(nullable = false)
+    public Long gameStartedAt;
+
+    @Column
+    public Long gameEndedAt;
+
+    @Column(nullable = false)
     public ArrayList<String> players = new ArrayList<>();
 
     @Column()
@@ -28,6 +38,49 @@ public class Game {
 
     @Column()
     public ArrayList<Integer> scores = new ArrayList<>();
+
+    @Column()
+    public HashMap<String, ArrayList<String>> board = new HashMap<>();
+
+    public Long getCurrentRoundFinishedAt() {
+        return currentRoundFinishedAt;
+    }
+
+    public void setCurrentRoundFinishedAt(Long currentRoundFinishedAt) {
+        this.currentRoundFinishedAt = currentRoundFinishedAt;
+    }
+
+    public Long getGameStartedAt() {
+        return gameStartedAt;
+    }
+
+    public void setGameStartedAt(Long gameStartedAt) {
+        this.gameStartedAt = gameStartedAt;
+    }
+
+    public Long getGameEndedAt() {
+        return gameEndedAt;
+    }
+
+    public void setGameEndedAt(Long gameEndedAt) {
+        this.gameEndedAt = gameEndedAt;
+    }
+
+    public HashMap<String, ArrayList<String>> getBoard() {
+        return board;
+    }
+
+    public void setBoard(HashMap<String, ArrayList<String>> board) {
+        this.board = board;
+    }
+
+    public Integer getRound() {
+        return round;
+    }
+
+    public void setRound(Integer round) {
+        this.round = round;
+    }
 
     public long getGameId() {
         return gameId;

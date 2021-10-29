@@ -17,13 +17,8 @@ public class GamesController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getGames(@RequestParam(required = false) Boolean finished){
-        if(finished == null || !finished){
-            return ResponseEntity.ok("all games which are not finished");
-        }
-        else{
-            return ResponseEntity.ok("all games");
-        }
+    public ResponseEntity<Object> getGames(){
+        return ResponseEntity.ok().body(gamesService.getGames());
     }
 
     @GetMapping(value = "/getGameIdForPlayer/{username}")

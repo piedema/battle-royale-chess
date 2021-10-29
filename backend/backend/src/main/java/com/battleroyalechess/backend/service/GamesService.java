@@ -9,10 +9,7 @@ import com.battleroyalechess.backend.repository.GametypeRepository;
 import com.battleroyalechess.backend.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class GamesService {
@@ -79,6 +76,10 @@ public class GamesService {
 
     public void orphanGame(Long gameId){
         this.activeGames.remove(gameId);
+    }
+
+    public Iterable<Game> getGames(){
+        return gameRepository.findAll();
     }
 
 }

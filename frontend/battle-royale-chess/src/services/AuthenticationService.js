@@ -1,4 +1,5 @@
-import axios from 'axios'
+import handleError from '../helpers/errorHandler'
+import apiCaller from '../helpers/apiCaller'
 
 export async function authenticate(username, password){
 
@@ -11,12 +12,6 @@ export async function authenticate(username, password){
         }
     }
 
-    try {
-
-        await axios(options)
-
-    } catch (error) {
-        return error
-    }
+    return apiCaller(options)
 
 }

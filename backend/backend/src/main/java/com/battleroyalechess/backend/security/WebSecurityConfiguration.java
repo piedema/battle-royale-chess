@@ -74,6 +74,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/**").hasRole("ADMIN")
                 .antMatchers("/game/**").hasRole("USER")
                 .antMatchers("/lobby/**").hasRole("USER")
+                .antMatchers("/gametypes/**").hasRole("USER")
                 .antMatchers(POST,"/register").permitAll()
                 .antMatchers(POST,"/authenticate").permitAll()
                 .antMatchers(GET,"/players/**").permitAll()
@@ -95,7 +96,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
-
-
 
 }

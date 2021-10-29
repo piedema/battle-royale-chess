@@ -14,13 +14,3 @@
     align-items: center;
     overflow-y: auto;
 }
-
-.gamesLobby {
-    display: flex;
-    justify-content: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    max-width: 1000px;
-    flex: 0 1 150px;
-    margin: 10px;
-}

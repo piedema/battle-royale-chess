@@ -7,10 +7,13 @@ import com.battleroyalechess.backend.repository.GametypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class GametypeService {
 
-    private GametypeRepository gametypeRepository;
+    private final GametypeRepository gametypeRepository;
 
     @Autowired
     public GametypeService(GametypeRepository gametypeRepository) {
@@ -37,5 +40,9 @@ public class GametypeService {
             throw new BadRequestException("Cannot create gametype.");
         }
 
+    }
+
+    public List<Gametype> getGametypes(){
+        return gametypeRepository.findAll();
     }
 }
