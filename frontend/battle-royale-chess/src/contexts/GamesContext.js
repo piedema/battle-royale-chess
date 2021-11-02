@@ -22,7 +22,7 @@ export default function GamesContextProvider({ children }){
 
     async function refreshGames(){
         const response = await getGames()
-        setGames(response)
+        if(Array.isArray(response)) setGames(response)
     }
 
     return (

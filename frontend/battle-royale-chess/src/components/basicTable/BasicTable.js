@@ -16,12 +16,12 @@ export default function BasicTable({ children, columns, data }){
     })
 
     return (
-        <table {...getTableProps()}>
+        <table className={styles.table} {...getTableProps()}>
             <thead>
                 {headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
+                  <tr className={styles.tr} {...headerGroup.getHeaderGroupProps()}>
                     {headerGroup.headers.map(column => (
-                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                      <th className={styles.th} {...column.getHeaderProps()}>{column.render('Header')}</th>
                     ))}
                   </tr>
                 ))}
@@ -30,9 +30,9 @@ export default function BasicTable({ children, columns, data }){
                 {rows.map((row, i) => {
                   prepareRow(row)
                   return (
-                    <tr {...row.getRowProps()}>
+                    <tr className={styles.tr} {...row.getRowProps()}>
                       {row.cells.map(cell => {
-                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        return <td className={styles.td} {...cell.getCellProps()}>{cell.render('Cell')}</td>
                       })}
                     </tr>
                   )

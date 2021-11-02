@@ -28,18 +28,12 @@ public class GamesController {
 
     @GetMapping(value = "/{gameId}")
     public ResponseEntity<Object> getGame(@PathVariable("gameId") Long gameId){
-        try {
-            return ResponseEntity.ok().body(gamesService.getGamedata(gameId));
-        }
-        catch (Exception ex){
-            throw new RecordNotFoundException();
-        }
+        return ResponseEntity.ok().body(gamesService.getGamedata(gameId));
     }
 
-    @PostMapping(value = "/{gameId}/newMove}")
+    @PostMapping(value = "/{gameId}/newMove")
     public ResponseEntity<Object> newMove(@PathVariable("gameId") Long gameId, @RequestBody NewMovePostRequest newMovePostRequest) {
-        gamesService.newMove(gameId, newMovePostRequest);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(gamesService.newMove(gameId, newMovePostRequest));
     }
 
 }

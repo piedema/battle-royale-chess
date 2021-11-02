@@ -1,5 +1,5 @@
 .container {
-
+    max-width: 1000px;
     width: 100%;
     min-width: 700px;
     display: flex;
@@ -13,4 +13,5 @@
     justify-content: center;
     align-items: center;
     overflow-y: auto;
+    margin: 10px;
 }

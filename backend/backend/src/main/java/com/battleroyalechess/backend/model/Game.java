@@ -22,7 +22,7 @@ public class Game {
     public Integer round = 0;
 
     @Column(nullable = false)
-    public Long currentRoundFinishedAt;
+    public Long nextRoundAt;
 
     @Column(nullable = false)
     public Long gameStartedAt;
@@ -42,12 +42,12 @@ public class Game {
     @Column()
     public HashMap<String, ArrayList<String>> board = new HashMap<>();
 
-    public Long getCurrentRoundFinishedAt() {
-        return currentRoundFinishedAt;
+    public Long getNextRoundAt() {
+        return nextRoundAt;
     }
 
-    public void setCurrentRoundFinishedAt(Long currentRoundFinishedAt) {
-        this.currentRoundFinishedAt = currentRoundFinishedAt;
+    public void setNextRoundAt(Long nextRoundAt) {
+        this.nextRoundAt = nextRoundAt;
     }
 
     public Long getGameStartedAt() {

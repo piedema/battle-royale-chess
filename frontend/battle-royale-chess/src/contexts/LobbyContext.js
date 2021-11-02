@@ -16,7 +16,7 @@ export default function LobbyContextProvider({ children }){
 
     async function refreshQueue(){
         const response = await getQueue()
-        setQueue([...response])
+        if(Array.isArray(response)) setQueue([...response])
     }
 
     async function add(gametype){

@@ -1,6 +1,7 @@
 package com.battleroyalechess.backend.service;
 
 import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
+import com.battleroyalechess.backend.dto.response.NewMoveResponse;
 import com.battleroyalechess.backend.exception.GameNotFoundException;
 import com.battleroyalechess.backend.gameEngine.GameEngine;
 import com.battleroyalechess.backend.model.Game;
@@ -66,11 +67,18 @@ public class GamesService {
 
     }
 
-    public void newMove(Long gameId, NewMovePostRequest newMovePostRequest){
+    public NewMoveResponse newMove(Long gameId, NewMovePostRequest newMovePostRequest){
 
         GameEngine game = this.activeGames.get(gameId);
 
-        game.newMove(newMovePostRequest);
+        System.out.println("new move recieved for game " + game);
+
+        try {
+            return game.newMove(newMovePostRequest);
+        }
+        catch (Exception ex) {
+            throw new GameNotFoundException();
+        }
 
     }
 

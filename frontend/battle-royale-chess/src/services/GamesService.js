@@ -37,7 +37,7 @@ export async function getGamedata(gameId){
         options,
         error => {
             handleError(error)
-            return {}
+            return undefined
         }
     )
 
@@ -74,6 +74,29 @@ export async function postNewMove(gameId, from, to){
         },
         withCredentials:true,
         data:{ from, to }
+    }
+
+    return apiCaller(
+        options,
+        error => {
+            handleError(error)
+            return {}
+        }
+    )
+
+}
+
+export async function cancelMove(gameId, username){
+
+    // this endpoint is not available on backend yet
+
+    const options = {
+        url:'/games/' + gameId + "/cancelMove/" + username,
+        method:'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials:true
     }
 
     return apiCaller(

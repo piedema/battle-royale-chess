@@ -1,6 +1,7 @@
 package com.battleroyalechess.backend.gameEngine;
 
 import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
+import com.battleroyalechess.backend.dto.response.NewMoveResponse;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.model.Gametype;
 import com.battleroyalechess.backend.model.User;
@@ -11,12 +12,7 @@ import com.battleroyalechess.backend.service.GamesService;
 import com.battleroyalechess.backend.service.UserService;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class GameEngine {
@@ -26,16 +22,11 @@ public class GameEngine {
     private Long gameId;
     private Boolean hasGameStarted = false;
     private HashMap<String, ArrayList<String>> board = new HashMap<>();
-    private Map<String, String> nextMoves = new HashMap<>();
-    private ScheduledFuture<?> scheduledTask;
+    private final Map<String, String> nextMoves = new HashMap<>();
     private GamesService gamesService;
     private final Map<String, Integer> pieces = new HashMap<>();
     private int currentRound = 0;
-    private int initialDelay;
     private int timePerRound;
-//    private GameEngineTimer gameEngineTimerService;
-//    private ScheduledExecutorService executor;
-    //private final Timer timer = new Timer();
 
     private final UserService userService;
     private final GameRepository gameRepository;
@@ -56,6 +47,7 @@ public class GameEngine {
 
         this.board = this.gametype.getBoard();
 
+
         this.gamesService = gamesService;
 
         this.pieces.put("Pawn", 1);
@@ -65,7 +57,7 @@ public class GameEngine {
         this.pieces.put("Queen", 9);
         this.pieces.put("King", 18);
 
-        this.initialDelay = this.gametype.getInitialDelay() * 1000;
+        int initialDelay = this.gametype.getInitialDelay() * 1000;
         this.timePerRound = this.gametype.getTimePerRound() * 1000;
 
         Game game = new Game();
@@ -73,7 +65,7 @@ public class GameEngine {
         game.setPlayers(players);
         game.setBoard(this.board);
         game.setGameStartedAt(new Date().getTime());
-        game.setCurrentRoundFinishedAt(new Date().getTime() + initialDelay);
+        game.setNextRoundAt(new Date().getTime() + initialDelay);
 
         Game savedGame = gameRepository.save(game);
 
@@ -96,38 +88,43 @@ public class GameEngine {
         return this.gameId;
     }
 
-    public void newMove(NewMovePostRequest newMovePostRequest){
+    public NewMoveResponse newMove(NewMovePostRequest newMovePostRequest){
 
-        if(!hasGameStarted()) return;
+        if(!hasGameStarted()) return new NewMoveResponse(false, "Game has not started yet");
 
         String username = this.userService.getCurrentUserName();
         String from = newMovePostRequest.getFrom();
         String to = newMovePostRequest.getTo();
 
         // check if players king is still alive
+        boolean isKingAlive = false;
+        int playerIndex = this.game.players.indexOf(username);
         for (Map.Entry<String, ArrayList<String>> tile : board.entrySet()) {
-            if(tile.getValue().contains(username) && tile.getValue().contains("King")){
-                return;
+            if (tile.getValue().contains(String.valueOf(playerIndex + 1)) && tile.getValue().contains("King")) {
+                isKingAlive = true;
+                break;
             }
         }
 
+        // exit if king is not alive
+        if(!isKingAlive) return new NewMoveResponse(false, "King is not alive");
+
         // create list with path for piece. list must be empty if path is not possible, then return
-        String piece = board.get(from).get(1);
-        int playerIndex = this.gameRepository.findPlayersByGameId(this.gameId).indexOf(username);
+        String piece = board.get(from).get(2);
         String direction = this.gametype.playerDirections.get(playerIndex);
-        List<String> path = createPath(piece, from, to, username, direction);
+        List<String> path = buildPath(piece, from, to, username, direction);
 
         // if path list is empty then there was no legal path found, then discard move
-        if(path.size() == 0) return;
+        if(path.size() == 0) return new NewMoveResponse(false,"Path is not valid");
 
         // check if whole path are tiles
         if(!isWholePathTiles(path)){
-            return;
+            return new NewMoveResponse(false,"Not whole path is tiles");
         }
 
         // check if there are no interuptions (other pieces) in the path. this does not count for knight
         if(!piece.equals("Knight") && isPathBlocked(path)){
-            return;
+            return new NewMoveResponse(false,"Path is blocked");
         }
 
         // store move locally. at end of round moves are stored in db. Not before, so other users cant see move before end of round
@@ -137,6 +134,8 @@ public class GameEngine {
         nextMoves.remove(username);
 
         nextMoves.put(username, currentMove);
+
+        return new NewMoveResponse(true,"Move successfully queued");
     }
 
     public Boolean hasGameStarted(){
@@ -148,7 +147,7 @@ public class GameEngine {
 
         currentRound = 1;
         game.setRound(currentRound);
-        game.setCurrentRoundFinishedAt(this.game.getCurrentRoundFinishedAt() + timePerRound);
+        game.setNextRoundAt(new Date().getTime() + timePerRound);
         this.gameRepository.save(this.game);
 
         //this.scheduledTask = executor.schedule(gameEngineTimerService, timePerRound, TimeUnit.SECONDS);timer.schedule(
@@ -169,24 +168,25 @@ public class GameEngine {
 
         // perform and store all moves
         // if a piece moves to a tile which is occupied already, it removes that piece
-        // if 2 pieces move to the same tile the weakest gets removed. If they are of same value they both get removed
-        ArrayList<Map<String, String>> removals = new ArrayList<Map<String, String>>();
+        // if 2 pieces move to the same tile the weakest gets removed. If there are multiple of same value they all get removed
+        ArrayList<Map<String, String>> removals = new ArrayList<>();
         Map<String, ArrayList<String>> movingTo = new HashMap<>();
 
         for (Map.Entry<String, String> move : nextMoves.entrySet()) {
 
             String from = move.getValue().split(">")[0];
             String to = move.getValue().split(">")[1];
-            String piece = getPieceOnTile(to);
-            String removedBy = move.getKey();
-            String removedFrom = getPlayerOnTile(to);
+            String movingPlayer = move.getKey();
+            String piece = getPieceOnTile(from);
 
             // processing moving to occupied tile
             if(isTileOccupied(to)){
+                String occupiedPiece = getPieceOnTile(to);
+                String removedFrom = getPlayerOnTile(to);
                 Map<String, String> removed = new HashMap<>();
                 removed.put("tile", to);
-                removed.put("piece", piece);
-                removed.put("removedBy", removedBy);
+                removed.put("piece", occupiedPiece);
+                removed.put("removedBy", movingPlayer);
                 removed.put("removedFrom", removedFrom);
                 removals.add(removed);
             }
@@ -194,24 +194,25 @@ public class GameEngine {
             // if moved piece would have been removed from tile it was on, remove that removal since it moved
             removals.removeIf(removal -> removal.get("tile").equals(from));
 
-            // if there isnt any move planned to new tile then queue this move
+            // if there isnt any move planned to new tile yet then queue this move
             if(!movingTo.containsKey(to)){
                 ArrayList<String> details = new ArrayList<>();
-                details.add(removedBy);
-                details.add(piece);
+                details.add(movingPlayer);
+                details.add(from);
                 movingTo.put(to, details);
             }
 
-            // processing multiple moves to same tile where own move has better piece than other persons moved piece
-            if(!movingTo.get(to).get(0).equals(removedBy) && this.pieces.get(piece) > this.pieces.get(movingTo.get(to).get(1))){
-                ArrayList<String> details = new ArrayList<String>();
-                details.add(removedBy);
-                details.add(piece);
+            // processing multiple moves to same tile where own move has better piece than other persons moved piece.
+            // also works if multiple people go to same tile but it always has to check against last approved piece
+            if(!movingTo.get(to).get(0).equals(movingPlayer) && this.pieces.get(piece) > this.pieces.get(movingTo.get(to).get(1))){
+                ArrayList<String> details = new ArrayList<>();
+                details.add(movingPlayer);
+                details.add(from);
 
                 Map<String, String> removed = new HashMap<>();
                 removed.put("tile", to);
                 removed.put("piece", movingTo.get(to).get(1));
-                removed.put("removedBy", removedBy);
+                removed.put("removedBy", movingPlayer);
                 removed.put("removedFrom", movingTo.get(to).get(0));
 
                 removals.add(removed);
@@ -219,40 +220,57 @@ public class GameEngine {
             }
 
             // processing multiple moves to same tile where other piece has better piece then current players move
-            if(!movingTo.get(to).get(0).equals(removedBy) && this.pieces.get(piece) < this.pieces.get(movingTo.get(to).get(1))){
+            if(!movingTo.get(to).get(0).equals(movingPlayer) && this.pieces.get(piece) < this.pieces.get(movingTo.get(to).get(1))){
 
                 Map<String, String> removed = new HashMap<>();
                 removed.put("tile", to);
                 removed.put("piece", piece);
                 removed.put("removedBy", movingTo.get(to).get(0));
-                removed.put("removedFrom", removedFrom);
+                removed.put("removedFrom", movingPlayer);
 
                 removals.add(removed);
             }
 
             // processing multiple moves to same tile where both pieces are of same worth
-            if(!movingTo.get(to).get(0).equals(removedBy) && this.pieces.get(piece).equals(this.pieces.get(movingTo.get(to).get(1)))){
+            if(!movingTo.get(to).get(0).equals(movingPlayer) && this.pieces.get(piece).equals(this.pieces.get(movingTo.get(to).get(1)))){
 
                 Map<String, String> removedCurrentUser = new HashMap<>();
                 removedCurrentUser.put("tile", to);
                 removedCurrentUser.put("piece", piece);
                 removedCurrentUser.put("removedBy", movingTo.get(to).get(0));
-                removedCurrentUser.put("removedFrom", removedFrom);
+                removedCurrentUser.put("removedFrom", movingPlayer);
 
                 removals.add(removedCurrentUser);
 
                 Map<String, String> removedOtherUser = new HashMap<>();
                 removedOtherUser.put("tile", to);
-                removedOtherUser.put("piece", piece);
-                removedOtherUser.put("removedBy", removedBy);
+                removedOtherUser.put("piece", movingTo.get(to).get(1));
+                removedOtherUser.put("removedBy", movingPlayer);
                 removedOtherUser.put("removedFrom", movingTo.get(to).get(0));
 
                 removals.add(removedOtherUser);
             }
+
         }
 
-        // process all legitimate moves on the board
-        board.putAll(movingTo);
+        // remove all removed positions from board
+        for (Map<String, String> removal : removals) {
+            ArrayList<String> tileAfterRemoval = new ArrayList<>();
+            tileAfterRemoval.add("normal");
+            board.put(removal.get("tile"), tileAfterRemoval);
+        }
+
+        // move all pieces to new position on board
+        for (Map.Entry<String, ArrayList<String>> move : movingTo.entrySet()) {
+            String from = move.getValue().get(1);
+            String to = move.getKey();
+
+            ArrayList<String> fromBoard = board.get(from);
+            ArrayList<String> toBoard = board.get(to);
+
+            board.put(to, fromBoard);
+            board.put(from, toBoard);
+        }
 
         // store all moves in database
         this.game.storeMoves(currentRound, nextMoves);
@@ -281,9 +299,9 @@ public class GameEngine {
             int leftLine = 0;
             int rightLine = 0;
 
-            Set<String> tilesToRemove = new HashSet<>();
-
             for(Map.Entry<String, ArrayList<String>> tile: board.entrySet()){
+
+                if(tile.getValue().get(0).equals("faded")) continue;
 
                 int xIndex = Integer.parseInt(tile.getKey().split(":")[0]);
                 int yIndex = Integer.parseInt(tile.getKey().split(":")[1]);
@@ -299,31 +317,20 @@ public class GameEngine {
                 int xIndex = Integer.parseInt(tile.getKey().split(":")[0]);
                 int yIndex = Integer.parseInt(tile.getKey().split(":")[1]);
 
-                if(yIndex == topLine && board.containsKey(tile.getKey()) && topLine != bottomLine) tilesToRemove.add(tile.getKey());
-                if(yIndex == bottomLine && board.containsKey(tile.getKey()) && topLine != bottomLine) tilesToRemove.add(tile.getKey());
-                if(xIndex == leftLine && board.containsKey(tile.getKey()) && leftLine != rightLine) tilesToRemove.add(tile.getKey());
-                if(xIndex == rightLine && board.containsKey(tile.getKey()) && leftLine != rightLine) tilesToRemove.add(tile.getKey());
+                if(yIndex == topLine && board.containsKey(tile.getKey()) && topLine != bottomLine) tile.getValue().set(0, "faded");
+                if(yIndex == bottomLine && board.containsKey(tile.getKey()) && topLine != bottomLine) tile.getValue().set(0, "faded");
+                if(xIndex == leftLine && board.containsKey(tile.getKey()) && leftLine != rightLine) tile.getValue().set(0, "faded");
+                if(xIndex == rightLine && board.containsKey(tile.getKey()) && leftLine != rightLine) tile.getValue().set(0, "faded");
             }
-
-            board.keySet().removeAll(tilesToRemove);
         }
 
-        currentRound++;
-
-        Long finishTime = this.game.getCurrentRoundFinishedAt() + timePerRound;
-
-        this.game.setRound(currentRound);
         this.game.setBoard(board);
-        this.game.setCurrentRoundFinishedAt(finishTime);
-
-        // store game in db
-        this.gameRepository.save(this.game);
 
         // if there is only 1 king or 0 kings left end game
         int numberOfKingsAlive = 0;
 
         for (Map.Entry<String, ArrayList<String>> tile : board.entrySet()) {
-            if(tile.getValue().contains("King")){
+            if(tile.getValue().contains("King") && tile.getValue().contains("normal")){
                 numberOfKingsAlive++;
             }
         }
@@ -346,6 +353,12 @@ public class GameEngine {
                     }, timePerRound
             );
         }
+
+        this.game.setRound(++currentRound);
+        this.game.setNextRoundAt(new Date().getTime() + timePerRound);
+
+        // store game in db
+        this.gameRepository.save(this.game);
 
     }
 
@@ -374,17 +387,17 @@ public class GameEngine {
 
     }
 
-    public List<String> createPath(String piece, String from, String to, String username, String direction){
+    public List<String> buildPath(String piece, String from, String to, String username, String direction){
         ArrayList<String> path = new ArrayList<>();
 
-        int fromH = Integer.parseInt(from.split(":")[0]);
-        int fromV = Integer.parseInt(from.split(":")[1]);
-        int toH = Integer.parseInt(to.split(":")[0]);
-        int toV = Integer.parseInt(to.split(":")[1]);
+        int fromH = Integer.parseInt(from.split(":")[1]);
+        int fromV = Integer.parseInt(from.split(":")[0]);
+        int toH = Integer.parseInt(to.split(":")[1]);
+        int toV = Integer.parseInt(to.split(":")[0]);
 
-        boolean horizontalPath = fromH == toH;
-        boolean verticalPath = fromV == toV;
-        boolean diagonalPath = fromH - toH == fromV - toV;
+        boolean horizontalPath = fromV == toV;
+        boolean verticalPath = fromH == toH;
+        boolean diagonalPath = Math.abs(fromH - toH) == Math.abs(fromV - toV);
 
         switch (piece){
             case "King":
@@ -393,32 +406,26 @@ public class GameEngine {
                 break;
             case "Queen":
                 if(horizontalPath){
-                    path.add(from);
-                    path.add(to);
+                    path.addAll(createPath(from, to, "horizontal"));
                 }
                 if(verticalPath){
-                    path.add(from);
-                    path.add(to);
+                    path.addAll(createPath(from, to, "vertical"));
                 }
                 if(diagonalPath){
-                    path.add(from);
-                    path.add(to);
+                    path.addAll(createPath(from, to, "diagonal"));
                 }
                 break;
             case "Tower":
                 if(horizontalPath){
-                    path.add(from);
-                    path.add(to);
+                    path.addAll(createPath(from, to, "horizontal"));
                 }
                 if(verticalPath){
-                    path.add(from);
-                    path.add(to);
+                    path.addAll(createPath(from, to, "vertical"));
                 }
                 break;
             case "Bishop":
                 if(diagonalPath){
-                    path.add(from);
-                    path.add(to);
+                    path.addAll(createPath(from, to, "diagonal"));
                 }
                 break;
             case "Knight":
@@ -478,9 +485,71 @@ public class GameEngine {
         return path;
     }
 
+    public List<String> createPath(String from, String to, String pathType){
+
+        ArrayList<String> path = new ArrayList<>();
+
+        int fromH = Integer.parseInt(from.split(":")[1]);
+        int fromV = Integer.parseInt(from.split(":")[0]);
+        int toH = Integer.parseInt(to.split(":")[1]);
+        int toV = Integer.parseInt(to.split(":")[0]);
+
+        if(pathType.equals("horizontal")){
+            if(fromH < toH) {
+                for (int i = fromH; i <= toH; i++) {
+                    path.add(fromV + ":" + i);
+                }
+            }
+            if(fromH > toH) {
+                for (int i = fromH; i >= toH; i--) {
+                    path.add(fromV + ":" + i);
+                }
+            }
+        }
+
+        if(pathType.equals("vertical")){
+            if(fromV < toV) {
+                for (int i = fromV; i <= toV; i++) {
+                    path.add(i + ":" + fromH);
+                }
+            }
+            if(fromV > toV) {
+                for (int i = fromV; i >= toV; i--) {
+                    path.add(i + ":" + fromH);
+                }
+            }
+        }
+
+        if(pathType.equals("diagonal")){
+            if(fromH < toH && fromV < toV) {
+                for (int i = fromH, j = fromV; i <= toH; i++, j++) {
+                    path.add(j + ":" + i);
+                }
+            }
+            if(fromH > toH && fromV < toV) {
+                for (int i = fromH, j = fromV; i >= toH; i--, j++) {
+                    path.add(j + ":" + i);
+                }
+            }
+            if(fromH < toH && fromV > toV) {
+                for (int i = fromH, j = fromV; i <= toH; i++, j--) {
+                    path.add(j + ":" + i);
+                }
+            }
+            if(fromH > toH && fromV > toV) {
+                for (int i = fromH, j = fromV; i >= toH; i--, j--) {
+                    path.add(j + ":" + i);
+                }
+            }
+        }
+
+        return path;
+
+    }
+
     public Boolean isWholePathTiles(List<String> path){
         for(String tile: path){
-            if(!board.containsKey(tile)){
+            if(!board.containsKey(tile) || !board.get(tile).get(0).equals("normal")){
                 return false;
             }
         }
@@ -488,27 +557,34 @@ public class GameEngine {
     }
 
     public Boolean isPathBlocked(List<String> path){
+
+        // piece moves only 1 tile, so path cant be blocked
+        if(path.size() == 2) return false;
+
         String from = path.get(0);
         String to = path.get(path.size() - 1);
+
         for(String tile: path){
-            if(!tile.equals(from) && !tile.equals(to) && board.get(tile).size() > 0){
-                return false;
+            // tile is not starting or finishing tile and has a piece so therefor is blocking
+            if(!tile.equals(from) && !tile.equals(to) && board.get(tile).size() > 1){
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public String getPieceOnTile(String tile){
-        return board.get(tile).get(1);
+        return board.get(tile).get(2);
     }
 
     public String getPlayerOnTile(String tile){
-        return board.get(tile).get(0);
+        int playerIndex = Integer.parseInt(board.get(tile).get(1));
+        return this.game.getPlayers().get(playerIndex - 1);
     }
 
     public Boolean isTileOccupied(String tile){
         if(board.containsKey(tile)){
-            return board.get(tile).size() != 0;
+            return board.get(tile).size() > 1;
         }
         return false;
     }

@@ -15,7 +15,7 @@ export default function GametypesContextProvider({ children }){
 
     async function refreshGametypes(){
         const response = await getGametypes()
-        setGametypes(response)
+        if(Array.isArray(response)) setGametypes(response)
     }
 
     return (
