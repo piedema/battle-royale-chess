@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react'
 
-import { getQueue, addToQueue } from '../services/LobbyService'
+import { getQueue, placeInQueue, removeFromQueue } from '../services/LobbyService'
 
 export const LobbyContext = createContext({})
 
@@ -11,7 +11,8 @@ export default function LobbyContextProvider({ children }){
     const contextData = {
         queue:queue,
         refreshQueue:refreshQueue,
-        addToQueue:add
+        placeInQueue:add,
+        removeFromQueue:remove
     }
 
     async function refreshQueue(){
@@ -20,7 +21,11 @@ export default function LobbyContextProvider({ children }){
     }
 
     async function add(gametype){
-        await addToQueue(gametype)
+        await placeInQueue(gametype)
+    }
+
+    async function remove(gametype){
+        await removeFromQueue(gametype)
     }
 
     return (

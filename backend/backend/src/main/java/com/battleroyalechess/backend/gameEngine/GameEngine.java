@@ -1,6 +1,7 @@
 package com.battleroyalechess.backend.gameEngine;
 
 import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
+import com.battleroyalechess.backend.dto.response.CancelMoveResponse;
 import com.battleroyalechess.backend.dto.response.NewMoveResponse;
 import com.battleroyalechess.backend.model.Game;
 import com.battleroyalechess.backend.model.Gametype;
@@ -86,56 +87,6 @@ public class GameEngine {
         );
 
         return this.gameId;
-    }
-
-    public NewMoveResponse newMove(NewMovePostRequest newMovePostRequest){
-
-        if(!hasGameStarted()) return new NewMoveResponse(false, "Game has not started yet");
-
-        String username = this.userService.getCurrentUserName();
-        String from = newMovePostRequest.getFrom();
-        String to = newMovePostRequest.getTo();
-
-        // check if players king is still alive
-        boolean isKingAlive = false;
-        int playerIndex = this.game.players.indexOf(username);
-        for (Map.Entry<String, ArrayList<String>> tile : board.entrySet()) {
-            if (tile.getValue().contains(String.valueOf(playerIndex + 1)) && tile.getValue().contains("King")) {
-                isKingAlive = true;
-                break;
-            }
-        }
-
-        // exit if king is not alive
-        if(!isKingAlive) return new NewMoveResponse(false, "King is not alive");
-
-        // create list with path for piece. list must be empty if path is not possible, then return
-        String piece = board.get(from).get(2);
-        String direction = this.gametype.playerDirections.get(playerIndex);
-        List<String> path = buildPath(piece, from, to, username, direction);
-
-        // if path list is empty then there was no legal path found, then discard move
-        if(path.size() == 0) return new NewMoveResponse(false,"Path is not valid");
-
-        // check if whole path are tiles
-        if(!isWholePathTiles(path)){
-            return new NewMoveResponse(false,"Not whole path is tiles");
-        }
-
-        // check if there are no interuptions (other pieces) in the path. this does not count for knight
-        if(!piece.equals("Knight") && isPathBlocked(path)){
-            return new NewMoveResponse(false,"Path is blocked");
-        }
-
-        // store move locally. at end of round moves are stored in db. Not before, so other users cant see move before end of round
-        String currentMove = from + ">" + to;
-
-        // if user already has a move registered for this round, throw away old move
-        nextMoves.remove(username);
-
-        nextMoves.put(username, currentMove);
-
-        return new NewMoveResponse(true,"Move successfully queued");
     }
 
     public Boolean hasGameStarted(){
@@ -387,6 +338,63 @@ public class GameEngine {
 
     }
 
+    public NewMoveResponse newMove(NewMovePostRequest newMovePostRequest){
+
+        if(!hasGameStarted()) return new NewMoveResponse(false, "Game has not started yet");
+
+        String username = this.userService.getCurrentUserName();
+        String from = newMovePostRequest.getFrom();
+        String to = newMovePostRequest.getTo();
+
+        // check if players king is still alive
+        boolean isKingAlive = false;
+        int playerIndex = this.game.players.indexOf(username);
+        for (Map.Entry<String, ArrayList<String>> tile : board.entrySet()) {
+            if (tile.getValue().contains(String.valueOf(playerIndex + 1)) && tile.getValue().contains("King")) {
+                isKingAlive = true;
+                break;
+            }
+        }
+
+        // exit if king is not alive
+        if(!isKingAlive) return new NewMoveResponse(false, "King is not alive");
+
+        // create list with path for piece. list must be empty if path is not possible, then return
+        String piece = board.get(from).get(2);
+        String direction = this.gametype.playerDirections.get(playerIndex);
+        List<String> path = buildPath(piece, from, to, username, direction);
+
+        // if path list is empty then there was no legal path found, then discard move
+        if(path.size() == 0) return new NewMoveResponse(false,"Path is not valid");
+
+        // check if whole path are tiles
+        if(!isWholePathTiles(path)){
+            return new NewMoveResponse(false,"Not whole path is tiles");
+        }
+
+        // check if there are no interuptions (other pieces) in the path. this does not count for knight
+        if(!piece.equals("Knight") && isPathBlocked(path)){
+            return new NewMoveResponse(false,"Path is blocked");
+        }
+
+        // store move locally. at end of round moves are stored in db. Not before, so other users cant see move before end of round
+        String currentMove = from + ">" + to;
+
+        // if user already has a move registered for this round, throw away old move
+        nextMoves.remove(username);
+
+        nextMoves.put(username, currentMove);
+
+        return new NewMoveResponse(true,"Move successfully queued");
+    }
+
+    public CancelMoveResponse cancelMove(String username){
+
+        nextMoves.remove(username);
+
+        return new CancelMoveResponse(true,"Move successfully removed");
+    }
+
     public List<String> buildPath(String piece, String from, String to, String username, String direction){
         ArrayList<String> path = new ArrayList<>();
 
@@ -444,7 +452,7 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                    if((fromH - toH == -1 || fromH - toH == 1) && fromV - toV == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                    if(Math.abs(fromH - toH) == 1 && fromV - toV == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
                     }
@@ -454,7 +462,7 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                    if((fromV - toV == -1 || fromV - toV == 1) && fromH - toH == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                    if(Math.abs(fromV - toV) == 1 && fromH - toH == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
                     }
@@ -464,7 +472,7 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                    if((fromH - toH == -1 || fromH - toH == 1) && fromV - toV == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                    if(Math.abs(fromH - toH) == 1 && fromV - toV == -1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
                     }
@@ -474,7 +482,7 @@ public class GameEngine {
                         path.add(from);
                         path.add(to);
                     }
-                    if((fromV - toV == -1 || fromV - toV == 1) && fromH - toH == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
+                    if(Math.abs(fromV - toV) == 1 && fromH - toH == 1 && isTileOccupied(to) && !getPlayerOnTile(to).equals(username)){
                         path.add(from);
                         path.add(to);
                     }

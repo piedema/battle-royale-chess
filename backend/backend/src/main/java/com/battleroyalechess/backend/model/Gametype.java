@@ -16,9 +16,6 @@ public class Gametype {
     public int numberOfPlayers;
 
     @Column(nullable = false)
-    public int numberOfRounds;
-
-    @Column(nullable = false)
     public int circleShrinkAfterNRounds;
 
     @Column(nullable = false)
@@ -50,14 +47,6 @@ public class Gametype {
 
     public void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
-    }
-
-    public int getNumberOfRounds() {
-        return numberOfRounds;
-    }
-
-    public void setNumberOfRounds(int numberOfRounds) {
-        this.numberOfRounds = numberOfRounds;
     }
 
     public int getCircleShrinkAfterNRounds() {

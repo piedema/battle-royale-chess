@@ -21,55 +21,73 @@ public class PopulateDbWithGametypes implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         HashMap<String, ArrayList<String>> board1 = new HashMap<>();
-        board1.put("1:1", createTile(null, null));
-        board1.put("1:2", createTile(null, null));
+        board1.put("1:1", createTile("1", "Tower"));
+        board1.put("1:2", createTile("1", "Bishop"));
         board1.put("1:3", createTile(null, null));
         board1.put("1:4", createTile(null, null));
         board1.put("1:5", createTile(null, null));
         board1.put("1:6", createTile(null, null));
         board1.put("1:7", createTile(null, null));
-        board1.put("1:8", createTile(null, null));
-        board1.put("1:9", createTile(null, null));
+        board1.put("1:8", createTile("2", "Bishop"));
+        board1.put("1:9", createTile("2", "Tower"));
         board1.put("2:1", createTile(null, null));
         board1.put("2:2", createTile(null, null));
-        board1.put("2:3", createTile(null, null));
+        board1.put("2:3", createTile("1", "Pawn"));
         board1.put("2:4", createTile(null, null));
         board1.put("2:5", createTile(null, null));
         board1.put("2:6", createTile(null, null));
-        board1.put("2:7", createTile(null, null));
+        board1.put("2:7", createTile("2", "Pawn"));
         board1.put("2:8", createTile(null, null));
         board1.put("2:9", createTile(null, null));
         board1.put("3:1", createTile(null, null));
-        board1.put("3:2", createTile(null, null));
-        board1.put("3:3", createTile(null, null));
-        board1.put("3:4", createTile("2", "King"));
-        board1.put("3:5", createTile("1", "King"));
+        board1.put("3:2", createTile("1", "Queen"));
+        board1.put("3:3", createTile("1", "Pawn"));
+        board1.put("3:4", createTile(null, null));
+        board1.put("3:5", createTile(null, null));
         board1.put("3:6", createTile(null, null));
-        board1.put("3:7", createTile(null, null));
-        board1.put("3:8", createTile(null, null));
+        board1.put("3:7", createTile("2", "Pawn"));
+        board1.put("3:8", createTile("2", "Knight"));
         board1.put("3:9", createTile(null, null));
         board1.put("4:1", createTile(null, null));
-        board1.put("4:2", createTile(null, null));
-        board1.put("4:3", createTile(null, null));
+        board1.put("4:2", createTile("1", "King"));
+        board1.put("4:3", createTile("1", "Pawn"));
         board1.put("4:4", createTile(null, null));
         board1.put("4:5", createTile(null, null));
         board1.put("4:6", createTile(null, null));
-        board1.put("4:7", createTile(null, null));
-        board1.put("4:8", createTile(null, null));
+        board1.put("4:7", createTile("2", "Pawn"));
+        board1.put("4:8", createTile("2", "King"));
         board1.put("4:9", createTile(null, null));
         board1.put("5:1", createTile(null, null));
-        board1.put("5:2", createTile(null, null));
-        board1.put("5:3", createTile(null, null));
+        board1.put("5:2", createTile("1", "Knight"));
+        board1.put("5:3", createTile("1", "Pawn"));
         board1.put("5:4", createTile(null, null));
         board1.put("5:5", createTile(null, null));
         board1.put("5:6", createTile(null, null));
-        board1.put("5:7", createTile(null, null));
-        board1.put("5:8", createTile(null, null));
+        board1.put("5:7", createTile("2", "Pawn"));
+        board1.put("5:8", createTile("2", "Queen"));
         board1.put("5:9", createTile(null, null));
+        board1.put("6:1", createTile(null, null));
+        board1.put("6:2", createTile(null, null));
+        board1.put("6:3", createTile("1", "Pawn"));
+        board1.put("6:4", createTile(null, null));
+        board1.put("6:5", createTile(null, null));
+        board1.put("6:6", createTile(null, null));
+        board1.put("6:7", createTile("2", "Pawn"));
+        board1.put("6:8", createTile(null, null));
+        board1.put("6:9", createTile(null, null));
+        board1.put("7:1", createTile("1", "Tower"));
+        board1.put("7:2", createTile("1", "Bishop"));
+        board1.put("7:3", createTile(null, null));
+        board1.put("7:4", createTile(null, null));
+        board1.put("7:5", createTile(null, null));
+        board1.put("7:6", createTile(null, null));
+        board1.put("7:7", createTile(null, null));
+        board1.put("7:8", createTile("2", "Bishop"));
+        board1.put("7:9", createTile("2", "Tower"));
         ArrayList<String> playerDirections1 = new ArrayList<>();
         playerDirections1.add("east");
         playerDirections1.add("west");
-        createGametype("2Player", 2, 100, 5, 5, 1, 3, board1, playerDirections1);
+        createGametype("2Player", 2, 5, 5, 15, 15, board1, playerDirections1);
 
         HashMap<String, ArrayList<String>> board2 = new HashMap<>();
         board2.put("1:6", createTile(null, null));
@@ -200,7 +218,7 @@ public class PopulateDbWithGametypes implements CommandLineRunner {
         ArrayList<String> playerDirections2 = new ArrayList<>();
         playerDirections2.add("east");
         playerDirections2.add("west");
-        createGametype("2PlayerBig+", 4, 200, 100, 20, 10, 5, board2, playerDirections2);
+        createGametype("4PlayerBig+", 4, 3, 20, 10, 15, board2, playerDirections2);
 
     }
 
@@ -215,7 +233,6 @@ public class PopulateDbWithGametypes implements CommandLineRunner {
     private void createGametype(
             String gametype,
             int numberOfPlayers,
-            int numberOfRounds,
             int circleShrinkAfterNRounds,
             int circleShrinkOffset,
             int timePerRound,
@@ -228,7 +245,6 @@ public class PopulateDbWithGametypes implements CommandLineRunner {
 
         gametypePostRequest.setGametype(gametype);
         gametypePostRequest.setNumberOfPlayers(numberOfPlayers);
-        gametypePostRequest.setNumberOfRounds(numberOfRounds);
         gametypePostRequest.setCircleShrinkAfterNRounds(circleShrinkAfterNRounds);
         gametypePostRequest.setCircleShrinkOffset(circleShrinkOffset);
         gametypePostRequest.setTimePerRound(timePerRound);

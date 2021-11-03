@@ -26,7 +26,6 @@ public class GametypeService {
             Gametype gametype = new Gametype();
             gametype.setGametype(gametypePostRequest.getGametype());
             gametype.setNumberOfPlayers(gametypePostRequest.getNumberOfPlayers());
-            gametype.setNumberOfRounds(gametypePostRequest.getNumberOfRounds());
             gametype.setCircleShrinkAfterNRounds(gametypePostRequest.getCircleShrinkAfterNRounds());
             gametype.setCircleShrinkOffset(gametypePostRequest.getCircleShrinkOffset());
             gametype.setTimePerRound(gametypePostRequest.getTimePerRound());

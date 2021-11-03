@@ -36,4 +36,10 @@ public class GamesController {
         return ResponseEntity.ok().body(gamesService.newMove(gameId, newMovePostRequest));
     }
 
+    @GetMapping(value = "/{gameId}/cancelMove")
+    public ResponseEntity<Object> cancelMove(@PathVariable("gameId") Long gameId) {
+        gamesService.cancelMove(gameId);
+        return ResponseEntity.ok().body(gamesService.cancelMove(gameId));
+    }
+
 }

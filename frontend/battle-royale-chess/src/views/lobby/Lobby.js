@@ -19,12 +19,18 @@ export default function Lobby() {
     const history = useHistory()
 
     const { username, role } = useContext(UserContext)
-    const { games, refreshGames, isPlayerQueued, setIsPlayerQueued, getGameIdForPlayer, setGameId } = useContext(GamesContext)
+    const { games, refreshGames, queuedForGame, setQueuedForGame, getGameIdForPlayer, setGameId } = useContext(GamesContext)
     const { gametypes, refreshGametypes } = useContext(GametypesContext)
-    const { queue, refreshQueue, addToQueue } = useContext(LobbyContext)
+    const { queue, refreshQueue, placeInQueue, removeFromQueue } = useContext(LobbyContext)
 
     const basicContainerOuterStyle = { width:"100%", height:"60px", userSelect:"none", boxSizing:"border-box" }
     const basicContainerInnerStyle = { fontSize:"20px", display:"flex", justifyContent:"center", alignItems:"center", boxSizing:"border-box" }
+
+    useEffect(() => {
+
+        console.log("test " + queuedForGame)
+
+    }, [queuedForGame])
 
     useEffect(() => {
 
@@ -49,8 +55,8 @@ export default function Lobby() {
 
         (async () => {
 
-            if(isPlayerQueued === true && queue.find(q => q.username === username) === undefined){
-                setIsPlayerQueued(false)
+            if(queuedForGame !== undefined && queue.find(q => q.username === username) === undefined){
+                setQueuedForGame(undefined)
                 history.push('/game')
             }
 
@@ -79,8 +85,15 @@ export default function Lobby() {
 
     async function queueForGame(gametype){
 
-        const result = await addToQueue(gametype)
-        if(result !== false) setIsPlayerQueued(true)
+        const result = await placeInQueue(gametype)
+        if(result !== false) setQueuedForGame(gametype)
+
+    }
+
+    async function unQueueFromGame(gametype){
+
+        const result = await removeFromQueue(gametype)
+        if(result !== false) setQueuedForGame(undefined)
 
     }
 
@@ -104,9 +117,9 @@ export default function Lobby() {
                                             Gametype: {g.gametype} <br />
                                             People currently in queue: {queue.filter(q => q.gametype === g.gametype).length} <br />
                                             {
-                                                isPlayerQueued !== true
-                                                ? <button onClick={() => queueForGame(g.gametype)} style={{ cursor:"pointer", backgroundColor:"lightgreen", padding:"10px", borderRadius:"10px", border:"0px" }}>Put in queue</button>
-                                                : <button onClick={() => queueForGame(g.gametype)} style={{ cursor:"pointer", backgroundColor:"lightred", padding:"10px", borderRadius:"10px", border:"0px" }}>Cancel queue</button>
+                                                queuedForGame !== g.gametype
+                                                ? <button onClick={() => queueForGame(g.gametype)} style={{ cursor:"pointer", backgroundColor:"lightgreen", padding:"10px", borderRadius:"10px", border:"0px" }}>Place in queue</button>
+                                                : <button onClick={() => unQueueFromGame(g.gametype)} style={{ cursor:"pointer", backgroundColor:"lightred", padding:"10px", borderRadius:"10px", border:"0px" }}>Remove from queue</button>
                                             }
                                         </BasicContainer>
                                     )

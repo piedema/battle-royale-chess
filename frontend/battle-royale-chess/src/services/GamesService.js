@@ -91,7 +91,7 @@ export async function cancelMove(gameId, username){
     // this endpoint is not available on backend yet
 
     const options = {
-        url:'/games/' + gameId + "/cancelMove/" + username,
+        url:'/games/' + gameId + "/cancelMove",
         method:'GET',
         headers: {
             'Content-Type': 'application/json'

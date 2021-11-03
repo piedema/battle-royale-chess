@@ -20,8 +20,14 @@ public class LobbyController {
     }
 
     @GetMapping(value = "/queue/{gametype}")
-    public ResponseEntity<Object> addInQueue(@PathVariable String gametype) {
-        lobbyService.addInQueue(gametype);
+    public ResponseEntity<Object> placeInQueue(@PathVariable String gametype) {
+        lobbyService.placeInQueue(gametype);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/queue")
+    public ResponseEntity<Object> removeFromQueue() {
+        lobbyService.removeFromQueue();
         return ResponseEntity.noContent().build();
     }
 

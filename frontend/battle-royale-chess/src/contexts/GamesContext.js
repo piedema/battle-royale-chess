@@ -7,13 +7,13 @@ export const GamesContext = createContext({})
 export default function GamesContextProvider({ children }){
 
     const [games, setGames] = useState([])
-    const [isPlayerQueued, setIsPlayerQueued] = useState(false)
+    const [queuedForGame, setQueuedForGame] = useState(undefined)
     const [gameId, setGameId] = useState(undefined)
 
     const contextData = {
         games:games,
-        isPlayerQueued:isPlayerQueued,
-        setIsPlayerQueued:setIsPlayerQueued,
+        queuedForGame:queuedForGame,
+        setQueuedForGame:setQueuedForGame,
         refreshGames:refreshGames,
         getGameIdForPlayer:getGameIdForPlayer,
         setGameId:setGameId,

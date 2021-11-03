@@ -1,6 +1,7 @@
 package com.battleroyalechess.backend.service;
 
 import com.battleroyalechess.backend.dto.request.NewMovePostRequest;
+import com.battleroyalechess.backend.dto.response.CancelMoveResponse;
 import com.battleroyalechess.backend.dto.response.NewMoveResponse;
 import com.battleroyalechess.backend.exception.GameNotFoundException;
 import com.battleroyalechess.backend.gameEngine.GameEngine;
@@ -75,6 +76,23 @@ public class GamesService {
 
         try {
             return game.newMove(newMovePostRequest);
+        }
+        catch (Exception ex) {
+            throw new GameNotFoundException();
+        }
+
+    }
+
+    public CancelMoveResponse cancelMove(Long gameId){
+
+        String username = userService.getCurrentUserName();
+
+        GameEngine game = this.activeGames.get(gameId);
+
+        System.out.println("move cancelled for player " + username);
+
+        try {
+            return game.cancelMove(username);
         }
         catch (Exception ex) {
             throw new GameNotFoundException();

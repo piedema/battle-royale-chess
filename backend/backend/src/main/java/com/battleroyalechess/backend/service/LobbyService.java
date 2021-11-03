@@ -37,7 +37,7 @@ public class LobbyService {
         return queue;
     }
 
-    public void addInQueue(String gametype) {
+    public void placeInQueue(String gametype) {
 
         String username = userService.getCurrentUserName();
 
@@ -118,6 +118,15 @@ public class LobbyService {
             queue.add(queuedPlayer);
 
         }
+
+    }
+
+    public void removeFromQueue() {
+
+        String username = userService.getCurrentUserName();
+
+        // check if user is not in the lobby already
+        queue.removeIf(queuedPlayer -> queuedPlayer.getUsername().equals(username));
 
     }
 

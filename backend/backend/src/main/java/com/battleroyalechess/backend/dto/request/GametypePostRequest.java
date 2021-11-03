@@ -16,7 +16,6 @@ public class GametypePostRequest {
 
     private String gametype;
     private int numberOfPlayers;
-    private int numberOfRounds;
     private int circleShrinkAfterNRounds;
     private int circleShrinkOffset;
     private int timePerRound;
