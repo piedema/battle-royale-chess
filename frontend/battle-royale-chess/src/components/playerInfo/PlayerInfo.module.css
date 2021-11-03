@@ -1,0 +1,71 @@
+/* leftTop */
+.s0 {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+}
+
+/* rightTop */
+.s1 {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+}
+
+/* leftBottom */
+.s2 {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+}
+
+/* leftMiddle */
+.s3 {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* rightMiddle */
+.s4 {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* rightBottom */
+.s5 {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
+
+/* middleBottom */
+.s6 {
+    position: fixed;
+    left: 50%;
+    bottom:  20px;
+    transform: translate(50%);
+}
+
+/* leftMiddleBottom */
+.s7 {
+    position: fixed;
+    left: 33%;
+    bottom: 20px;
+    transform: translate(50%);
+}
+
+/* rightMiddleBottom */
+.s8 {
+    position: fixed;
+    left: 66%;
+    bottom: 20px;
+    transform: translate(50%);
+}
+
+/* .c0 {
+    background-color: ;
+} */

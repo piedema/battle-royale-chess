@@ -3,7 +3,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* transform: scale( 1 ); */
+    transform: scale( 0.5 );
+}
+
+.gameInfoContainer {
 }
 
 .roundContainer {

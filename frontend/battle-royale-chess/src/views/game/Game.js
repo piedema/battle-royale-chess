@@ -224,9 +224,8 @@ export default function Game() {
                         const classes = { tile:styles.tile, td:styles.td }
 
                         if(tile[0] === 'faded') classes.faded = styles.faded
-                        if(playerIndex === players.indexOf(username) && tile[0] !== 'faded' && moveFrom === undefined) classes.hasOwnPiece = styles.hasOwnPiece
-                        if(moveFrom === key) classes.isSelected = styles.isSelected
-                        if(moveTo === key) classes.isSelected = styles.isSelected
+                        if(playerIndex === players.indexOf(username) && tile[0] !== 'faded' && moveFrom === undefined && round > 0) classes.hasOwnPiece = styles.hasOwnPiece
+                        if(moveFrom === key || moveTo === key) classes.isSelected = styles.isSelected
                         if(players[playerIndex] !== username && tile[0] !== 'faded' && moveFrom !== undefined) classes.hasOtherPiece = styles.hasOtherPiece
                         if(i === Math.ceil(rowsAmount / 2) && j === Math.ceil(colsAmount / 2)) classes.winningTile = styles.winningTile
 
@@ -297,7 +296,9 @@ export default function Game() {
 
     return (
         <div className="game" onWheel={(event) => { zoomGame(event) }}>
-            {alert}
+            <div className={styles.gameInfoContainer}>
+
+            </div>
             <div className={styles.boardContainer} style={{ transform: `scale( ${zoomLevel} )` }}>
                 {boardToJSX(board)}
             </div>

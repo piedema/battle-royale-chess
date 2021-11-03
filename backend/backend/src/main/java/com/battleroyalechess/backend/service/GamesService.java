@@ -72,8 +72,6 @@ public class GamesService {
 
         GameEngine game = this.activeGames.get(gameId);
 
-        System.out.println("new move recieved for game " + game);
-
         try {
             return game.newMove(newMovePostRequest);
         }
@@ -88,8 +86,6 @@ public class GamesService {
         String username = userService.getCurrentUserName();
 
         GameEngine game = this.activeGames.get(gameId);
-
-        System.out.println("move cancelled for player " + username);
 
         try {
             return game.cancelMove(username);

@@ -292,6 +292,9 @@ public class GameEngine {
 
         if(numberOfKingsAlive > 1) {
 
+            this.game.setRound(++currentRound);
+            this.game.setNextRoundAt(new Date().getTime() + timePerRound);
+
             Timer timer = new Timer();
             timer.schedule(
                     new TimerTask(){
@@ -304,9 +307,6 @@ public class GameEngine {
                     }, timePerRound
             );
         }
-
-        this.game.setRound(++currentRound);
-        this.game.setNextRoundAt(new Date().getTime() + timePerRound);
 
         // store game in db
         this.gameRepository.save(this.game);
