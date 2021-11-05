@@ -251,20 +251,6 @@ export default function Lobby() {
                                         )
                                     })
                                 }
-                                {
-                                    gametypes.map(g => {
-                                        return (
-                                            <Card
-                                                key={g.gametype}
-                                                gametypeInfo={g}
-                                                queue={queue}
-                                                username={username}
-                                                placeInQueue={queueForGame}
-                                                removeFromQueue={unQueueFromGame}
-                                            />
-                                        )
-                                    })
-                                }
                         </div>
                         : ""
                     }
