@@ -1,4 +1,4 @@
-import { useEffect, useContext, useMemo, useState } from 'react'
+import { useEffect, useContext, useState } from 'react'
 import { useHistory, NavLink } from 'react-router-dom'
 
 import Menu from '../../components/menu/Menu'
@@ -27,12 +27,13 @@ export default function Lobby() {
     const { queue, refreshQueue, placeInQueue, removeFromQueue } = useContext(LobbyContext)
     const { logout } = useContext(AuthenticationContext)
 
-    const basicContainerOuterStyle = { width:"100%", height:"60px", userSelect:"none", boxSizing:"border-box" }
-    const basicContainerInnerStyle = { fontSize:"20px", display:"flex", justifyContent:"center", alignItems:"center", boxSizing:"border-box" }
-
     const [shuffledBoard, setShuffledBoard] = useState({})
+    const [tileSize, setTileSize] = useState(100)
+    const [rows, setRows] = useState(4)
+    const [cols, setCols] = useState(8)
+    const [perspective, setPerspective] = useState('2d')
 
-    function shuffleBoard(boardWidth, boardHeight, shuffleEvenWhenShuffledAlready){
+    function shuffleBoard(shuffleEvenWhenShuffledAlready){
 
         if(shuffleEvenWhenShuffledAlready){
 
@@ -62,7 +63,7 @@ export default function Lobby() {
 
             while(buttonsFilteredByRole.length !== 0){
 
-                const key = `${Math.ceil((Math.random() * boardHeight))}${Math.ceil((Math.random() * boardWidth))}`
+                const key = `${Math.ceil((Math.random() * rows))}${Math.ceil((Math.random() * cols))}`
 
                 if(result[key] === undefined) result[key] = buttonsFilteredByRole.shift()
 
@@ -84,7 +85,7 @@ export default function Lobby() {
 
             while(piecesWanted.length !== 0){
 
-                const key = `${Math.ceil((Math.random() * boardHeight))}${Math.ceil((Math.random() * boardWidth))}`
+                const key = `${Math.ceil((Math.random() * rows))}${Math.ceil((Math.random() * cols))}`
 
                 if(result[key] === undefined) result[key] = piecesWanted.shift()
 
@@ -96,9 +97,29 @@ export default function Lobby() {
 
     }
 
+    function setRowsCols(){
+
+        let newHeight = Math.min(window.innerHeight - 600, 600)
+        let newWidth = Math.min(window.innerWidth - 200, 1000)
+
+        setRows(Math.floor(newHeight / tileSize))
+        setCols(Math.max(Math.floor(newWidth / tileSize), 3))
+
+    }
+
+    useEffect(() => {
+
+        shuffleBoard(true)
+
+    }, [rows, cols])
+
     useEffect(() => {
 
         refreshGametypes()
+        setRowsCols()
+        setPerspective(window.innerWidth > 1000 ? '3d' : '2d')
+
+        window.addEventListener('resize', setRowsCols)
 
         const refreshDataInterval = setInterval(() => {
 
@@ -130,27 +151,8 @@ export default function Lobby() {
     }, [queue])
 
     useEffect(() => {
-        shuffleBoard(8, 4, true)
+        shuffleBoard(cols, rows, true)
     }, [role])
-
-    const columns = useMemo(
-        () => [
-          {
-            Header: 'Currently played games',
-            columns: [
-              {
-                Header: 'Players',
-                accessor: 'players',
-              },
-              {
-                Header: 'Gametype',
-                accessor: 'gametype',
-              },
-            ],
-          }
-        ],
-        []
-    )
 
     async function queueForGame(gametype){
 
@@ -220,23 +222,21 @@ export default function Lobby() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.welcomeUser}>
+            <div className={styles.userContainer}>
                 Welcome {username} <button onClick={logout} className={styles.logoutBtn}>Logout</button>
             </div>
             <div className={styles.lobbyContainer}>
-                <div>
-                    <div className={styles.shuffleButtonContainer}>
-                        <div className={styles.shuffleButton} onClick={() => shuffleBoard(8, 4, true)}>Shuffle Menu</div>
-                    </div>
-                    <div className={styles.menuContainer}>
-                        {generateChessboard(8, 4)}
-                    </div>
+                <div className={styles.shuffleButtonContainer}>
+                    <div className={styles.shuffleButton} onClick={() => shuffleBoard(true)}>Shuffle Menu</div>
+                    <div className={styles.shuffleButton} onClick={() => setPerspective(perspective === '3d' ? '2d' : '3d')}>View in {perspective === '3d' ? '2d' : '3d'}</div>
+                </div>
+                <div className={`${styles['chessboard-' + perspective]}`}>
+                    {generateChessboard(cols, rows)}
                 </div>
 
                 {
                     role !== 'SPECTATOR' ?
-                        <div className={styles.gamesLobby}>
-                            <div className={styles.queueContainer}>
+                        <div className={styles.queueContainer}>
                                 {
                                     gametypes.map(g => {
                                         return (
@@ -251,7 +251,20 @@ export default function Lobby() {
                                         )
                                     })
                                 }
-                            </div>
+                                {
+                                    gametypes.map(g => {
+                                        return (
+                                            <Card
+                                                key={g.gametype}
+                                                gametypeInfo={g}
+                                                queue={queue}
+                                                username={username}
+                                                placeInQueue={queueForGame}
+                                                removeFromQueue={unQueueFromGame}
+                                            />
+                                        )
+                                    })
+                                }
                         </div>
                         : ""
                     }
