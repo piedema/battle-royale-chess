@@ -24,8 +24,8 @@ export default function LobbyContextProvider({ children }){
         await placeInQueue(gametype)
     }
 
-    async function remove(gametype){
-        await removeFromQueue(gametype)
+    async function remove(){
+        await removeFromQueue()
     }
 
     return (

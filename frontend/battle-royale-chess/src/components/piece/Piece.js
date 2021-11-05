@@ -1,6 +1,6 @@
 import styles from './Piece.module.js'
 
-export default function Piece({ type, styling, playerIndex }){
+export default function Piece({ type, styling, playerIndex, w, h, vB }){
 
     if(playerIndex < 0 || playerIndex > 7) return null
 
@@ -33,12 +33,16 @@ export default function Piece({ type, styling, playerIndex }){
             stroke:"#545925",
             fill:"#e5e8ca"
         },
+        {
+            stroke:"darkred",
+            fill:"orangered"
+        },
     ]
 
     const pieces = {
         outlined:{
             King:(
-                <svg width="200" height="200" viewBox="-2 -2 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "-2 -2 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -63,7 +67,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Queen:(
-                <svg width="200" height="200" viewBox="42 -4 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "42 -4 110 110"}>
                     <g
                       fill={styles[playerIndex].fill}
                       fillRule="evenodd"
@@ -95,7 +99,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Bishop:(
-                <svg width="200" height="200" viewBox="88 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "88 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -127,7 +131,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Knight:(
-                <svg width="200" height="200" viewBox="133 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "133 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -161,7 +165,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Tower:(
-                <svg width="200" height="200" viewBox="178 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "178 -5 110 110"}>
                     <g
                       fill={styles[playerIndex].fill}
                       fillRule="evenodd"
@@ -193,7 +197,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Pawn:(
-                <svg width="200" height="200" viewBox="222 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "222 -5 110 110"}>
                     <g>
                       <path
                         fill={styles[playerIndex].fill}
@@ -210,7 +214,7 @@ export default function Piece({ type, styling, playerIndex }){
         },
         filled:{
             King:(
-                <svg width="200" height="200" viewBox="-2 -2 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "-2 -2 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -255,7 +259,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Queen:(
-                <svg width="200" height="200" viewBox="42 -4 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "42 -4 110 110"}>
                     <g
                       fill="0"
                       fillRule="evenodd"
@@ -297,7 +301,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Bishop:(
-                <svg width="200" height="200" viewBox="88 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "88 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -330,7 +334,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Knight:(
-                <svg width="200" height="200" viewBox="178 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "178 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -372,7 +376,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Tower:(
-                <svg width="200" height="200" viewBox="178 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "178 -5 110 110"}>
                     <g
                       fill="0"
                       fillRule="evenodd"
@@ -409,7 +413,7 @@ export default function Piece({ type, styling, playerIndex }){
                 </svg>
             ),
             Pawn:(
-                <svg width="200" height="200" viewBox="230 -5 110 110">
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "230 -5 110 110"}>
                     <g>
                         <path
                           stroke={styles[playerIndex].stroke}
@@ -425,7 +429,7 @@ export default function Piece({ type, styling, playerIndex }){
     }
 
     return (
-        <svg width="100px" height="100px">
+        <svg width={w || "100px"} height={h || "100px"}>
             { pieces[styling][type] }
         </svg>
     )

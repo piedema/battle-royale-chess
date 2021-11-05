@@ -37,7 +37,7 @@ export async function placeInQueue(gametype){
 
 }
 
-export async function removeFromQueue(gametype){
+export async function removeFromQueue(){
 
     const options = {
         url:'/lobby/queue/',

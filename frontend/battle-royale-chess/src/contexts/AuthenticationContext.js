@@ -28,16 +28,16 @@ export default function AuthenticationContextProvider({ children }){
 
     useEffect(() => {
         console.log(username, email, role)
-    }, [username, email, role])
+    }, [role])
 
     async function loadUserdata(){
-        try{
+        try {
             const result = await getUserdata()
             setAuthState("success")
             setUsername(result.username)
             setEmail(result.email)
 
-            if(result.authorities.includes("ROLE_ADMIN")) return setRole("ADMIN")
+            if(result.authorities.map(a => a.authority).includes("ROLE_ADMIN")) return setRole("ADMIN")
             setRole("USER")
             console.log("loading data is succes", result)
         } catch (error){
@@ -62,6 +62,9 @@ export default function AuthenticationContextProvider({ children }){
     function logout(){
         Cookies.remove('jwt')
         setAuthState("failed")
+        setUsername(undefined)
+        setEmail(undefined)
+        setRole(undefined)
     }
 
     return (
