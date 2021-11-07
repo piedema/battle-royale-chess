@@ -1,0 +1,60 @@
+
+
+.td {
+  width: 110px;
+  height: 110px;
+  max-width: 110px;
+  max-height: 110px;
+  min-width: 110px;
+  min-height: 110px;
+}
+
+.tile {
+  border: 1px solid #000;
+  background: rgb(255, 251, 235);
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 10px;
+}
+
+.winningTile {
+    z-index: 10;
+    border: 1px solid darkgoldenrod;
+    box-shadow: inset 0 0 60px 5px gold;
+}
+
+.faded {
+    opacity: 0.2;
+}
+
+.isSelected {
+    cursor: pointer;
+    background: rgb(11,146,231) !important;
+    background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
+    border: 1px solid rgb(0,54,236);
+}
+
+.hasOwnPiece:hover {
+    cursor: pointer;
+    background: rgb(11,146,231) !important;
+    background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
+    border: 1px solid rgb(0,54,236);
+}
+
+.hasOtherPiece:hover {
+    cursor: pointer;
+    background: rgb(11,146,231) !important;
+    background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
+    border: 1px solid rgb(0,54,236);
+}
+
+.table {
+    table-layout: fixed;
+}
+
+.tr:nth-child(odd) .tile:nth-child(even) {
+    background: rgb(18, 7, 0);
+}
+.tr:nth-child(even) .tile:nth-child(odd) {
+    background: rgb(18, 7, 0);
+}

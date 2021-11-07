@@ -429,7 +429,7 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
     }
 
     return (
-        <svg width={w || "100px"} height={h || "100px"}>
+        <svg width={w / 2 || "100px"} height={h / 2 || "100px"}>
             { pieces[styling][type] }
         </svg>
     )
