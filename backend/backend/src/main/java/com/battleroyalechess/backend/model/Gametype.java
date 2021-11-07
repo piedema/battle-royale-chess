@@ -70,7 +70,6 @@ public class Gametype {
     }
 
     public void setTimePerRound(int timePerRound) {
-        System.out.println("timePerRound " + timePerRound);
         this.timePerRound = timePerRound;
     }
 

@@ -150,12 +150,14 @@ public class GameEngine {
                 ArrayList<String> details = new ArrayList<>();
                 details.add(movingPlayer);
                 details.add(from);
+                details.add(piece);
                 movingTo.put(to, details);
             }
 
             // processing multiple moves to same tile where own move has better piece than other persons moved piece.
             // also works if multiple people go to same tile but it always has to check against last approved piece
-            if(!movingTo.get(to).get(0).equals(movingPlayer) && this.pieces.get(piece) > this.pieces.get(movingTo.get(to).get(1))){
+
+            if(!movingTo.get(to).get(0).equals(movingPlayer) && this.pieces.get(piece) > this.pieces.get(movingTo.get(to).get(2))){
                 ArrayList<String> details = new ArrayList<>();
                 details.add(movingPlayer);
                 details.add(from);

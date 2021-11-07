@@ -217,7 +217,9 @@ public class PopulateDbWithGametypes implements CommandLineRunner {
         board2.put("15:10", createTile(null, null));
         ArrayList<String> playerDirections2 = new ArrayList<>();
         playerDirections2.add("east");
+        playerDirections2.add("south");
         playerDirections2.add("west");
+        playerDirections2.add("north");
         createGametype("4PlayerBig+", 4, 3, 20, 10, 15, board2, playerDirections2);
 
     }
