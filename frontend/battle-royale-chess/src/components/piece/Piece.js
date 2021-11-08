@@ -1,43 +1,8 @@
+import colors from '../../assets/js/colors'
+
 import styles from './Piece.module.js'
 
-export default function Piece({ type, styling, playerIndex, w, h, vB }){
-
-    if(playerIndex < 0 || playerIndex > 7) return null
-
-    const styles = [
-        {
-            stroke:"#346340",
-            fill:"#cae8d2"
-        },
-        {
-            stroke:"#635334",
-            fill:"#e8dcca"
-        },
-        {
-            stroke:"#633434",
-            fill:"#e8caca"
-        },
-        {
-            stroke:"#346340",
-            fill:"#bce8e5"
-        },
-        {
-            stroke:"#2a3157",
-            fill:"#cacfe8"
-        },
-        {
-            stroke:"#592e66",
-            fill:"#e1cae8"
-        },
-        {
-            stroke:"#545925",
-            fill:"#e5e8ca"
-        },
-        {
-            stroke:"darkred",
-            fill:"orangered"
-        },
-    ]
+export default function Piece({ type, styling, color, w, h, vB }){
 
     const pieces = {
         outlined:{
@@ -46,20 +11,20 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="none"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
                     >
                       <path strokeLinejoin="miter" d="M22.5 11.63V6M20 8h5"></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         strokeLinecap="butt"
                         strokeLinejoin="miter"
                         d="M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         d="M11.5 37c5.5 3.5 15.5 3.5 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10V37z"
                       ></path>
                       <path d="M11.5 30c5.5-3 15.5-3 21 0M11.5 33.5c5.5-3 15.5-3 21 0M11.5 37c5.5-3 15.5-3 21 0"></path>
@@ -69,9 +34,9 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
             Queen:(
                 <svg width={w || "200"} height={h || "200"} viewBox={vB || "42 -4 110 110"}>
                     <g
-                      fill={styles[playerIndex].fill}
+                      fill={color.fill}
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
@@ -103,12 +68,12 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="none"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
                     >
-                      <g fill={styles[playerIndex].fill} strokeLinecap="butt">
+                      <g fill={color.fill} strokeLinecap="butt">
                         <path
                           d="M9 36c3.39-.97 10.11.43 13.5-2 3.39 2.43 10.11 1.03 13.5 2 0 0 1.65.54 3 2-.68.97-1.65.99-3 .5-3.39-.97-10.11.46-13.5-1-3.39 1.46-10.11.03-13.5 1-1.354.49-2.323.47-3-.5 1.354-1.94 3-2 3-2z"
                           transform="translate(90)"
@@ -135,28 +100,28 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="none"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
                     >
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21"
                         transform="translate(135)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         d="M24 18c.38 2.91-5.55 7.37-8 9-3 2-2.82 4.34-5 4-1.042-.94 1.41-3.04 0-3-1 0 .19 1.23-1 2-1 0-4.003 1-4-4 0-2 6-12 6-12s1.89-1.9 2-3.5c-.73-.994-.5-2-.5-3 1-1 3 2.5 3 2.5h2s.78-1.992 2.5-3c1 0 1 3 1 3"
                         transform="translate(135)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         d="M9.5 25.5a.5.5 0 11-1 0 .5.5 0 111 0z"
                         transform="translate(135)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         strokeWidth="1.5"
                         d="M14.933 15.75a.5 1.5 30 11-.866-.5.5 1.5 30 11.866.5z"
                         transform="translate(135)"
@@ -167,9 +132,9 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
             Tower:(
                 <svg width={w || "200"} height={h || "200"} viewBox={vB || "178 -5 110 110"}>
                     <g
-                      fill={styles[playerIndex].fill}
+                      fill={color.fill}
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
@@ -200,8 +165,8 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                 <svg width={w || "200"} height={h || "200"} viewBox={vB || "222 -5 110 110"}>
                     <g>
                       <path
-                        fill={styles[playerIndex].fill}
-                        stroke={styles[playerIndex].stroke}
+                        fill={color.fill}
+                        stroke={color.stroke}
                         strokeLinecap="round"
                         strokeWidth="1.5"
                         d="M22 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38-1.95 1.12-3.28 3.21-3.28 5.62 0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z"
@@ -218,7 +183,7 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="none"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
@@ -229,14 +194,14 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                         transform="translate(0 45)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         strokeLinecap="butt"
                         strokeLinejoin="miter"
                         d="M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5"
                         transform="translate(0 45)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         d="M11.5 37c5.5 3.5 15.5 3.5 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10V37z"
                         transform="translate(0 45)"
                       ></path>
@@ -263,12 +228,12 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="0"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
                     >
-                      <g fill={styles[playerIndex].fill} stroke="none" transform="translate(45 45)">
+                      <g fill={color.fill} stroke="none" transform="translate(45 45)">
                         <circle cx="6" cy="12" r="2.75"></circle>
                         <circle cx="14" cy="9" r="2.75"></circle>
                         <circle cx="22.5" cy="8" r="2.75"></circle>
@@ -305,12 +270,12 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="none"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
                     >
-                      <g fill={styles[playerIndex].fill} strokeLinecap="butt">
+                      <g fill={color.fill} strokeLinecap="butt">
                         <path
                           d="M9 36c3.39-.97 10.11.43 13.5-2 3.39 2.43 10.11 1.03 13.5 2 0 0 1.65.54 3 2-.68.97-1.65.99-3 .5-3.39-.97-10.11.46-13.5-1-3.39 1.46-10.11.03-13.5 1-1.354.49-2.323.47-3-.5 1.354-1.94 3-2 3-2z"
                           transform="translate(90 45)"
@@ -338,36 +303,36 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="none"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
                     >
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21"
                         transform="translate(135 45)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         d="M24 18c.38 2.91-5.55 7.37-8 9-3 2-2.82 4.34-5 4-1.042-.94 1.41-3.04 0-3-1 0 .19 1.23-1 2-1 0-4.003 1-4-4 0-2 6-12 6-12s1.89-1.9 2-3.5c-.73-.994-.5-2-.5-3 1-1 3 2.5 3 2.5h2s.78-1.992 2.5-3c1 0 1 3 1 3"
                         transform="translate(135 45)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         stroke="#fff"
                         d="M9.5 25.5a.5.5 0 11-1 0 .5.5 0 111 0z"
                         transform="translate(135 45)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         stroke="#fff"
                         strokeWidth="1.5"
                         d="M14.933 15.75a.5 1.5 30 11-.866-.5.5 1.5 30 11.866.5z"
                         transform="translate(135 45)"
                       ></path>
                       <path
-                        fill={styles[playerIndex].fill}
+                        fill={color.fill}
                         stroke="none"
                         d="M24.55 10.4l-.45 1.45.5.15c3.15 1 5.65 2.49 7.9 6.75S35.75 29.06 35.25 39l-.05.5h2.25l.05-.5c.5-10.06-.88-16.85-3.25-21.34-2.37-4.49-5.79-6.64-9.19-7.16l-.51-.1z"
                         transform="translate(135 45)"
@@ -380,7 +345,7 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                     <g
                       fill="0"
                       fillRule="evenodd"
-                      stroke={styles[playerIndex].stroke}
+                      stroke={color.stroke}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="1.5"
@@ -416,7 +381,7 @@ export default function Piece({ type, styling, playerIndex, w, h, vB }){
                 <svg width={w || "200"} height={h || "200"} viewBox={vB || "230 -5 110 110"}>
                     <g>
                         <path
-                          stroke={styles[playerIndex].stroke}
+                          stroke={color.stroke}
                           strokeLinecap="round"
                           strokeWidth="1.5"
                           d="M22 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38-1.95 1.12-3.28 3.21-3.28 5.62 0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z"
