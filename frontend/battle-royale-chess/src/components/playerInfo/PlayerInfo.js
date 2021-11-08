@@ -46,7 +46,7 @@ export default function PlayerInfo({ playerName }){
 
         if(moveFrom === undefined) setCurrentMove('-')
         if(moveFrom !== undefined && moveTo === undefined) setCurrentMove(moveFrom)
-        ifmoveFrom !== undefined && moveTo !== undefined) setCurrentMove(moveFrom + ' > ' + moveTo)
+        if(moveFrom !== undefined && moveTo !== undefined) setCurrentMove(moveFrom + ' > ' + moveTo)
 
     }, [moveFrom, moveTo])
 
