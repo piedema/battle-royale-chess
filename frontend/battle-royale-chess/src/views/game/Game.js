@@ -156,7 +156,7 @@ export default function Game() {
                 <GameBoard makeMove={makeMove} />
             </div>
             <div className={styles.playerInfoContainer}>
-                {players.map(p => <PlayerInfo key={p} username={username} playerName={p} />)}
+                {players.map(p => <PlayerInfo key={p} playerName={p} />)}
             </div>
         </div>
     )
