@@ -1,75 +1,85 @@
-export default function GameBoard(){
+import { useEffect, useState } from 'react'
 
-    const colKeysSorted = Object.keys(newBoard).sort((a, b) => { return a.split(":")[1] - b.split(":")[1]})
-    const rowKeysSorted = Object.keys(newBoard).sort((a, b) => { return a.split(":")[0] - b.split(":")[0]})
+import { GameContext } from '../../contexts/GameContext.js'
 
-    const rows = []
-    const cols = []
+export default function GameBoard({ makeMove }){
 
-    const cellSize = 100
+    const { board, players, moveFrom, moveTo } = useContext(GameContext)
 
-    let colsAmount, rowsAmount, tableWidth, tableHeight
+    const [rows, setRows] = useState([])
+    const [width, setWidth] = useState(0)
+    const [height, setHeight] = useState(0)
+    const [cellSize, setCellSize] = useState(100)
+    const [pieceStyle, setPieceStyle] = useState('outlined')
 
-    if(colKeysSorted.length > 0 && rowKeysSorted.length > 0){
+    useEffect(() => {
 
-        colsAmount = colKeysSorted[colKeysSorted.length - 1].split(":")[1]
-        rowsAmount = rowKeysSorted[rowKeysSorted.length - 1].split(":")[0]
+        const colKeysSorted = Object.keys(board).sort((a, b) => a.split(":")[1] - b.split(":")[1])
+        const rowKeysSorted = Object.keys(board).sort((a, b) => a.split(":")[0] - b.split(":")[0])
 
-        tableWidth = colsAmount * cellSize
-        tableHeight = rowsAmount * cellSize
+        const rows = []
 
-        for(let i = 1; i <= rowsAmount; i++){
+        if(colKeysSorted.length > 0 && rowKeysSorted.length > 0){
 
-            const row = []
+            const colsAmount = colKeysSorted[colKeysSorted.length - 1].split(":")[1]
+            const rowsAmount = rowKeysSorted[rowKeysSorted.length - 1].split(":")[0]
 
-            for(let j = 1; j <= colsAmount; j++){
+            setWidth(`${colsAmount * cellSize} !important`)
+            setHeight(`${rowsAmount * cellSize} !important`)
 
-                const tile = newBoard[`${i}:${j}`]
+            for(let i = 1; i <= rowsAmount; i++){
 
-                if(tile === undefined){
+                const row = []
 
-                    row.push(
-                        <td key={`${i}:${j}`} className={styles.td}></td>
-                    )
+                for(let j = 1; j <= colsAmount; j++){
 
-                }
-
-                if(tile !== undefined){
-
-                    const piece = tile[2]
-                    const playerIndex = parseFloat(tile[1]) - 1
                     const key = i + ':' + j
-                    const classes = { tile:styles.tile, td:styles.td }
+                    const tile = board[key]
 
-                    if(tile[0] === 'faded') classes.faded = styles.faded
-                    if(playerIndex === players.indexOf(username) && tile[0] !== 'faded' && moveFrom === undefined && round > 0) classes.hasOwnPiece = styles.hasOwnPiece
-                    if(moveFrom === key || moveTo === key) classes.isSelected = styles.isSelected
-                    if(players[playerIndex] !== username && tile[0] !== 'faded' && moveFrom !== undefined) classes.hasOtherPiece = styles.hasOtherPiece
-                    if(i === Math.ceil(rowsAmount / 2) && j === Math.ceil(colsAmount / 2)) classes.winningTile = styles.winningTile
+                    if(tile === undefined) row.push(<td key={key}></td>)}
 
-                    row.push(
-                        <td key={key} className={Object.values(classes).join(" ")} onClick={() => { scheduleMove(key) }}>
-                            { piece !== undefined ? <Piece type={piece} styling="outlined" playerIndex={playerIndex}/> : null }
-                        </td>
-                    )
+                    if(tile !== undefined){
+
+                        const tileState = tile[0]
+                        const indexOfPlayerOnTile = parseFloat(tile[1]) - 1
+                        const pieceOnTile = tile[2]
+                        const isLastTileFading = i === Math.ceil(rowsAmount / 2) && j === Math.ceil(colsAmount / 2) ? true : false
+
+                        const classList = { tile:styles.tile, td:styles.td }
+
+                        if(tileState === 'faded') classList.faded = styles.faded
+                        if(isLastTileFading) classList.isLastTileFading = styles.isLastTileFading
+                        if(moveFrom === key || moveTo === key && tileState !== 'faded') classList.isSelected = styles.isSelected
+                        if(indexOfPlayerOnTile === players.indexOf(username) && tileState !== 'faded' && moveFrom === undefined && round > 0) classList.hoverable = styles.hoverable
+                        if(indexOfPlayerOnTile !== players.indexOf(username) && tileState !== 'faded' && moveTo === key && round > 0) classList.hoverable = styles.hoverable
+
+                        const classListJoined = Object.values(classList).join(" ")
+
+                        row.push(
+                            <td key={key} className={classListJoined} onClick={() => makeMove(key) }>
+                                { piece !== undefined ? <Piece type={pieceOnTile} pieceStyle={pieceStyle} index={indexOfPlayerOnTile}/> : null }
+                            </td>
+                        )
+
+                    }
 
                 }
+
+                rows.push(
+                    <tr key={i} className={styles.tr}>
+                        {row}
+                    </tr>
+                )
 
             }
 
-            rows.push(
-                <tr key={i} className={styles.tr}>
-                    {row}
-                </tr>
-            )
-
         }
 
-    }
+    }, [board, players, moveFrom, moveTo])
 
     return (
         <div>
-            <table className={styles.table} style={{ width:`${tableWidth} !important`, height:`${tableHeight} !important`}}>
+            <table className={styles.table} style={{ width:width, height:`${tableHeight} !important`}}>
                 <tbody>
                     {rows}
                 </tbody>

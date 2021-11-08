@@ -115,7 +115,7 @@ export default function Game() {
 
     }
 
-    function scheduleMove(tile){
+    function makeMove(tile){
 
         const boardState = board[tile][0]
         const indexOfPlayer = players.indexOf(username) + 1
@@ -153,7 +153,7 @@ export default function Game() {
                 <GameMenu />
             </div>
             <div className={styles.boardContainer} style={{ transform: `scale( ${zoomLevel} )` }}>
-                <GameBoard />
+                <GameBoard makeMove={makeMove} />
             </div>
             <div className={styles.playerInfoContainer}>
                 {players.map(p => <PlayerInfo key={p} username={username} playerName={p} />)}
