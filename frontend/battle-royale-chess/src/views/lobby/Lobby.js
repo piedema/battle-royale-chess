@@ -15,6 +15,8 @@ import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
 import { getGameIdForPlayer } from '../../services/GamesService'
 
+import { colors } from '../../assets/js/colors'
+
 import styles from './Lobby.module.css'
 
 export default function Lobby() {
@@ -79,7 +81,7 @@ export default function Lobby() {
                 const pieceIndex = Math.ceil(Math.random() * 5) - 1
                 const colorIndex = Math.ceil(Math.random() * 8) - 1
 
-                piecesWanted.push({ element:"piece", type:types[pieceIndex], style:style, color:colorIndex })
+                piecesWanted.push({ element:"piece", type:types[pieceIndex], style:style, color:colors.pieces(colorIndex) })
 
             }
 
