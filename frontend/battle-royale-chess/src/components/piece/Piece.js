@@ -1,8 +1,8 @@
-import colors from '../../assets/js/colors'
-
 import styles from './Piece.module.js'
 
 export default function Piece({ type, styling, color, w, h, vB }){
+
+    console.log(color)
 
     const pieces = {
         outlined:{

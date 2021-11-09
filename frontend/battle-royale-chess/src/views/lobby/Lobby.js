@@ -15,7 +15,7 @@ import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
 import { getGameIdForPlayer } from '../../services/GamesService'
 
-import { colors } from '../../assets/js/colors'
+import colors from '../../assets/js/colors'
 
 import styles from './Lobby.module.css'
 
@@ -196,7 +196,7 @@ export default function Lobby() {
                             shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'button'
                             ? <NavLink to={shuffledBoard[key].link} className={styles.menuBtn}>{shuffledBoard[key].text}</NavLink>
                             : shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'piece'
-                            ? <Piece type={shuffledBoard[key].type} styling={shuffledBoard[key].style} playerIndex={shuffledBoard[key].color}></Piece>
+                            ? <Piece type={shuffledBoard[key].type} styling={shuffledBoard[key].style} color={shuffledBoard[key].color}></Piece>
                             : null
                         }
                     </div>

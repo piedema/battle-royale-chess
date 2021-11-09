@@ -10,6 +10,7 @@ import { getGamedata, getGameIdForPlayer, postNewMove, cancelMove } from '../../
 import Piece from '../../components/piece/Piece'
 import GameBoard from '../../components/gameBoard/GameBoard'
 import GameMenu from '../../components/gameMenu/GameMenu'
+import PlayerInfo from '../../components/playerInfo/PlayerInfo'
 
 import styles from './Game.module.css'
 
@@ -20,7 +21,7 @@ export default function Game() {
     const { username } = useContext(UserContext)
     const { gametypes } = useContext(GametypesContext)
     const {
-        gameId, setGameId
+        gameId, setGameId,
         gamedata, setGamedata,
         scores, setScores,
         moves, setMoves,
@@ -29,12 +30,13 @@ export default function Game() {
         round, setRound,
         finished, setFinished,
         nextRoundAt, setNextRoundAt,
-        gametype, setGametype,
         zoomLevel, setZoomLevel,
         moveFrom, setMoveFrom,
         moveTo, setMoveTo,
         alert, setAlert
     } = useContext(GameContext)
+
+    const [gametype, setGametype] = useState({})
 
     let nextRoundAtInterval
 
@@ -43,7 +45,6 @@ export default function Game() {
 
         setMoveFrom(undefined)
         setMoveTo(undefined)
-        setGametype({})
         setScores([])
         setMoves({})
         setBoard({})
@@ -51,6 +52,7 @@ export default function Game() {
         setFinished(false)
         setRound(0)
         setNextRoundAt(undefined)
+        setGametype(undefined)
 
         ;(async () => {
 
@@ -77,12 +79,12 @@ export default function Game() {
 
     useEffect(() => {
 
-        if(Date.now() > nextRoundAt && gamedata.finished === false) setTimeout(loadGamedata, 100)
-        if(Date.now() < nextRoundAt && gamedata.finished === false) setTimeout(loadGamedata, (nextRoundAt - Date.now()) + 1000)
+        if(Date.now() > nextRoundAt && finished === false) setTimeout(loadGamedata, 100)
+        if(Date.now() < nextRoundAt && finished === false) setTimeout(loadGamedata, (nextRoundAt - Date.now()) + 1000)
 
     }, [nextRoundAt])
 
-    function loadGamedata(){
+    async function loadGamedata(){
 
         const gamedata = await getGamedata(gameId)
 
@@ -115,7 +117,7 @@ export default function Game() {
 
     }
 
-    function makeMove(tile){
+    async function makeMove(tile){
 
         const boardState = board[tile][0]
         const indexOfPlayer = players.indexOf(username) + 1
@@ -129,10 +131,6 @@ export default function Game() {
             console.log(result)
 
         }
-
-        const boardState = board[tile][0]
-        const indexOfPlayer = players.indexOf(username) + 1
-        const playerIndexOnTile = parseFloat(board[tile][1])
 
         if(moveFrom === undefined && boardState === "normal" && indexOfPlayer === playerIndexOnTile) setMoveFrom(tile)
 

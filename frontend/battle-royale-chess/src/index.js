@@ -8,6 +8,7 @@ import GametypesContextProvider from './contexts/GametypesContext'
 import AuthenticationContextProvider from './contexts/AuthenticationContext'
 import UserContextProvider from './contexts/UserContext'
 import LobbytypesContextProvider from './contexts/LobbyContext'
+import GameContextProvider from './contexts/GameContext'
 
 import reportWebVitals from './reportWebVitals';
 
@@ -20,7 +21,9 @@ ReactDOM.render(
                 <GamesContextProvider>
                     <GametypesContextProvider>
                         <LobbytypesContextProvider>
-                            <App />
+                            <GameContextProvider>
+                                <App />
+                            </GameContextProvider>
                         </LobbytypesContextProvider>
                     </GametypesContextProvider>
                 </GamesContextProvider>

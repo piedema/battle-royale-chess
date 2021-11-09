@@ -4,11 +4,13 @@ import { useHistory } from 'react-router-dom'
 
 import { GameContext } from '../../contexts/GameContext'
 
+import styles from './GameMenu.module.css'
+
 export default function GameMenu(){
 
     const history = useHistory()
 
-    const { round, nextRoundAt, finished } = useContext(UserContext)
+    const { round, nextRoundAt, finished } = useContext(GameContext)
 
     const [countdown, setCountdown] = useState(0)
 
@@ -22,7 +24,7 @@ export default function GameMenu(){
 
         if(round === 0) countdownMessage = `Game will start in ${timeUntilNextRound} seconds!`
         if(round > 0 && finished === false) countdownMessage = `Round ${round} will end in ${timeUntilNextRound} seconds!`
-        if(finished === true) `Game is finished. Click exit to play a new game!`
+        if(finished === true) countdownMessage = `Game is finished. Click exit to play a new game!`
 
         setCountdown(timeUntilNextRound)
 

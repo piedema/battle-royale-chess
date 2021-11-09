@@ -5,12 +5,16 @@ import { useHistory } from 'react-router-dom'
 import { UserContext } from '../../contexts/UserContext'
 import { GameContext } from '../../contexts/GameContext'
 
+import Piece from '../piece/Piece'
+
 import colors from '../../assets/js/colors'
+
+import styles from './PlayerInfo.module.css'
 
 export default function PlayerInfo({ playerName }){
 
     const { username } = useContext(UserContext)
-    const { board, players, scores, round, moves, moveFrom, moveTo } = useContext(UserContext)
+    const { board, players, scores, round, moves, moveFrom, moveTo } = useContext(GameContext)
 
     const [index, setIndex] = useState(undefined)
     const [stroke, setStroke] = useState(undefined)
@@ -26,7 +30,7 @@ export default function PlayerInfo({ playerName }){
     useEffect(() => {
 
         const index = players.indexOf(playerName)
-        const { stroke, fill } = colors.get('pieces', index)
+        const { stroke, fill } = colors.pieces(index)
         const position = getPosition(players.length, index)
         const color = colors.pieces(index)
 
@@ -100,13 +104,13 @@ export default function PlayerInfo({ playerName }){
     function getPosition(numberOfPlayers, index){
 
         switch (numberOfPlayers) {
-            case 2: return position = ['s3', 's4'][index]
-            case 3: return position = ['s0', 's1', 's2'][index]
-            case 4: return position = ['s0', 's1', 's2', 's5'][index]
-            case 5: return position = ['s0', 's1', 's3', 's2', 's5'][index]
-            case 6: return position = ['s0', 's1', 's3', 's4', 's2', 's5'][index]
-            case 7: return position = ['s0', 's1', 's3', 's4', 's2', 's6', 's5'][index]
-            case 8: return position = ['s0', 's1', 's3', 's4', 's2', 's7', 's8', 's5'][index]
+            case 2: return ['s3', 's4'][index]
+            case 3: return ['s0', 's1', 's2'][index]
+            case 4: return ['s0', 's1', 's2', 's5'][index]
+            case 5: return ['s0', 's1', 's3', 's2', 's5'][index]
+            case 6: return ['s0', 's1', 's3', 's4', 's2', 's5'][index]
+            case 7: return ['s0', 's1', 's3', 's4', 's2', 's6', 's5'][index]
+            case 8: return ['s0', 's1', 's3', 's4', 's2', 's7', 's8', 's5'][index]
 
             }
 
@@ -129,8 +133,8 @@ export default function PlayerInfo({ playerName }){
         <div className={styles[position]}>
             <div className={styles.outer}>
                 <div className={styles.inner}>
-                    <div className={styles.playerName} style={color.stroke}>
-                        {players[index]}
+                    <div className={styles.playerName} style={{ color:colors.pieces(index) }}>
+                        {username}
                     </div>
                     <div className={styles.subjectContainer}>
                         <div className={styles.subject}>
@@ -158,7 +162,7 @@ export default function PlayerInfo({ playerName }){
                     </div>
                     <div className={styles.subjectContainer}>
                         <div className={styles.value}>
-                            { allAlivePiecesOfPlayerSorted.map(p => <Piece type={p} styling={pieceStyle} color={color} />) }
+                            { piecesLeft.map(p => <Piece type={p} styling={pieceStyle} color={color} />) }
                         </div>
                     </div>
                 </div>

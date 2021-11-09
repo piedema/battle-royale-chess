@@ -1,12 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
+import { UserContext } from '../../contexts/UserContext.js'
 import { GameContext } from '../../contexts/GameContext.js'
+
+import Piece from '../../components/piece/Piece'
+
+import styles from './GameBoard.module.css'
+
+import colors from '../../assets/js/colors'
 
 export default function GameBoard({ makeMove }){
 
-    const { board, players, moveFrom, moveTo } = useContext(GameContext)
+    const { username } = useContext(UserContext)
+    const { board, players, moveFrom, moveTo, round } = useContext(GameContext)
 
-    const [rows, setRows] = useState([])
+    const [boardJSX, setBoardJSX] = useState([])
     const [width, setWidth] = useState(0)
     const [height, setHeight] = useState(0)
     const [cellSize, setCellSize] = useState(100)
@@ -36,7 +44,7 @@ export default function GameBoard({ makeMove }){
                     const key = i + ':' + j
                     const tile = board[key]
 
-                    if(tile === undefined) row.push(<td key={key}></td>)}
+                    if(tile === undefined) row.push(<td key={key}></td>)
 
                     if(tile !== undefined){
 
@@ -44,6 +52,7 @@ export default function GameBoard({ makeMove }){
                         const indexOfPlayerOnTile = parseFloat(tile[1]) - 1
                         const pieceOnTile = tile[2]
                         const isLastTileFading = i === Math.ceil(rowsAmount / 2) && j === Math.ceil(colsAmount / 2) ? true : false
+                        const color = colors.pieces[indexOfPlayerOnTile]
 
                         const classList = { tile:styles.tile, td:styles.td }
 
@@ -57,7 +66,7 @@ export default function GameBoard({ makeMove }){
 
                         row.push(
                             <td key={key} className={classListJoined} onClick={() => makeMove(key) }>
-                                { piece !== undefined ? <Piece type={pieceOnTile} pieceStyle={pieceStyle} index={indexOfPlayerOnTile}/> : null }
+                                { pieceOnTile !== undefined ? <Piece type={pieceOnTile} styling={pieceStyle} color={color}/> : null }
                             </td>
                         )
 
@@ -73,15 +82,17 @@ export default function GameBoard({ makeMove }){
 
             }
 
+            setBoardJSX(rows)
+
         }
 
-    }, [board, players, moveFrom, moveTo])
+    }, [board, players, moveFrom, moveTo, username, round])
 
     return (
         <div>
-            <table className={styles.table} style={{ width:width, height:`${tableHeight} !important`}}>
+            <table className={styles.table} style={{ width:width, height:height}}>
                 <tbody>
-                    {rows}
+                    {boardJSX}
                 </tbody>
             </table>
         </div>
