@@ -1,10 +1,13 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import Piece from '../piece/Piece'
 
 import styles from './Card.module.css'
+import colors from '../../assets/js/colors'
 
 export default function Card({ gametypeInfo, queue, username, placeInQueue, removeFromQueue }){
+
+    const [pieceColors, setPieceColors] = useState(colors.pieces(0))
 
     if(gametypeInfo === undefined || queue === undefined || username === undefined) return (<></>)
 
@@ -58,9 +61,9 @@ export default function Card({ gametypeInfo, queue, username, placeInQueue, remo
                                 : null
                             }
                             <div className={styles.decoration}>
-                                <Piece type="King" styling="outlined" playerIndex={0} w={240} h={300} vB={"3 5 20 20"} />
-                                <Piece type="Tower" styling="outlined" playerIndex={0} w={240} h={300} vB={"207 20 40 40"} />
-                                <Piece type="Pawn" styling="outlined" playerIndex={0} w={240} h={300} vB={"197 30 80 80"} />
+                                <Piece type="King" styling="outlined" color={pieceColors} w={240} h={300} vB={"3 5 20 20"} />
+                                <Piece type="Tower" styling="outlined" color={pieceColors} w={240} h={300} vB={"207 20 40 40"} />
+                                <Piece type="Pawn" styling="outlined" color={pieceColors} w={240} h={300} vB={"197 30 80 80"} />
                             </div>
                         </div>
                     </div>

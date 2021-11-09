@@ -12,10 +12,11 @@ import { GamesContext } from '../../contexts/GamesContext'
 import { GametypesContext } from '../../contexts/GametypesContext'
 import { LobbyContext } from '../../contexts/LobbyContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
+import { GameContext } from '../../contexts/GameContext'
 
 import { getGameIdForPlayer } from '../../services/GamesService'
 
-import { colors } from '../../assets/js/colors'
+import colors from '../../assets/js/colors'
 
 import styles from './Lobby.module.css'
 
@@ -28,6 +29,7 @@ export default function Lobby() {
     const { gametypes, refreshGametypes } = useContext(GametypesContext)
     const { queue, refreshQueue, placeInQueue, removeFromQueue } = useContext(LobbyContext)
     const { logout } = useContext(AuthenticationContext)
+    const { finished, resetGameContext } = useContext(GameContext)
 
     const [shuffledBoard, setShuffledBoard] = useState({})
     const [tileSize, setTileSize] = useState(100)
@@ -117,6 +119,8 @@ export default function Lobby() {
 
     useEffect(() => {
 
+        if(finished === true) resetGameContext()
+
         refreshGametypes()
         setRowsCols()
         setPerspective(window.innerWidth > 1000 ? '3d' : '2d')
@@ -196,7 +200,7 @@ export default function Lobby() {
                             shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'button'
                             ? <NavLink to={shuffledBoard[key].link} className={styles.menuBtn}>{shuffledBoard[key].text}</NavLink>
                             : shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'piece'
-                            ? <Piece type={shuffledBoard[key].type} styling={shuffledBoard[key].style} playerIndex={shuffledBoard[key].color}></Piece>
+                            ? <Piece type={shuffledBoard[key].type} styling={shuffledBoard[key].style} color={shuffledBoard[key].color}></Piece>
                             : null
                         }
                     </div>

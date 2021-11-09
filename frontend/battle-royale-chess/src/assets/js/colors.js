@@ -36,7 +36,7 @@ module.exports = (() => {
     ]
 
     return  {
-        pieces:index => { return pieces[key] }
+        pieces:index => { return pieces[index] }
     }
 
 })()

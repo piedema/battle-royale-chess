@@ -1,6 +1,13 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    width: 600px;
+}
+
 .outer {
     background: rgb(255,255,255);
-    width: fit-content;
+    width: 100%;
     border: 1px solid white;
     border-radius: 6px;
     padding: 3px;
@@ -12,13 +19,19 @@
     background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(39,57,35,0.2) 100%);
     border: 1px solid white;
     height: 100%;
-    padding: 10px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
 }
 
 .countdownContainer {
-    width: 100%;
+    flex-grow: 1;
+    margin: 10px;
+    user-select: none;
+    display: flex;
     justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .exitButton {
@@ -27,8 +40,13 @@
     background-color: white;
     border-radius: 4px;
     padding: 10px 20px;
+    margin: 10px;
+    user-select: none;
+    cursor: pointer;
+    text-align: center;
 }
 
 .exitButton:hover {
-    color: red;
+    color: white;
+    background-color: orangered;
 }

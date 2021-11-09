@@ -1,45 +1,65 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
 import { GameContext } from '../../contexts/GameContext'
 
+import styles from './GameMenu.module.css'
+
 export default function GameMenu(){
 
     const history = useHistory()
 
-    const { round, nextRoundAt, finished } = useContext(UserContext)
+    const { round, nextRoundAt, finished } = useContext(GameContext)
+    const roundRef = useRef(round)
+    const nextRoundAtRef = useRef(nextRoundAt)
+    const finishedRef = useRef(finished)
+    
+    roundRef.current = round
+    nextRoundAtRef.current = nextRoundAt
+    finishedRef.current = finished
 
-    const [countdown, setCountdown] = useState(0)
+    const [countdownMessage, setCountdownMessage] = useState('')
 
     useEffect(() => {
 
-        let countdownMessage, timeUntilNextRound
+        const countdownInterval = setInterval(() => {
 
-        timeUntilNextRound = Math.floor((nextRoundAt - Date.now()) / 1000)
+            let message
 
-        if(timeUntilNextRound < 0) timeUntilNextRound = 0
+            let timeLeft = (nextRoundAtRef.current - Date.now()) / 1000
 
-        if(round === 0) countdownMessage = `Game will start in ${timeUntilNextRound} seconds!`
-        if(round > 0 && finished === false) countdownMessage = `Round ${round} will end in ${timeUntilNextRound} seconds!`
-        if(finished === true) `Game is finished. Click exit to play a new game!`
+            if(timeLeft === 0) timeLeft = Math.abs(timeLeft)
+            if(timeLeft < 0) timeLeft = 0
 
-        setCountdown(timeUntilNextRound)
+            const timeLeftFixed = timeLeft.toFixed(1)
 
-    }, [round, nextRoundAt])
+            if(roundRef.current === 0) message = `Game will start in ${timeLeftFixed} seconds!`
+            if(roundRef.current > 0 && finishedRef.current === false) message = `Round ${roundRef.current} will end in ${timeLeftFixed} seconds!`
+            if(finishedRef.current === true) message = `Game is finished. Click exit to play a new game!`
+
+            setCountdownMessage(message)
+
+        }, 50)
+
+        return () => clearInterval(countdownInterval)
+
+    }, [])
 
     function exitGame(){
         history.push('/')
     }
 
     return (
-        <div className={styles.outer}>
-            <div className={styles.inner}>
-                <div className={styles.countdownContainer}>
-
-                </div>
-                <div className={styles.exitButton} onClick={exitGame} >
-                    Exit this game
+        <div className={styles.container}>
+            <div className={styles.outer}>
+                <div className={styles.inner}>
+                    <div className={styles.countdownContainer}>
+                        { countdownMessage }
+                    </div>
+                    <div className={styles.exitButton} onClick={exitGame} >
+                        Exit this game
+                    </div>
                 </div>
             </div>
         </div>
