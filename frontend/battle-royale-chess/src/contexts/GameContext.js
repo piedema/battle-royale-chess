@@ -15,7 +15,20 @@ export default function GameContextProvider({ children }){
     const [round, setRound] = useState(0)
     const [nextRoundAt, setNextRoundAt] = useState(undefined)
 
-    console.log('test', players)
+    function resetGameContext(){
+
+        setGameId(undefined)
+        setBoard({})
+        setPlayers([])
+        setScores([])
+        setMoves({})
+        setMoveFrom(undefined)
+        setMoveTo(undefined)
+        setFinished(false)
+        setRound(0)
+        setNextRoundAt(undefined)
+
+    }
 
     const contextData = {
         gameId, setGameId,
@@ -27,7 +40,8 @@ export default function GameContextProvider({ children }){
         moveFrom, setMoveFrom,
         moveTo, setMoveTo,
         round, setRound,
-        nextRoundAt, setNextRoundAt
+        nextRoundAt, setNextRoundAt,
+        resetGameContext
     }
 
     return (

@@ -146,10 +146,9 @@ public class Game {
         ArrayList<String> movesToStore = new ArrayList<>();
         ArrayList<String> players = this.getPlayers();
 
-        for(int i = 0; i < players.size(); i++){
-            String currentPlayer = players.get(i);
-            if(moves.containsKey(currentPlayer)) movesToStore.add(moves.get(currentPlayer));
-            if(moves.containsKey(currentPlayer)) movesToStore.add(null);
+        for (String currentPlayer : players) {
+            if (moves.containsKey(currentPlayer)) movesToStore.add(moves.get(currentPlayer));
+            if (!moves.containsKey(currentPlayer)) movesToStore.add(null);
         }
 
         this.moves.put(round, movesToStore);

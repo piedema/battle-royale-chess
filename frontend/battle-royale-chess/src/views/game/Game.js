@@ -84,6 +84,21 @@ export default function Game() {
 
     }, [nextRoundAt])
 
+    useEffect(() => {
+
+        if(moveTo !== undefined){
+
+            ;(async () => {
+
+                const result = await postNewMove(gameId, moveFrom, moveTo)
+                console.log(result)
+
+            })()
+
+        }
+
+    }, [moveTo])
+
     async function loadGamedata(){
 
         const gamedata = await getGamedata(gameId)
@@ -127,8 +142,6 @@ export default function Game() {
         if(moveFrom !== undefined && tile !== moveFrom && boardState === 'normal'){
 
             setMoveTo(tile)
-            const result = await postNewMove(gameId, moveFrom, moveTo)
-            console.log(result)
 
         }
 

@@ -22,7 +22,7 @@ export default function PlayerInfo({ playerName }){
     const [pieceStyle, setPieceStyle] = useState('outlined')
     const [score, setScore] = useState(0)
     const [currentMove, setCurrentMove] = useState('-')
-    const [lastMove, setLastMove] = useState('-')
+    const [previousMove, setPreviousMove] = useState('-')
     const [piecesLeft, setPiecesLeft] = useState([])
     const [color, setColor] = useState({})
     const [position, setPosition] = useState(undefined)
@@ -60,18 +60,25 @@ export default function PlayerInfo({ playerName }){
 
     useEffect(() => {
 
-        const movesThisRound = moves[round] || []
+        const highestRound = Object.keys(moves).sort((a, b) => b - a)[0]
+
+        console.log(moves, highestRound, index, players)
+
+        if(moves[highestRound] === undefined) return
+        if(index === undefined) return
+
+        const movesThisRound = moves[highestRound]
         const move = movesThisRound[index]
 
         if(move !== undefined && move !== null){
-            setLastMove(move.replace('>', ' > '))
+            setPreviousMove(move.replace('>', ' > '))
         }
 
         if(move === undefined || move === null){
-            setLastMove('-')
+            setPreviousMove('-')
         }
 
-    }, [round, moves])
+    }, [moves, index])
 
     useEffect(() => {
 
@@ -79,9 +86,9 @@ export default function PlayerInfo({ playerName }){
 
         for(let tile in board){
 
-            const tileState = tile[0]
-            const playerIndex = tile[1] - 1
-            const piece = tile[2]
+            const tileState = board[tile][0]
+            const playerIndex = board[tile][1] - 1
+            const piece = board[tile][2]
 
             if(
                 tileState === 'normal' &&
@@ -95,11 +102,11 @@ export default function PlayerInfo({ playerName }){
 
         }
 
-        const allAlivePiecesOfPlayerSorted = allAlivePiecesOfPlayer.sort((a, b) => getPieceWorth(a) - getPieceWorth(b))
+        const allAlivePiecesOfPlayerSorted = allAlivePiecesOfPlayer.sort((a, b) => getPieceWorth(b) - getPieceWorth(a))
 
         setPiecesLeft(allAlivePiecesOfPlayerSorted)
 
-    }, [board])
+    }, [board, index])
 
     function getPosition(numberOfPlayers, index){
 
@@ -131,38 +138,42 @@ export default function PlayerInfo({ playerName }){
 
     return (
         <div className={styles[position]}>
-            <div className={styles.outer}>
+            <div className={styles.outer} style={{ background:fill }}>
                 <div className={styles.inner}>
-                    <div className={styles.playerName} style={{ color:colors.pieces(index) }}>
-                        {username}
+                    <div className={styles.playerName} style={{ color:stroke }}>
+                        {playerName}
                     </div>
                     <div className={styles.subjectContainer}>
-                        <div className={styles.subject}>
+                        <div className={styles.subject} style={{ color:stroke }}>
                             Score
                         </div>
                         <div className={styles.value}>
                             {score}
                         </div>
                     </div>
+                    {
+                        playerName === username
+                        ? (<div className={styles.subjectContainer}>
+                                <div className={styles.subject} style={{ color:stroke }}>
+                                    Current move
+                                </div>
+                                <div className={styles.value}>
+                                    {currentMove}
+                                </div>
+                            </div>)
+                        : null
+                    }
                     <div className={styles.subjectContainer}>
-                        <div className={styles.subject}>
-                            Current move
+                        <div className={styles.subject} style={{ color:stroke }}>
+                            Previous move
                         </div>
                         <div className={styles.value}>
-                            {currentMove}
+                            {previousMove}
                         </div>
                     </div>
-                    <div className={styles.subjectContainer}>
-                        <div className={styles.subject}>
-                            Last move
-                        </div>
-                        <div className={styles.value}>
-                            {lastMove}
-                        </div>
-                    </div>
-                    <div className={styles.subjectContainer}>
-                        <div className={styles.value}>
-                            { piecesLeft.map(p => <Piece type={p} styling={pieceStyle} color={color} />) }
+                    <div className={styles.subjectContainer} style={{ display:"flex", justifyContent:"center"}}>
+                        <div className={styles.piecesContainer}>
+                            { piecesLeft.map((p, i) => <div><Piece key={p+i} type={p} styling={pieceStyle} color={color} w={50} h={50} /></div>) }
                         </div>
                     </div>
                 </div>

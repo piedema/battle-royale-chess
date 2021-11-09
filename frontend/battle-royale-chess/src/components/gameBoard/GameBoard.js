@@ -52,7 +52,7 @@ export default function GameBoard({ makeMove }){
                         const indexOfPlayerOnTile = parseFloat(tile[1]) - 1
                         const pieceOnTile = tile[2]
                         const isLastTileFading = i === Math.ceil(rowsAmount / 2) && j === Math.ceil(colsAmount / 2) ? true : false
-                        const color = colors.pieces[indexOfPlayerOnTile]
+                        const color = colors.pieces(indexOfPlayerOnTile)
 
                         const classList = { tile:styles.tile, td:styles.td }
 
@@ -60,7 +60,7 @@ export default function GameBoard({ makeMove }){
                         if(isLastTileFading) classList.isLastTileFading = styles.isLastTileFading
                         if(moveFrom === key || moveTo === key && tileState !== 'faded') classList.isSelected = styles.isSelected
                         if(indexOfPlayerOnTile === players.indexOf(username) && tileState !== 'faded' && moveFrom === undefined && round > 0) classList.hoverable = styles.hoverable
-                        if(indexOfPlayerOnTile !== players.indexOf(username) && tileState !== 'faded' && moveTo === key && round > 0) classList.hoverable = styles.hoverable
+                        if(indexOfPlayerOnTile !== players.indexOf(username) && tileState !== 'faded' && round > 0) classList.hoverable = styles.hoverable
 
                         const classListJoined = Object.values(classList).join(" ")
 

@@ -12,6 +12,7 @@ import { GamesContext } from '../../contexts/GamesContext'
 import { GametypesContext } from '../../contexts/GametypesContext'
 import { LobbyContext } from '../../contexts/LobbyContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
+import { GameContext } from '../../contexts/GameContext'
 
 import { getGameIdForPlayer } from '../../services/GamesService'
 
@@ -28,6 +29,7 @@ export default function Lobby() {
     const { gametypes, refreshGametypes } = useContext(GametypesContext)
     const { queue, refreshQueue, placeInQueue, removeFromQueue } = useContext(LobbyContext)
     const { logout } = useContext(AuthenticationContext)
+    const { finished, resetGameContext } = useContext(GameContext)
 
     const [shuffledBoard, setShuffledBoard] = useState({})
     const [tileSize, setTileSize] = useState(100)
@@ -116,6 +118,8 @@ export default function Lobby() {
     }, [rows, cols])
 
     useEffect(() => {
+
+        if(finished === true) resetGameContext()
 
         refreshGametypes()
         setRowsCols()
