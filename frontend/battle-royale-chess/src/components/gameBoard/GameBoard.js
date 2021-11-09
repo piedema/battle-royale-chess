@@ -12,7 +12,7 @@ import colors from '../../assets/js/colors'
 export default function GameBoard({ makeMove }){
 
     const { username } = useContext(UserContext)
-    const { board, players, moveFrom, moveTo, round } = useContext(GameContext)
+    const { board, players, moveFrom, moveTo, round, finished } = useContext(GameContext)
 
     const [boardJSX, setBoardJSX] = useState([])
     const [width, setWidth] = useState(0)
@@ -58,9 +58,9 @@ export default function GameBoard({ makeMove }){
 
                         if(tileState === 'faded') classList.faded = styles.faded
                         if(isLastTileFading) classList.isLastTileFading = styles.isLastTileFading
-                        if(moveFrom === key || moveTo === key && tileState !== 'faded') classList.isSelected = styles.isSelected
-                        if(indexOfPlayerOnTile === players.indexOf(username) && tileState !== 'faded' && moveFrom === undefined && round > 0) classList.hoverable = styles.hoverable
-                        if(indexOfPlayerOnTile !== players.indexOf(username) && tileState !== 'faded' && round > 0) classList.hoverable = styles.hoverable
+                        if(moveFrom === key || moveTo === key && tileState !== 'faded' && finished === false) classList.isSelected = styles.isSelected
+                        if(indexOfPlayerOnTile === players.indexOf(username) && tileState !== 'faded' && moveFrom === undefined && round > 0 && finished === false) classList.hoverable = styles.hoverable
+                        if(indexOfPlayerOnTile !== players.indexOf(username) && tileState !== 'faded' && round > 0 && finished === false) classList.hoverable = styles.hoverable
 
                         const classListJoined = Object.values(classList).join(" ")
 
@@ -86,7 +86,7 @@ export default function GameBoard({ makeMove }){
 
         }
 
-    }, [board, players, moveFrom, moveTo, username, round])
+    }, [board, players, moveFrom, moveTo, username, round, finished])
 
     return (
         <div>
