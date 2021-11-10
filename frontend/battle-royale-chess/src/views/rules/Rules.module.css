@@ -1,0 +1,137 @@
+.container {
+
+}
+
+.menuOuter {
+    margin-top: 20px;
+    background: #f4f1e6;
+    border-radius: 10px;
+    padding: 3px;
+    border: 1px solid #E8D6C0;
+    box-shadow: 12px 12px 20px -14px;
+}
+
+.menuInner {
+    background: linear-gradient(to bottom, #f4f1e6 0%,#eae0d3 100%);
+    padding: 10px 10px 0px 10px;
+    border-radius: 10px;
+    border: 1px solid #E5CEB3;
+}
+
+.pageTitle {
+    text-align: center;
+    font-size: 40px;
+    font-style: bold;
+    color: #7F592B;
+    box-shadow: 0px 20px 30px -20px #7F592B;
+    user-select: none;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.categoryButton {
+    text-decoration: inherit;
+    color: white;
+    background-color: #9E9380;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 10px;
+    user-select: none;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    width: 160px;
+    transition: background .3s;
+}
+
+.categoryButton:hover {
+    color: white;
+    background-color: #7F592B;
+    transition: background .3s;
+}
+
+.gameplay {
+    width: 600px;
+    margin: 30px auto;
+}
+
+.moves {
+    width: 600px;
+    margin: 30px auto;
+}
+
+.mainMoves {
+    margin-bottom: 50px;
+}
+
+.pieces {
+    display: flex;
+    justify-content: center;
+}
+
+.pieces div {
+    cursor: pointer;
+}
+
+.textUnderneath {
+    width: 100%;
+    background: #f4f1e6;
+    border-radius: 10px;
+    padding: 3px;
+    box-sizing: border-box;
+    border: 1px solid #E8D6C0;
+    box-shadow: 12px 12px 20px -14px;
+}
+
+.ruleContainer {
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.piece {
+    display: flex;
+    align-items: center;
+}
+
+.textfieldOuter {
+    display: inline-block;
+    background: #f4f1e6;
+    border-radius: 10px;
+    padding: 3px;
+    width: 100%;
+    border: 1px solid #E8D6C0;
+    box-shadow: 12px 12px 20px -14px;
+}
+
+.textfieldInner {
+    background: linear-gradient(to bottom, #f4f1e6 0%,#eae0d3 100%);
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #E5CEB3;
+    user-select: none;
+}
+
+.title {
+    font-size: 30px;
+    font-style: bold;
+    color: #E2C4A1;
+    box-shadow: 2px 8px 13px -10px #E2C4A1;
+    margin-bottom: 20px;
+    text-shadow: -1px 0 rgba(127, 89, 43, 0.6), 0 1px rgba(127, 89, 43, 0.6), 1px 0 rgba(127, 89, 43, 0.6), 0 -1px rgba(127, 89, 43, 0.6);
+    user-select: none;
+}
+
+.marginBottomFix {
+    min-height: 20px;
+    display: block;
+}
+
+li::marker {
+    color: #7F592B;
+    content: '♔';
+}

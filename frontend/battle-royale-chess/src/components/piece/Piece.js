@@ -1,11 +1,11 @@
-import styles from './Piece.module.js'
+import styles from './Piece.module.css'
 
 export default function Piece({ type, styling, color, w, h, vB }){
 
     const pieces = {
         outlined:{
             King:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "-2 -2 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "-6 -2 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -30,7 +30,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Queen:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "42 -4 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "38 -4 110 110"}>
                     <g
                       fill={color.fill}
                       fillRule="evenodd"
@@ -62,7 +62,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Bishop:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "88 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "84 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -94,7 +94,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Knight:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "133 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "129 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -128,7 +128,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Tower:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "178 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "174 -5 110 110"}>
                     <g
                       fill={color.fill}
                       fillRule="evenodd"
@@ -160,7 +160,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Pawn:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "222 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "218 -5 110 110"}>
                     <g>
                       <path
                         fill={color.fill}
@@ -177,7 +177,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
         },
         filled:{
             King:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "-2 -2 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "-6 -2 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -222,7 +222,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Queen:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "42 -4 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "38 -4 110 110"}>
                     <g
                       fill="0"
                       fillRule="evenodd"
@@ -264,7 +264,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Bishop:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "88 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "84 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -297,7 +297,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Knight:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "178 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "174 -5 110 110"}>
                     <g
                       fill="none"
                       fillRule="evenodd"
@@ -339,7 +339,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Tower:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "178 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "174 -5 110 110"}>
                     <g
                       fill="0"
                       fillRule="evenodd"
@@ -376,7 +376,7 @@ export default function Piece({ type, styling, color, w, h, vB }){
                 </svg>
             ),
             Pawn:(
-                <svg width={w || "200"} height={h || "200"} viewBox={vB || "230 -5 110 110"}>
+                <svg width={w || "200"} height={h || "200"} viewBox={vB || "226 -5 110 110"}>
                     <g>
                         <path
                           stroke={color.stroke}
