@@ -25,7 +25,7 @@ export default function Lobby() {
     const history = useHistory()
 
     const { username, role } = useContext(UserContext)
-    const { games, refreshGames, queuedForGame, setQueuedForGame, getGameIdForPlayer, setGameId } = useContext(GamesContext)
+    const { games, loadGames, queuedForGame, setQueuedForGame, getGameIdForPlayer, setGameId } = useContext(GamesContext)
     const { gametypes, refreshGametypes } = useContext(GametypesContext)
     const { queue, refreshQueue, placeInQueue, removeFromQueue } = useContext(LobbyContext)
     const { logout } = useContext(AuthenticationContext)
@@ -47,8 +47,8 @@ export default function Lobby() {
                 { text:"Profile", link:"/profile", role:"USER" },
                 { text:"Users", link:"/users", role:"ADMIN" },
                 { text:"Rules", link:"/rules", role:"SPECTATOR" },
-                { text:"Shop", link:"/shop", role:"USER" },
-                { text:"About", link:"/about", role:"SPECTATOR" },
+                // { text:"Shop", link:"/shop", role:"USER" },
+                // { text:"About", link:"/about", role:"SPECTATOR" },
             ]
 
             const buttonsFilteredByRole = buttons.filter(b => {
@@ -129,7 +129,7 @@ export default function Lobby() {
 
         const refreshDataInterval = setInterval(() => {
 
-            refreshGames()
+            loadGames()
 
             if(role !== "SPECTATOR"){
 
