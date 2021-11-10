@@ -8,7 +8,8 @@
     background-position: center; */
     background: rgb(46,117,58);
     background: linear-gradient(72deg, rgba(46,117,58,1) 0%, rgba(39,57,35,1) 100%);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .container {
