@@ -22,15 +22,17 @@ export default function Menu({ title, buttons }){
                     </div>
                     <div className={styles.buttons}>
                         {
-                            buttons.map(b => {
+                            Array.isArray(buttons)
+                            ?   buttons.map(b => {
 
-                                return (
-                                    <div className={styles.categoryButton} onClick={b.onClick} >
-                                        {b.text}
-                                    </div>
-                                )
+                                    return (
+                                        <div className={styles.categoryButton} onClick={b.onClick} >
+                                            {b.text}
+                                        </div>
+                                    )
 
-                            })
+                                })
+                            : null
                         }
                         <div className={styles.categoryButton} onClick={() => history.push('/')} >
                             Return to Lobby

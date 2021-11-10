@@ -1,16 +1,8 @@
 .container {
-    max-width: 1000px;
     width: 100%;
-    min-width: 700px;
-    display: flex;
-    flex-flow: column;
-    height: 100%;
 }
 
 .highscoresList {
-    flex: 1 1 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-y: auto;
+    display: block;
+    margin: 10px;
 }

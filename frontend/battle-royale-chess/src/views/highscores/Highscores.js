@@ -12,9 +12,6 @@ export default function Highscores() {
 
     const [players, setPlayers] = useState([])
 
-    const basicContainerOuterStyle = { width:"100%", height:"60px", userSelect:"none", boxSizing:"border-box" }
-    const basicContainerInnerStyle = { fontSize:"20px", display:"flex", justifyContent:"center", alignItems:"center", boxSizing:"border-box" }
-
     useEffect(() => {
 
         (async () => {
@@ -31,18 +28,22 @@ export default function Highscores() {
           {
             Header: 'Players',
             columns: [
-              {
-                Header: 'Player name',
-                accessor: 'username',
-              },
-              {
-                Header: 'Score',
-                accessor: 'score',
-              },
-              {
-                Header: 'Games played',
-                accessor: 'gamesPlayed',
-              },
+                {
+                  Header: 'Rank',
+                  accessor: 'rank',
+                },
+                {
+                    Header: 'Name',
+                    accessor: 'username',
+                },
+                {
+                    Header: 'Score',
+                    accessor: 'score',
+                },
+                {
+                    Header: 'Games played',
+                    accessor: 'gamesPlayed',
+                },
             ],
           }
         ],
@@ -51,11 +52,11 @@ export default function Highscores() {
 
     return (
         <div className={styles.container}>
-            <Menu />
+            <Menu
+                title={'Highscores in Battle Royale Chess'}
+            />
             <div className={styles.highscoresList}>
-                <BasicContainer outerStyle={Object.assign(basicContainerOuterStyle, { height:"fit-content" })} innerStyle={basicContainerInnerStyle}>
-                    <BasicTable columns={columns} data={players} />
-                </BasicContainer>
+                <BasicTable columns={columns} data={players} />
             </div>
         </div>
     )
