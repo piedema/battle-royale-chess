@@ -14,15 +14,19 @@ export default function GamesContextProvider({ children }){
         games:games,
         queuedForGame:queuedForGame,
         setQueuedForGame:setQueuedForGame,
-        refreshGames:refreshGames,
+        loadGames:loadGames,
         getGameIdForPlayer:getGameIdForPlayer,
         setGameId:setGameId,
         getGamedata:getGamedata
     }
 
-    async function refreshGames(){
+    async function loadGames(type = 'finished'){
         const response = await getGames()
-        if(Array.isArray(response)) setGames(response)
+        if(Array.isArray(response)){
+            setGames(
+                response.filter(g => type === 'finished' && g.finished === true || type === 'active' && g.finished === false)
+            )
+        }
     }
 
     return (

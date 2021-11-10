@@ -9,6 +9,7 @@ import AuthenticationContextProvider from './contexts/AuthenticationContext'
 import UserContextProvider from './contexts/UserContext'
 import LobbytypesContextProvider from './contexts/LobbyContext'
 import GameContextProvider from './contexts/GameContext'
+import SettingsContextProvider from './contexts/SettingsContext'
 
 import reportWebVitals from './reportWebVitals';
 
@@ -18,15 +19,17 @@ ReactDOM.render(
     <React.StrictMode>
         <UserContextProvider>
             <AuthenticationContextProvider>
-                <GamesContextProvider>
-                    <GametypesContextProvider>
-                        <LobbytypesContextProvider>
-                            <GameContextProvider>
-                                <App />
-                            </GameContextProvider>
-                        </LobbytypesContextProvider>
-                    </GametypesContextProvider>
-                </GamesContextProvider>
+                <SettingsContextProvider>
+                    <GamesContextProvider>
+                        <GametypesContextProvider>
+                            <LobbytypesContextProvider>
+                                <GameContextProvider>
+                                    <App />
+                                </GameContextProvider>
+                            </LobbytypesContextProvider>
+                        </GametypesContextProvider>
+                    </GamesContextProvider>
+                </SettingsContextProvider>
             </AuthenticationContextProvider>
         </UserContextProvider>
     </React.StrictMode>,
