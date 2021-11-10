@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import Piece from '../../components/piece/Piece'
+import Menu from '../../components/menu/Menu'
 
 import colors from '../../assets/js/colors'
 
@@ -17,24 +18,19 @@ export default function Rules() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.menuOuter}>
-                <div className={styles.menuInner}>
-                    <div className={styles.pageTitle}>
-                        Rules of Battle Royale Chess
-                    </div>
-                    <div className={styles.buttons}>
-                        <div className={styles.categoryButton} onClick={() => setCategory('gameplay')} >
-                            Gameplay
-                        </div>
-                        <div className={styles.categoryButton} onClick={() => setCategory('pieces')} >
-                            Pieces
-                        </div>
-                        <div className={styles.categoryButton} onClick={() => history.push('/')} >
-                            Back to lobby
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Menu
+                title={'Games played on Battle Royale Chess'}
+                buttons={[
+                    {
+                        text:'Gameplay',
+                        onClick:() => setCategory('gameplay')
+                    },
+                    {
+                        text:'Pieces',
+                        onClick:() => setCategory('pieces')
+                    },
+                ]}
+            />
             {
                 category === 'gameplay'
                 ? ( <div className={styles.gameplay}>

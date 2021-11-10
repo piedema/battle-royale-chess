@@ -1,44 +1,61 @@
-.menu {
+.container {
     width: 100%;
-    display: block;
-    box-sizing: border-box;
-    padding: 10px;
-    flex: 0 1 auto;
+    display: flex;
+    justify-content: center;
 }
 
-
-.outerContainer {
-    display: inline-block;
+.menuOuter {
+    max-width: 800px;
+    width: 800px;
     background: #f4f1e6;
     border-radius: 10px;
     padding: 3px;
-    width: 50%;
     border: 1px solid #E8D6C0;
     box-shadow: 12px 12px 20px -14px;
-    box-sizing: border-box;
     margin: 10px;
+    margin-top: 20px;
+    box-sizing: border-box;
 }
 
-.innerContainer {
+.menuInner {
     background: linear-gradient(to bottom, #f4f1e6 0%,#eae0d3 100%);
-    padding: 10px;
+    padding: 10px 10px 0px 10px;
     border-radius: 10px;
     border: 1px solid #E5CEB3;
+}
+
+.pageTitle {
+    text-align: center;
+    font-size: 40px;
+    font-style: bold;
+    color: #7F592B;
+    box-shadow: 0px 20px 30px -20px #7F592B;
     user-select: none;
+}
+
+.buttons {
     display: flex;
     justify-content: center;
-    color: #605C58;
+    margin-top: 10px;
 }
 
-.outerContainer:hover {
+.categoryButton {
+    text-decoration: inherit;
+    color: white;
+    background-color: #9E9380;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 10px;
+    user-select: none;
     cursor: pointer;
-    background: linear-gradient(to bottom, #f4f1e6 0%,#D6BCA0 100%);
+    text-align: center;
+    display: inline-block;
+    width: 160px;
+    transition: background .3s;
 }
 
-.outerContainer:hover .innerContainer {
-    cursor: pointer;
-    border: 0px;
-    margin: 1px;
-    color: black;
-    background: linear-gradient(to bottom, #f4f1e6 0%,#D6BCA0 100%);
+.categoryButton:hover {
+    color: white;
+    background-color: #7F592B;
+    transition: background .3s;
 }
