@@ -42,10 +42,12 @@ export default function Login() {
             <div className={styles.title}>Battle Royale Chess</div>
             <form onSubmit={handleSubmit(handleLogin)} id="login" className={styles.formContainer}>
                 <BasicContainer>
+                    Login
+                    <br />
                     <input
                         name="loginUsername"
                         type="text"
-                        placeholder="username"
+                        placeholder="player name"
                         className={styles.input}
                         value={loginUsernameValue}
                         onChange={e => setLoginUsernameValue(e.target.value)}
@@ -63,13 +65,14 @@ export default function Login() {
                     <button className={styles.loginSubmitBtn} type="submit">Login</button><br />
                 </BasicContainer>
             </form>
-            <br />
             <form onSubmit={handleSubmit(handleRegister)} id="register" className={styles.formContainer}>
                 <BasicContainer>
+                    Register as new player
+                    <br />
                     <input
                         name="registerUsername"
                         type="text"
-                        placeholder="username"
+                        placeholder="player name"
                         className={styles.input}
                         value={registerUsernameValue}
                         onChange={e => setRegisterUsernameValue(e.target.value)}
@@ -105,9 +108,10 @@ export default function Login() {
                     <button className={styles.registerSubmitBtn} type="submit">Register</button><br />
                 </BasicContainer>
             </form>
-            <br />
             <div id="spectator" className={styles.formContainer}>
                 <BasicContainer>
+                    Continue as spectator
+                    <br />
                     <button className={styles.spectatorBtn} type="button" onClick={continueAsSpectator}>Continue as Spectator</button><br />
                 </BasicContainer>
             </div>

@@ -19,7 +19,7 @@ export default function Rules() {
     return (
         <div className={styles.container}>
             <Menu
-                title={'Games played on Battle Royale Chess'}
+                title={'Rules of Battle Royale Chess'}
                 buttons={[
                     {
                         text:'Gameplay',

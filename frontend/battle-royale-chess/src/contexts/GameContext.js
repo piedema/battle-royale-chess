@@ -14,6 +14,7 @@ export default function GameContextProvider({ children }){
     const [finished, setFinished] = useState(false)
     const [round, setRound] = useState(0)
     const [nextRoundAt, setNextRoundAt] = useState(undefined)
+    const [zoomLevel, setZoomLevel] = useState(1)
 
     function resetGameContext(){
 
@@ -41,7 +42,8 @@ export default function GameContextProvider({ children }){
         moveTo, setMoveTo,
         round, setRound,
         nextRoundAt, setNextRoundAt,
-        resetGameContext
+        resetGameContext,
+        zoomLevel, setZoomLevel
     }
 
     return (
