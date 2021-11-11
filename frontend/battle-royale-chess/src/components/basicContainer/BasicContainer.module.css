@@ -1,17 +1,20 @@
 .outerContainer {
-    background: rgb(255,255,255);
-    width: fit-content;
-    border: 1px solid white;
-    border-radius: 6px;
+    margin-top: 20px;
+    background: #f4f1e6;
+    border-radius: 10px;
     padding: 3px;
+    border: 1px solid #E8D6C0;
+    box-shadow: 12px 12px 20px -14px;
 }
 
 .innerContainer {
-    border-radius: 6px;
-    background: rgb(240,240,240);
-    background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(39,57,35,0.2) 100%);
-    border: 1px solid white;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
+    background: linear-gradient(to bottom, #f4f1e6 0%,#eae0d3 100%);
+    padding: 10px 10px 0px 10px;
+    border-radius: 10px;
+    border: 1px solid #E5CEB3;
+}
+
+.marginBottomFix {
+    min-height: 20px;
+    display: block;
 }

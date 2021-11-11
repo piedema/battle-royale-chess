@@ -91,6 +91,7 @@ public class UserService {
 
         String username = newUser.getUsername();
         String email = newUser.getEmail();
+        String password = newUser.getPassword();
 
         Optional<User> userOptional = userRepository.findById(username);
         Optional<User> userWithThisEmailOptional = userRepository.findByEmail(email);
@@ -98,13 +99,12 @@ public class UserService {
         if (userOptional.isEmpty()) throw new UserNotFoundException(username);
         else if(userWithThisEmailOptional.isPresent()){
             String otherUserUsername = userWithThisEmailOptional.get().getUsername();
-            if(otherUserUsername != username) throw new EmailNotAvailableException(email);
+            if(otherUserUsername.equals(username)) throw new EmailNotAvailableException(email);
         }
         else {
             User user = userOptional.get();
-            user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            user.setEmail(newUser.getEmail());
-            user.setEnabled(newUser.isEnabled());
+            if(!password.isEmpty()) user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            if(!email.isEmpty()) user.setEmail(newUser.getEmail());
             userRepository.save(user);
         }
     }

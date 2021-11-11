@@ -65,6 +65,28 @@ export async function getAllUserdata(){
 
 }
 
+export async function updateUser(updatedUser){
+
+    const options = {
+        url:'/users',
+        method:'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials:true,
+        data:updatedUser
+    }
+
+    return apiCaller(
+        options,
+        error => {
+            handleError(error)
+            return []
+        }
+    )
+
+}
+
 export async function doRegister(username, password, email){
 
     const options = {
