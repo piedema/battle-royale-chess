@@ -44,7 +44,7 @@ export default function Lobby() {
             const buttons = [
                 { text:"Games", link:"/games", role:"SPECTATOR" },
                 { text:"High scores", link:"/highscores", role:"SPECTATOR" },
-                { text:"Profile", link:"/profile", role:"USER" },
+                { text:"Settings", link:"/settings", role:"USER" },
                 { text:"Users", link:"/users", role:"ADMIN" },
                 { text:"Rules", link:"/rules", role:"SPECTATOR" },
                 // { text:"Shop", link:"/shop", role:"USER" },

@@ -18,6 +18,7 @@ export default function AuthenticationContextProvider({ children }){
         authState:authState,
         authenticate:authenticateWithCredentials,
         authenticateAsSpectator:authenticateAsSpectator,
+        loadUserdata:loadUserdata,
         logout:logout
     }
 
