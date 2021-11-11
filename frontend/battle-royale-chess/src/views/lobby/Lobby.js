@@ -1,5 +1,7 @@
-import { useEffect, useContext, useState } from 'react'
+import { useEffect, useContext, useState, useMemo } from 'react'
 import { useHistory, NavLink } from 'react-router-dom'
+
+import { moment } from 'moment'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
@@ -36,6 +38,43 @@ export default function Lobby() {
     const [rows, setRows] = useState(4)
     const [cols, setCols] = useState(8)
     const [perspective, setPerspective] = useState('2d')
+
+    const dateFormat = localStorage.getItem('dateTime')
+
+    const columns = useMemo(
+        () => [
+            {
+                Header: 'Games',
+                columns: [
+                    {
+                        Header: 'Game id',
+                        accessor: 'gameId',
+                    },
+                    {
+                        Header: 'Gametype',
+                        accessor: 'gametype',
+                    },
+                    {
+                        Header: 'Ending round',
+                        accessor: 'round',
+                    },
+                    {
+                        Header: 'Game finished',
+                        accessor: data => data.finished === true ? 'Yes' : 'No',
+                    },
+                    {
+                        Header:'Players & scores',
+                        accessor: data => data.players.map((p, i) => { return p + ' ' + data.scores[i] }).join(', ')
+                    },
+                    {
+                        Header: 'Played at',
+                        accessor: data => moment(data.gameStartedAt).format(dateFormat),
+                    },
+                ],
+            }
+        ],
+        []
+    )
 
     function shuffleBoard(shuffleEvenWhenShuffledAlready){
 
@@ -121,7 +160,7 @@ export default function Lobby() {
 
         if(finished === true) resetGameContext()
 
-        refreshGametypes()
+        if(role !== 'SPECTATOR') refreshGametypes()
         setRowsCols()
         setPerspective(window.innerWidth > 1000 ? '3d' : '2d')
 
@@ -258,8 +297,15 @@ export default function Lobby() {
                                     })
                                 }
                         </div>
-                        : ""
-                    }
+                    : ""
+                }
+                {
+                    role === 'SPECTATOR' && (
+                        <div className={styles.gamesList}>
+                            <BasicTable columns={columns} data={games} />
+                        </div>
+                    )
+                }
             </div>
         </div>
     )
