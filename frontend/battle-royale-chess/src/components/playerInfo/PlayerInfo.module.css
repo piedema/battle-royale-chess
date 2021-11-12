@@ -6,6 +6,7 @@
     width: fit-content;
     max-width: 190px;
     min-width: 190px;
+    user-select: none;
 }
 
 .inner {
@@ -16,12 +17,16 @@
     height: 100%;
     box-sizing: border-box;
     padding: 3px;
+    overflow: hidden;
 }
 
 .playerName {
     width: 100%;
     padding: 15px;
     box-sizing: border-box;
+    text-shadow:0px 0px 30px #fff;
+    font-size: 22px;
+    word-wrap: break-word;
 }
 
 .subjectContainer {

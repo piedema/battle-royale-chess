@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { GametypesContext } from '../../contexts/GametypesContext'
@@ -7,7 +7,6 @@ import { GameContext } from '../../contexts/GameContext'
 
 import { getGamedata, getGameIdForPlayer, postNewMove, cancelMove } from '../../services/GamesService'
 
-import Piece from '../../components/piece/Piece'
 import GameBoard from '../../components/gameBoard/GameBoard'
 import GameMenu from '../../components/gameMenu/GameMenu'
 import PlayerInfo from '../../components/playerInfo/PlayerInfo'
@@ -22,37 +21,26 @@ export default function Game() {
     const { gametypes } = useContext(GametypesContext)
     const {
         gameId, setGameId,
-        gamedata, setGamedata,
-        scores, setScores,
-        moves, setMoves,
+        setScores,
+        setMoves,
         board, setBoard,
         players, setPlayers,
-        round, setRound,
+        setRound,
         finished, setFinished,
         nextRoundAt, setNextRoundAt,
         zoomLevel, setZoomLevel,
         moveFrom, setMoveFrom,
         moveTo, setMoveTo,
-        alert, setAlert
+        gametype, setGametype,
+        gameStartedAt, setGameStartedAt,
+        gameEndedAt, setGameEndedAt,
+        resetGameContext
     } = useContext(GameContext)
-
-    const [gametype, setGametype] = useState({})
-
-    let nextRoundAtInterval
 
     // get gameId
     useEffect(() => {
 
-        setMoveFrom(undefined)
-        setMoveTo(undefined)
-        setScores([])
-        setMoves({})
-        setBoard({})
-        setPlayers([])
-        setFinished(false)
-        setRound(0)
-        setNextRoundAt(undefined)
-        setGametype(undefined)
+        resetGameContext()
 
         ;(async () => {
 
@@ -115,6 +103,8 @@ export default function Game() {
             setFinished(gamedata.finished)
             setRound(gamedata.round)
             setNextRoundAt(gamedata.nextRoundAt)
+            setGameStartedAt(gamedata.gameStartedAt)
+            setGameEndedAt(gamedata.gameEndedAt)
 
         }
 
@@ -126,7 +116,7 @@ export default function Game() {
 
         let scale = zoomLevel
         scale += event.deltaY * -0.001
-        scale = Math.min(Math.max(.2, scale), 1.8)
+        scale = Math.min(Math.max(.2, scale), 5)
 
         setZoomLevel(scale)
 
@@ -159,7 +149,7 @@ export default function Game() {
     }
 
     return (
-        <div className="game" onWheel={(event) => { zoomGame(event) }}>
+        <div className={styles.container} onWheel={(event) => { zoomGame(event) }}>
             <div className={styles.gameMenuContainer}>
                 <GameMenu />
             </div>

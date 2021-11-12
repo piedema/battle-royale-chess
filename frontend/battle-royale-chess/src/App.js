@@ -19,36 +19,32 @@ export default function App() {
 
     return (
         <div className={styles.app}>
-            <div className={styles.container}>
-
-                {
-                    authState === "success"
-                    ?   <Router>
-                            <Switch>
-                                <Route exact path="/">
-                                    <Lobby />
-                                </Route>
-                                <Route path="/games">
-                                    <Games />
-                                </Route>
-                                <Route path="/highscores">
-                                    <Highscores />
-                                </Route>
-                                <Route path="/settings">
-                                    <Settings />
-                                </Route>
-                                <Route path="/rules">
-                                    <Rules />
-                                </Route>
-                                <Route path="/game">
-                                    <Game />
-                                </Route>
-                            </Switch>
-                        </Router>
-                    : <Login />
-                }
-
-            </div>
+            {
+                authState === "success"
+                ?   <Router>
+                        <Switch>
+                            <Route exact path="/">
+                                <Lobby />
+                            </Route>
+                            <Route path="/games">
+                                <Games />
+                            </Route>
+                            <Route path="/highscores">
+                                <Highscores />
+                            </Route>
+                            <Route path="/settings">
+                                <Settings />
+                            </Route>
+                            <Route path="/rules">
+                                <Rules />
+                            </Route>
+                            <Route path="/game">
+                                <Game />
+                            </Route>
+                        </Switch>
+                    </Router>
+                : <Login />
+            }
         </div>
     )
 }

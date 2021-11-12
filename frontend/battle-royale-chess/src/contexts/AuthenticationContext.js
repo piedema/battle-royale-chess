@@ -12,7 +12,7 @@ export const AuthenticationContext = createContext({})
 export default function AuthenticationContextProvider({ children }){
 
     const [authState, setAuthState] = useState("pending")
-    const { setUsername, setEmail, setRole, username, email, role } = useContext(UserContext)
+    const { setUsername, setEmail, setRole } = useContext(UserContext)
 
     const contextData = {
         authState:authState,
@@ -26,10 +26,6 @@ export default function AuthenticationContextProvider({ children }){
         if(Cookies.get('jwt') === undefined) return setAuthState("failed")
         loadUserdata()
     }, [])
-
-    useEffect(() => {
-        console.log(username, email, role)
-    }, [role])
 
     async function loadUserdata(){
         try {

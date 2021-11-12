@@ -1,4 +1,6 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
+
+import Draggable from "react-draggable"
 
 import { UserContext } from '../../contexts/UserContext.js'
 import { GameContext } from '../../contexts/GameContext.js'
@@ -11,21 +13,34 @@ import colors from '../../assets/js/colors'
 
 export default function GameBoard({ makeMove }){
 
+    const dragRef = useRef()
+
     const { username } = useContext(UserContext)
-    const { board, players, moveFrom, moveTo, round, finished } = useContext(GameContext)
+    const { board, players, moveFrom, moveTo, round, finished, gametype, boardPosition, setBoardPosition } = useContext(GameContext)
 
     const [boardJSX, setBoardJSX] = useState([])
     const [width, setWidth] = useState(0)
     const [height, setHeight] = useState(0)
-    const [cellSize, setCellSize] = useState(100)
-    const [pieceStyle, setPieceStyle] = useState('outlined')
 
     useEffect(() => {
+
+        const cellSize = 100
+        const pieceStyle = localStorage.getItem('piecesStyle') || 'outlined'
 
         const colKeysSorted = Object.keys(board).sort((a, b) => a.split(":")[1] - b.split(":")[1])
         const rowKeysSorted = Object.keys(board).sort((a, b) => a.split(":")[0] - b.split(":")[0])
 
         const rows = []
+
+        const { circleShrinkAfterNRounds, circleShrinkOffset } = gametype
+
+        const circleShrinkInNRounds = (
+            round > circleShrinkOffset
+            ? circleShrinkAfterNRounds - ((round % circleShrinkAfterNRounds) % circleShrinkAfterNRounds)
+            : circleShrinkOffset - round
+        )
+
+        const roundsLeft = circleShrinkInNRounds === circleShrinkOffset ? 0 : circleShrinkInNRounds
 
         if(colKeysSorted.length > 0 && rowKeysSorted.length > 0){
 
@@ -44,7 +59,7 @@ export default function GameBoard({ makeMove }){
                     const key = i + ':' + j
                     const tile = board[key]
 
-                    if(tile === undefined) row.push(<td key={key}></td>)
+                    if(tile === undefined) row.push(<td key={key} className={styles.td}></td>)
 
                     if(tile !== undefined){
 
@@ -54,19 +69,40 @@ export default function GameBoard({ makeMove }){
                         const isLastTileFading = i === Math.ceil(rowsAmount / 2) && j === Math.ceil(colsAmount / 2) ? true : false
                         const color = colors.pieces(indexOfPlayerOnTile)
 
+                        const topTile = board[i-1+':'+j]
+                        const bottomTile = board[i+1+':'+j]
+                        const leftTile = board[i+':'+(j-1)]
+                        const rightTile = board[i+':'+(j+1)]
+
+                        const tileFadesSoon = (
+                            round > 0 &&
+                            tileState !== 'faded' &&
+                            finished !== true &&
+                            (
+                                topTile === undefined || topTile[0] === 'faded' ||
+                                bottomTile === undefined || bottomTile[0] === 'faded' ||
+                                leftTile === undefined || leftTile[0] === 'faded' ||
+                                rightTile === undefined || rightTile[0] === 'faded'
+                            )
+                            ? roundsLeft
+                            : null
+                        )
+
                         const classList = { tile:styles.tile, td:styles.td }
 
                         if(tileState === 'faded') classList.faded = styles.faded
-                        if(isLastTileFading) classList.isLastTileFading = styles.isLastTileFading
-                        if(moveFrom === key || moveTo === key && tileState !== 'faded' && finished === false) classList.isSelected = styles.isSelected
+                        if(isLastTileFading) classList.lastTileFading = styles.lastTileFading
+                        if((moveFrom === key || moveTo === key) && tileState !== 'faded' && finished === false) classList.isSelected = styles.isSelected
                         if(indexOfPlayerOnTile === players.indexOf(username) && tileState !== 'faded' && moveFrom === undefined && round > 0 && finished === false) classList.hoverable = styles.hoverable
-                        if(indexOfPlayerOnTile !== players.indexOf(username) && tileState !== 'faded' && round > 0 && finished === false) classList.hoverable = styles.hoverable
+                        if(indexOfPlayerOnTile !== players.indexOf(username) && tileState !== 'faded' && round > 0 && finished === false && moveFrom !== undefined) classList.hoverable = styles.hoverable
 
                         const classListJoined = Object.values(classList).join(" ")
 
                         row.push(
                             <td key={key} className={classListJoined} onClick={() => makeMove(key) }>
                                 { pieceOnTile !== undefined ? <Piece type={pieceOnTile} styling={pieceStyle} color={color}/> : null }
+                                <div className={styles.tileId}>{i + ' ' + j}</div>
+                                { tileFadesSoon !== null && <div className={styles.tileFadesSoon}>{tileFadesSoon}</div> }
                             </td>
                         )
 
@@ -89,12 +125,16 @@ export default function GameBoard({ makeMove }){
     }, [board, players, moveFrom, moveTo, username, round, finished])
 
     return (
-        <div>
-            <table className={styles.table} style={{ width:width, height:height}}>
-                <tbody>
-                    {boardJSX}
-                </tbody>
-            </table>
+        <div className={styles.container}>
+            <Draggable dragRef={dragRef}>
+                <div ref={dragRef}>
+                    <table className={styles.table} style={{ width:width, height:height}}>
+                        <tbody>
+                            {boardJSX}
+                        </tbody>
+                    </table>
+                </div>
+            </Draggable>
         </div>
     )
 

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
 import Piece from '../piece/Piece'
 
@@ -7,14 +7,13 @@ import colors from '../../assets/js/colors'
 
 export default function Card({ gametypeInfo, queue, username, placeInQueue, removeFromQueue }){
 
-    const [pieceColors, setPieceColors] = useState(colors.pieces(0))
+    const [pieceColors] = useState(colors.pieces(0))
 
     if(gametypeInfo === undefined || queue === undefined || username === undefined) return (<></>)
 
     const name = gametypeInfo.gametype
     const numberOfPlayers = gametypeInfo.numberOfPlayers
 
-    let isToggled = false
     let amIInQueue = queue.filter(q => q.gametype === name).find(q => q.username === username)
     let playersInThisQueue = queue.filter(q => q.gametype === name).map(p => p.username)
 

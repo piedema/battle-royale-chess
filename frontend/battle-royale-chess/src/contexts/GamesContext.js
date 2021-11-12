@@ -24,7 +24,7 @@ export default function GamesContextProvider({ children }){
         const response = await getGames()
         if(Array.isArray(response)){
             setGames(
-                response.filter(g => type === 'finished' && g.finished === true || type === 'active' && g.finished === false)
+                response.filter(g => (type === 'finished' && g.finished === true) || (type === 'active' && g.finished === false))
             )
         }
     }

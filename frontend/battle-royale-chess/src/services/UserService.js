@@ -107,18 +107,3 @@ export async function doRegister(username, password, email){
     return apiCaller(options)
 
 }
-
-function transformUser(user){
-
-    const { username, email, authorities } = user
-    let role = "USER"
-
-    authorities.forEach(a => {
-        if(a.authority === "ROLE_ADMIN"){
-            role = "ADMIN"
-        }
-    })
-
-    return { username, email, role }
-
-}

@@ -26,6 +26,10 @@ export default function Lobby() {
 
     const history = useHistory()
 
+    const dateFormat = localStorage.getItem('dateTime')
+    const boardView = localStorage.getItem('boardView') || '3d'
+    const piecesStyle = localStorage.getItem('piecesStyle') || 'outlined'
+
     const { username, role } = useContext(UserContext)
     const { games, loadGames, queuedForGame, setQueuedForGame, getGameIdForPlayer, setGameId } = useContext(GamesContext)
     const { gametypes, refreshGametypes } = useContext(GametypesContext)
@@ -37,9 +41,7 @@ export default function Lobby() {
     const [tileSize, setTileSize] = useState(100)
     const [rows, setRows] = useState(4)
     const [cols, setCols] = useState(8)
-    const [perspective, setPerspective] = useState('2d')
-
-    const dateFormat = localStorage.getItem('dateTime')
+    const [perspective, setPerspective] = useState(boardView)
 
     const columns = useMemo(
         () => [
@@ -83,7 +85,7 @@ export default function Lobby() {
             const buttons = [
                 { text:"Games", link:"/games", role:"SPECTATOR" },
                 { text:"High scores", link:"/highscores", role:"SPECTATOR" },
-                { text:"Settings", link:"/settings", role:"USER" },
+                { text:"Set tings", link:"/settings", role:"USER" },
                 { text:"Users", link:"/users", role:"ADMIN" },
                 { text:"Rules", link:"/rules", role:"SPECTATOR" },
                 // { text:"Shop", link:"/shop", role:"USER" },
@@ -112,13 +114,13 @@ export default function Lobby() {
 
             }
 
-            const numberOfPiecesWanted = Math.ceil(Math.random() * 6) + 2
+            const numberOfPiecesWanted = Math.ceil((rows * cols) / 4) - 8
             const piecesWanted = []
 
             for(let i = 0; i < numberOfPiecesWanted; i++){
 
                 const types = ["King", "Queen", "Tower", "Bishop", "Knight", "Pawn"]
-                const style = "outlined"
+                const style = piecesStyle
                 const pieceIndex = Math.ceil(Math.random() * 5) - 1
                 const colorIndex = Math.ceil(Math.random() * 8) - 1
 
@@ -154,7 +156,7 @@ export default function Lobby() {
 
         shuffleBoard(true)
 
-    }, [rows, cols])
+    }, [rows, cols, piecesStyle])
 
     useEffect(() => {
 
@@ -162,7 +164,7 @@ export default function Lobby() {
 
         if(role !== 'SPECTATOR') refreshGametypes()
         setRowsCols()
-        setPerspective(window.innerWidth > 1000 ? '3d' : '2d')
+        setPerspective(boardView)
 
         window.addEventListener('resize', setRowsCols)
 
@@ -196,7 +198,7 @@ export default function Lobby() {
     }, [queue])
 
     useEffect(() => {
-        shuffleBoard(cols, rows, true)
+        shuffleBoard(true)
     }, [role])
 
     async function queueForGame(gametype){
@@ -223,7 +225,6 @@ export default function Lobby() {
 
             for(let j = 1; j <= tiles; j++){
 
-                const x = (100 * j) + 'px'
                 const key = `${i}${j}`
 
                 tilesJsx.push(
@@ -233,13 +234,12 @@ export default function Lobby() {
                         className={
                             shuffledBoard[key] !== undefined && shuffledBoard[key].element === "button"
                             ? styles.tileMenuitem
-                            : styles.tile}
-                        style={{ x:x }}>
+                            : styles.tile}>
                         {
                             shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'button'
                             ? <NavLink to={shuffledBoard[key].link} className={styles.menuBtn}>{shuffledBoard[key].text}</NavLink>
                             : shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'piece'
-                            ? <Piece type={shuffledBoard[key].type} styling={shuffledBoard[key].style} color={shuffledBoard[key].color}></Piece>
+                            ? <div className={styles.piece}><Piece type={shuffledBoard[key].type} styling={shuffledBoard[key].style} color={shuffledBoard[key].color}></Piece></div>
                             : null
                         }
                     </div>
@@ -247,10 +247,8 @@ export default function Lobby() {
 
             }
 
-            const y = (100 * i) + 'px'
-
             rowsJsx.push(
-                <div key={i} className={styles.row} style={{ y:y }}>
+                <div key={i} className={styles.row}>
                     {tilesJsx}
                 </div>
             )
@@ -258,8 +256,10 @@ export default function Lobby() {
         }
 
         return (
-            <div className={styles.chessboard}>
-                {rowsJsx}
+            <div className={`${styles['chessboard-' + perspective]}`}>
+                <div className={styles.chessboard}>
+                    {rowsJsx}
+                </div>
             </div>
         )
 
@@ -280,7 +280,8 @@ export default function Lobby() {
                 </div>
 
                 {
-                    role !== 'SPECTATOR' ?
+                    role !== 'SPECTATOR'
+                    ? (
                         <div className={styles.queueContainer}>
                                 {
                                     gametypes.map(g => {
@@ -297,6 +298,7 @@ export default function Lobby() {
                                     })
                                 }
                         </div>
+                    )
                     : ""
                 }
                 {

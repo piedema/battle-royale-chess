@@ -1,4 +1,3 @@
-import handleError from '../helpers/errorHandler'
 import apiCaller from '../helpers/apiCaller'
 
 export async function authenticate(username, password){

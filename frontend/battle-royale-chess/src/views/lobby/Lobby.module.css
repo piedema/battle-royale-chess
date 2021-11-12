@@ -1,5 +1,6 @@
 .container {
     width: 100vw;
+    overflow: hidden;
 }
 
 .lobbyContainer {
@@ -28,7 +29,7 @@
 
 .chessboard-3d {
     table-layout: fixed;
-    transform: perspective(1000px) rotateX(20deg) translateY(-50px);
+    transform: perspective(1000px) rotateX(20deg) translateY(-20px);
     transition: transform .5s;
 }
 
@@ -74,7 +75,6 @@
     padding: 10px 30px;
     width: fit-content;
     margin: 10px;
-    transform: translateX(15px);
     transition: background-color .4s, color .4s;
     z-index: 15;
 }
@@ -86,17 +86,16 @@
 }
 
 .row {
-    position: relative;
+    font-size: 0px;
+    box-sizing: border-box;
 }
 
 .row:nth-child(odd) .tile:nth-child(even), .row:nth-child(odd) .tileMenuitem:nth-child(even) {
     background: rgb(18, 7, 0);
-    color: white;
 }
 
 .row:nth-child(even) .tile:nth-child(odd), .row:nth-child(even) .tileMenuitem:nth-child(odd) {
     background: rgb(18, 7, 0);
-    color: white;
 }
 
 .tile {
@@ -108,6 +107,7 @@
     border: 1px solid black;
     display: inline-block;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .tileMenuitem {
@@ -121,16 +121,22 @@
     display: inline-block;
     transition: background-color .4s, transform .4s;
     z-index: 0;
-    color: black;
+    color: orangered;
     overflow: hidden;
     font-size: 30px;
+    box-sizing: border-box;
 }
 
 .tileMenuitem:hover {
     z-index: 100;
     background-color: orangered !important;
-    transform: translateY(-15px);
-    transition: background-color .4s, transform .4s;
+    color: white;
+    transition: all .4s, transform .4s;
+}
+
+.piece {
+    perspective: 400px;
+    /* transform: rotateX(30deg); */
 }
 
 .menuBtn {
@@ -141,10 +147,9 @@
     align-items: center;
     word-wrap: break-word;
     text-decoration: inherit;
+    text-align: center;
     color: inherit;
     position: absolute;
-    transform-origin: 50% 100%;
-    transform: rotateX(-50deg);
 }
 
 /* // TODO fix dat de cards normaal scrollen vanaf het begin */

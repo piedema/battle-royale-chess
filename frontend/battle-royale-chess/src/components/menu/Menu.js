@@ -1,17 +1,10 @@
-import { useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-
-import { NavLink } from 'react-router-dom'
-
-import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
 import styles from './Menu.module.css'
 
 export default function Menu({ title, buttons }){
 
     const history = useHistory()
-
-    const { logout } = useContext(AuthenticationContext)
 
     return (
         <div className={styles.container}>
@@ -26,7 +19,7 @@ export default function Menu({ title, buttons }){
                             ?   buttons.map(b => {
 
                                     return (
-                                        <div className={styles.categoryButton} onClick={b.onClick} >
+                                        <div key={b.text} className={styles.categoryButton} onClick={b.onClick} >
                                             {b.text}
                                         </div>
                                     )

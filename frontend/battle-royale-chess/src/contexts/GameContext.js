@@ -15,21 +15,10 @@ export default function GameContextProvider({ children }){
     const [round, setRound] = useState(0)
     const [nextRoundAt, setNextRoundAt] = useState(undefined)
     const [zoomLevel, setZoomLevel] = useState(1)
-
-    function resetGameContext(){
-
-        setGameId(undefined)
-        setBoard({})
-        setPlayers([])
-        setScores([])
-        setMoves({})
-        setMoveFrom(undefined)
-        setMoveTo(undefined)
-        setFinished(false)
-        setRound(0)
-        setNextRoundAt(undefined)
-
-    }
+    const [gametype, setGametype] = useState({})
+    const [gameStartedAt, setGameStartedAt] = useState(undefined)
+    const [gameEndedAt, setGameEndedAt] = useState(undefined)
+    const [boardPosition, setBoardPosition] = useState({ top:'50%', left:'50%' })
 
     const contextData = {
         gameId, setGameId,
@@ -43,7 +32,30 @@ export default function GameContextProvider({ children }){
         round, setRound,
         nextRoundAt, setNextRoundAt,
         resetGameContext,
-        zoomLevel, setZoomLevel
+        zoomLevel, setZoomLevel,
+        gametype, setGametype,
+        gameStartedAt, setGameStartedAt,
+        gameEndedAt, setGameEndedAt,
+        boardPosition, setBoardPosition
+    }
+
+    function resetGameContext(){
+
+        setGameId(undefined)
+        setBoard({})
+        setPlayers([])
+        setScores([])
+        setMoves({})
+        setMoveFrom(undefined)
+        setMoveTo(undefined)
+        setFinished(false)
+        setRound(0)
+        setNextRoundAt(undefined)
+        setGametype({})
+        setGameStartedAt(undefined)
+        setGameEndedAt(undefined)
+        setBoardPosition({ top:'50%', left:'50%' })
+
     }
 
     return (

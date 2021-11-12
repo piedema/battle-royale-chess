@@ -1,7 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { useHistory } from 'react-router-dom'
-
 import { UserContext } from '../../contexts/UserContext'
 import { GameContext } from '../../contexts/GameContext'
 
@@ -14,18 +12,19 @@ import styles from './PlayerInfo.module.css'
 export default function PlayerInfo({ playerName }){
 
     const { username } = useContext(UserContext)
-    const { board, players, scores, round, moves, moveFrom, moveTo } = useContext(GameContext)
+    const { board, players, scores, moves, moveFrom, moveTo } = useContext(GameContext)
 
     const [index, setIndex] = useState(undefined)
     const [stroke, setStroke] = useState(undefined)
     const [fill, setFill] = useState(undefined)
-    const [pieceStyle, setPieceStyle] = useState('outlined')
     const [score, setScore] = useState(0)
     const [currentMove, setCurrentMove] = useState('-')
     const [previousMove, setPreviousMove] = useState('-')
     const [piecesLeft, setPiecesLeft] = useState([])
     const [color, setColor] = useState({})
     const [position, setPosition] = useState(undefined)
+
+    const piecesStyle = localStorage.getItem('piecesStyle') || 'outlined'
 
     useEffect(() => {
 
@@ -40,17 +39,15 @@ export default function PlayerInfo({ playerName }){
         setColor(color)
         setPosition(position)
 
-    }, [players])
+    }, [players, playerName])
 
     useEffect(() => {
 
         setScore(scores[index] || 0)
 
-    }, [scores])
+    }, [scores, index])
 
     useEffect(() => {
-
-        let move
 
         if(moveFrom === undefined) setCurrentMove('-')
         if(moveFrom !== undefined && moveTo === undefined) setCurrentMove(moveFrom)
@@ -61,8 +58,6 @@ export default function PlayerInfo({ playerName }){
     useEffect(() => {
 
         const highestRound = Object.keys(moves).sort((a, b) => b - a)[0]
-
-        console.log(moves, highestRound, index, players)
 
         if(moves[highestRound] === undefined) return
         if(index === undefined) return
@@ -118,7 +113,7 @@ export default function PlayerInfo({ playerName }){
             case 6: return ['s0', 's1', 's3', 's4', 's2', 's5'][index]
             case 7: return ['s0', 's1', 's3', 's4', 's2', 's6', 's5'][index]
             case 8: return ['s0', 's1', 's3', 's4', 's2', 's7', 's8', 's5'][index]
-
+            default: return undefined
             }
 
     }
@@ -132,6 +127,7 @@ export default function PlayerInfo({ playerName }){
             case "Bishop": return 3
             case "Knight": return 2
             case "Pawn": return 1
+            default: return 0
         }
 
     }
@@ -173,7 +169,7 @@ export default function PlayerInfo({ playerName }){
                     </div>
                     <div className={styles.subjectContainer} style={{ display:"flex", justifyContent:"center"}}>
                         <div className={styles.piecesContainer}>
-                            { piecesLeft.map((p, i) => <div><Piece key={p+i} type={p} styling={pieceStyle} color={color} w={50} h={50} /></div>) }
+                            { piecesLeft.map((p, i) => <div key={p+i}><Piece key={p+i} type={p} styling={piecesStyle} color={color} w={50} h={50} /></div>) }
                         </div>
                     </div>
                 </div>
