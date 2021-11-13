@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 
 import { getGametypes } from '../services/GametypesService'
 
@@ -10,12 +10,20 @@ export default function GametypesContextProvider({ children }){
 
     const contextData = {
         gametypes:gametypes,
-        refreshGametypes:refreshGametypes
+        getGametypeByName:getGametypeByName
     }
 
-    async function refreshGametypes(){
+    useEffect(async () => {
+
         const response = await getGametypes()
         if(Array.isArray(response)) setGametypes(response)
+
+    }, [])
+
+    function getGametypeByName(name){
+
+        return gametypes.find(g => g.gametype === name)
+
     }
 
     return (

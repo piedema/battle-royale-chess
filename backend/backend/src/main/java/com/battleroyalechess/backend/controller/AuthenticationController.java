@@ -23,12 +23,6 @@ public class AuthenticationController {
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse res) {
         AuthenticationResponse authenticationResponse = userAuthenticateService.authenticateUser(authenticationRequest);
-        Cookie cookie = new Cookie("jwt", authenticationResponse.getJwt());
-        cookie.setPath("/");
-        //cookie.setSecure(true);
-        //cookie.setHttpOnly(true);
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-        res.addCookie(cookie);
         return ResponseEntity.ok(authenticationResponse);
     }
 

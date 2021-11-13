@@ -1,22 +1,22 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
 import { useHistory, NavLink } from 'react-router-dom'
 
-import { moment } from 'moment'
+import moment from 'moment'
 
-import Menu from '../../components/menu/Menu'
+import MainMenu from '../../components/mainMenu/MainMenu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
 import Piece from '../../components/piece/Piece'
-import Card from '../../components/card/Card'
+import LobbyCard from '../../components/lobbyCard/LobbyCard'
 
 import { UserContext } from '../../contexts/UserContext'
 import { GamesContext } from '../../contexts/GamesContext'
 import { GametypesContext } from '../../contexts/GametypesContext'
-import { LobbyContext } from '../../contexts/LobbyContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 import { GameContext } from '../../contexts/GameContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 
-import { getGameIdForPlayer } from '../../services/GamesService'
+import { getQueue, placeInQueue, removeFromQueue, getGameId } from '../../services/LobbyService'
 
 import colors from '../../assets/js/colors'
 
@@ -26,22 +26,15 @@ export default function Lobby() {
 
     const history = useHistory()
 
-    const dateFormat = localStorage.getItem('dateTime')
-    const boardView = localStorage.getItem('boardView') || '3d'
-    const piecesStyle = localStorage.getItem('piecesStyle') || 'outlined'
-
     const { username, role } = useContext(UserContext)
-    const { games, loadGames, queuedForGame, setQueuedForGame, getGameIdForPlayer, setGameId } = useContext(GamesContext)
+    const { games, refreshGames } = useContext(GamesContext)
     const { gametypes, refreshGametypes } = useContext(GametypesContext)
-    const { queue, refreshQueue, placeInQueue, removeFromQueue } = useContext(LobbyContext)
     const { logout } = useContext(AuthenticationContext)
-    const { finished, resetGameContext } = useContext(GameContext)
+    const { gameId, setGameId, resetGameContext } = useContext(GameContext)
+    const { dateFormat } = useContext(SettingsContext)
 
-    const [shuffledBoard, setShuffledBoard] = useState({})
-    const [tileSize, setTileSize] = useState(100)
-    const [rows, setRows] = useState(4)
-    const [cols, setCols] = useState(8)
-    const [perspective, setPerspective] = useState(boardView)
+    const [queue, setQueue] = useState([])
+    const [isAlreadyInGame, setIsAlreadyInGame] = useState(undefined)
 
     const columns = useMemo(
         () => [
@@ -70,117 +63,36 @@ export default function Lobby() {
                     },
                     {
                         Header: 'Played at',
-                        accessor: data => moment(data.gameStartedAt).format(dateFormat),
+                        accessor: data => {
+                            console.log(moment, data, dateFormat)
+                            moment(data.gameStartedAt).format(dateFormat)
+
+                        },
                     },
                 ],
             }
         ],
-        []
+        [dateFormat]
     )
 
-    function shuffleBoard(shuffleEvenWhenShuffledAlready){
+    let getGameIdInterval, refreshGamesInterval, refreshQueueInterval, isAlreadyInGameInterval
 
-        if(shuffleEvenWhenShuffledAlready){
+    useEffect(() => {
 
-            const buttons = [
-                { text:"Games", link:"/games", role:"SPECTATOR" },
-                { text:"High scores", link:"/highscores", role:"SPECTATOR" },
-                { text:"Set tings", link:"/settings", role:"USER" },
-                { text:"Users", link:"/users", role:"ADMIN" },
-                { text:"Rules", link:"/rules", role:"SPECTATOR" },
-                // { text:"Shop", link:"/shop", role:"USER" },
-                // { text:"About", link:"/about", role:"SPECTATOR" },
-            ]
+        console.log('mounting')
 
-            const buttonsFilteredByRole = buttons.filter(b => {
+        return () => {
 
-                b.element = "button"
+            console.log('unmounting')
 
-                switch (role) {
-                    case "SPECTATOR": return b.role === "SPECTATOR"
-                    case "USER": return b.role === "SPECTATOR" || b.role === "USER"
-                    case "ADMIN": return b
-                }
+            getGameIdInterval = clearInterval(getGameIdInterval)
+            refreshGamesInterval = clearInterval(refreshGamesInterval)
+            refreshQueueInterval = clearInterval(refreshQueueInterval)
+            isAlreadyInGameInterval = clearInterval(isAlreadyInGameInterval)
 
-            })
-
-            const result = {}
-
-            while(buttonsFilteredByRole.length !== 0){
-
-                const key = `${Math.ceil((Math.random() * rows))}${Math.ceil((Math.random() * cols))}`
-
-                if(result[key] === undefined) result[key] = buttonsFilteredByRole.shift()
-
-            }
-
-            const numberOfPiecesWanted = Math.ceil((rows * cols) / 4) - 8
-            const piecesWanted = []
-
-            for(let i = 0; i < numberOfPiecesWanted; i++){
-
-                const types = ["King", "Queen", "Tower", "Bishop", "Knight", "Pawn"]
-                const style = piecesStyle
-                const pieceIndex = Math.ceil(Math.random() * 5) - 1
-                const colorIndex = Math.ceil(Math.random() * 8) - 1
-
-                piecesWanted.push({ element:"piece", type:types[pieceIndex], style:style, color:colors.pieces(colorIndex) })
-
-            }
-
-            while(piecesWanted.length !== 0){
-
-                const key = `${Math.ceil((Math.random() * rows))}${Math.ceil((Math.random() * cols))}`
-
-                if(result[key] === undefined) result[key] = piecesWanted.shift()
-
-            }
-
-            setShuffledBoard(result)
+            console.log('intervals', getGameIdInterval, refreshGamesInterval, refreshQueueInterval, isAlreadyInGameInterval)
 
         }
-
-    }
-
-    function setRowsCols(){
-
-        let newHeight = Math.min(window.innerHeight - 600, 600)
-        let newWidth = Math.min(window.innerWidth - 200, 1000)
-
-        setRows(Math.floor(newHeight / tileSize))
-        setCols(Math.max(Math.floor(newWidth / tileSize), 3))
-
-    }
-
-    useEffect(() => {
-
-        shuffleBoard(true)
-
-    }, [rows, cols, piecesStyle])
-
-    useEffect(() => {
-
-        if(finished === true) resetGameContext()
-
-        if(role !== 'SPECTATOR') refreshGametypes()
-        setRowsCols()
-        setPerspective(boardView)
-
-        window.addEventListener('resize', setRowsCols)
-
-        const refreshDataInterval = setInterval(() => {
-
-            loadGames()
-
-            if(role !== "SPECTATOR"){
-
-                refreshQueue()
-
-            }
-
-        }, 1000)
-
-        return () => clearInterval(refreshDataInterval)
 
     }, [])
 
@@ -188,127 +100,163 @@ export default function Lobby() {
 
         (async () => {
 
-            if(queuedForGame !== undefined && queue.find(q => q.username === username) === undefined){
-                setQueuedForGame(undefined)
-                history.push('/game')
+            // clear game context
+            resetGameContext()
+
+            // check if player is already in a game
+            const result = await getGameId(username)
+
+            if(result !== undefined) setIsAlreadyInGame(result)
+            if(result === undefined) setIsAlreadyInGame(false)
+
+
+            if(refreshGamesInterval === undefined){
+
+                refreshGamesInterval = setInterval(refreshGames, 1000 * 10)
+
             }
 
         })()
 
-    }, [queue])
+        return () => refreshGamesInterval = clearInterval(refreshGamesInterval)
+
+    }, [username])
 
     useEffect(() => {
-        shuffleBoard(true)
-    }, [role])
 
-    async function queueForGame(gametype){
+        if(isAlreadyInGame){
 
-        const result = await placeInQueue(gametype)
-        if(result !== false) setQueuedForGame(gametype)
+            isAlreadyInGameInterval = setInterval(async () => {
 
-    }
+                const result = await getGameId(username)
 
-    async function unQueueFromGame(gametype){
+                if(result === undefined){
 
-        const result = await removeFromQueue()
-        if(result !== false) setQueuedForGame(undefined)
+                    clearInterval(isAlreadyInGameInterval)
+                    setIsAlreadyInGame(false)
 
-    }
+                }
 
-    function generateChessboard(tiles, rows){
-
-        const rowsJsx = []
-
-        for(let i = 1; i <= rows; i++){
-
-            const tilesJsx = []
-
-            for(let j = 1; j <= tiles; j++){
-
-                const key = `${i}${j}`
-
-                tilesJsx.push(
-                    <div
-                        key={j}
-                        id={key}
-                        className={
-                            shuffledBoard[key] !== undefined && shuffledBoard[key].element === "button"
-                            ? styles.tileMenuitem
-                            : styles.tile}>
-                        {
-                            shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'button'
-                            ? <NavLink to={shuffledBoard[key].link} className={styles.menuBtn}>{shuffledBoard[key].text}</NavLink>
-                            : shuffledBoard[key] !== undefined && shuffledBoard[key].element === 'piece'
-                            ? <div className={styles.piece}><Piece type={shuffledBoard[key].type} styling={shuffledBoard[key].style} color={shuffledBoard[key].color}></Piece></div>
-                            : null
-                        }
-                    </div>
-                )
-
-            }
-
-            rowsJsx.push(
-                <div key={i} className={styles.row}>
-                    {tilesJsx}
-                </div>
-            )
+            }, 1000)
 
         }
 
-        return (
-            <div className={`${styles['chessboard-' + perspective]}`}>
-                <div className={styles.chessboard}>
-                    {rowsJsx}
-                </div>
-            </div>
-        )
+        return () => isAlreadyInGameInterval = clearInterval(isAlreadyInGameInterval)
+
+    }, [isAlreadyInGame])
+
+    useEffect(() => {
+
+        if(role === 'ADMIN' || role === 'USER'){
+
+            if(refreshGamesInterval === undefined){
+
+                console.log(role)
+
+                refreshGamesInterval = setInterval(async () => {
+
+                    const result = await getQueue()
+                    setQueue(result)
+
+                }, 1000 * 10)
+
+            }
+
+        }
+
+        return () => refreshQueueInterval = clearInterval(refreshQueueInterval)
+
+    }, [role])
+
+    async function enterQueue(gametype){
+
+        const result = await placeInQueue(gametype)
+
+        if(getGameIdInterval === undefined){
+
+            getGameIdInterval = setInterval(async () => {
+
+                const result = await getGameId(username)
+
+                if(result !== undefined){
+
+                    setGameId(result)
+                    getGameIdInterval = clearInterval(getGameIdInterval)
+                    history.push('/game')
+
+                }
+
+            }, 1000)
+
+        }
 
     }
+
+    async function leaveQueue(){
+
+        const result = await removeFromQueue()
+
+        getGameIdInterval = clearInterval(getGameIdInterval)
+
+    }
+
+    useEffect(() => {
+
+        if(gameId !== undefined){
+
+            history.push('/game')
+
+        }
+
+    }, [gameId])
 
     return (
         <div className={styles.container}>
             <div className={styles.userContainer}>
                 Welcome {username} <button onClick={logout} className={styles.logoutBtn}>Logout</button>
             </div>
-            <div className={styles.lobbyContainer}>
-                <div className={styles.shuffleButtonContainer}>
-                    <div className={styles.shuffleButton} onClick={() => shuffleBoard(true)}>Shuffle Menu</div>
-                    <div className={styles.shuffleButton} onClick={() => setPerspective(perspective === '3d' ? '2d' : '3d')}>View in {perspective === '3d' ? '2d' : '3d'}</div>
-                </div>
-                <div className={`${styles['chessboard-' + perspective]}`}>
-                    {generateChessboard(cols, rows)}
-                </div>
+            <MainMenu />
+            {
+                role === 'ADMIN' || role === 'USER'
+                ?   (
+                        <div className={styles.lobbyContainer}>
+                            {
+                                isAlreadyInGame === false
+                                ?   (
+                                        gametypes.map(g => {
+                                            return  (
+                                                <LobbyCard
+                                                    key={g.gametype}
+                                                    enterQueue={enterQueue}
+                                                    leaveQueue={leaveQueue}
+                                                    queue={queue}
+                                                    gametype={g}
+                                                    />
+                                                )
+                                        })
+                                    )
+                                : (
+                                        <BasicContainer>
+                                            <div className={styles.alreadyInGameContainer} onClick={() => {
 
-                {
-                    role !== 'SPECTATOR'
-                    ? (
-                        <div className={styles.queueContainer}>
-                                {
-                                    gametypes.map(g => {
-                                        return (
-                                            <Card
-                                                key={g.gametype}
-                                                gametypeInfo={g}
-                                                queue={queue}
-                                                username={username}
-                                                placeInQueue={queueForGame}
-                                                removeFromQueue={unQueueFromGame}
-                                            />
-                                        )
-                                    })
-                                }
+                                                console.log('i am already in a game')
+
+                                                setGameId(isAlreadyInGame)
+
+                                            }}>
+                                                Your are already in a game, click here to go to that game.
+                                            </div>
+                                        </BasicContainer>
+                                    )
+                            }
                         </div>
                     )
-                    : ""
-                }
-                {
-                    role === 'SPECTATOR' && (
-                        <div className={styles.gamesList}>
-                            <BasicTable columns={columns} data={games} />
-                        </div>
-                    )
-                }
-            </div>
+                : (
+                    <div className={styles.gamesContainer}>
+                        <BasicTable columns={columns} data={games} />
+                    </div>
+                )
+            }
         </div>
     )
 }

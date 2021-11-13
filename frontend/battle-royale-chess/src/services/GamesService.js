@@ -7,9 +7,9 @@ export async function getGames(){
         url:'/games',
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true
     }
 
     return apiCaller(
@@ -28,30 +28,9 @@ export async function getGamedata(gameId){
         url:'/games/' + gameId,
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true
-    }
-
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return undefined
-        }
-    )
-
-}
-
-export async function getGameIdForPlayer(username){
-
-    const options = {
-        url:'/games/getGameIdForPlayer/' + username,
-        method:'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials:true
     }
 
     return apiCaller(
@@ -70,9 +49,9 @@ export async function postNewMove(gameId, from, to){
         url:'/games/' + gameId + "/newMove",
         method:'POST',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true,
         data:{ from, to }
     }
 
@@ -94,9 +73,9 @@ export async function cancelMove(gameId, username){
         url:'/games/' + gameId + "/cancelMove",
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true
     }
 
     return apiCaller(

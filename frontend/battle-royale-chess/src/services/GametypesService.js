@@ -9,7 +9,6 @@ export async function getGametypes(){
         headers: {
             'Content-Type': 'application/json'
         },
-        withCredentials:true
     }
 
     return apiCaller(

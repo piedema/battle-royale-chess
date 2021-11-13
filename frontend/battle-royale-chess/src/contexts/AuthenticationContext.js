@@ -1,7 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 
-import Cookies from 'js-cookie'
-
 import { UserContext } from './UserContext'
 
 import { authenticate } from '../services/AuthenticationService'
@@ -23,7 +21,7 @@ export default function AuthenticationContextProvider({ children }){
     }
 
     useEffect(() => {
-        if(Cookies.get('jwt') === undefined) return setAuthState("failed")
+        if(!localStorage.getItem('token')) return setAuthState("failed")
         loadUserdata()
     }, [])
 
@@ -44,7 +42,8 @@ export default function AuthenticationContextProvider({ children }){
     }
 
     async function authenticateWithCredentials(username, password){
-        await authenticate(username, password)
+        const result = await authenticate(username, password)
+        localStorage.setItem('token', result.jwt)
         loadUserdata()
 
     }
@@ -57,7 +56,7 @@ export default function AuthenticationContextProvider({ children }){
     }
 
     function logout(){
-        Cookies.remove('jwt')
+        localStorage.removeItem('token')
         setAuthState("failed")
         setUsername(undefined)
         setEmail(undefined)
