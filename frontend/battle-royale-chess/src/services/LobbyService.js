@@ -7,9 +7,9 @@ export async function getQueue(){
         url:'/lobby/queue',
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true
     }
 
     return apiCaller(
@@ -28,9 +28,9 @@ export async function placeInQueue(gametype){
         url:'/lobby/queue/' + gametype,
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true
     }
 
     return apiCaller(options)
@@ -43,11 +43,32 @@ export async function removeFromQueue(){
         url:'/lobby/queue/',
         method:'DELETE',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true
     }
 
     return apiCaller(options)
+
+}
+
+export async function getGameId(username){
+
+    const options = {
+        url:'/games/getGameIdForPlayer/' + username,
+        method:'GET',
+        headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        },
+    }
+
+    return apiCaller(
+        options,
+        error => {
+            handleError(error)
+            return undefined
+        }
+    )
 
 }

@@ -7,7 +7,6 @@ import GamesContextProvider from './contexts/GamesContext'
 import GametypesContextProvider from './contexts/GametypesContext'
 import AuthenticationContextProvider from './contexts/AuthenticationContext'
 import UserContextProvider from './contexts/UserContext'
-import LobbytypesContextProvider from './contexts/LobbyContext'
 import GameContextProvider from './contexts/GameContext'
 import SettingsContextProvider from './contexts/SettingsContext'
 
@@ -22,11 +21,9 @@ ReactDOM.render(
                 <SettingsContextProvider>
                     <GamesContextProvider>
                         <GametypesContextProvider>
-                            <LobbytypesContextProvider>
-                                <GameContextProvider>
-                                    <App />
-                                </GameContextProvider>
-                            </LobbytypesContextProvider>
+                            <GameContextProvider>
+                                <App />
+                            </GameContextProvider>
                         </GametypesContextProvider>
                     </GamesContextProvider>
                 </SettingsContextProvider>

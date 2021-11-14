@@ -7,9 +7,9 @@ export async function getUserdata(errorHandler = false){
         url:'/users',
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
-        },
-        withCredentials:true
+        }
     }
 
     return apiCaller(
@@ -29,9 +29,9 @@ export async function getSpecificUserdata(username){
         url:`/users/${username}`,
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
-        },
-        withCredentials:true
+        }
     }
 
     return apiCaller(
@@ -50,9 +50,9 @@ export async function getAllUserdata(){
         url:'/users/all',
         method:'GET',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
-        },
-        withCredentials:true
+        }
     }
 
     return apiCaller(
@@ -71,9 +71,9 @@ export async function updateUser(updatedUser){
         url:'/users',
         method:'PUT',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true,
         data:updatedUser
     }
 
@@ -93,9 +93,9 @@ export async function doRegister(username, password, email){
         url:'/register',
         method:'POST',
         headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        withCredentials:true,
         data:{
             username,
             password,

@@ -4,6 +4,7 @@
     min-width: 240px;
     margin: 10px;
     display: inline-block;
+    cursor: pointer;
 }
 
 .container:hover .card{

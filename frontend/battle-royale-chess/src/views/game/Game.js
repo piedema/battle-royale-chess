@@ -5,7 +5,7 @@ import { GametypesContext } from '../../contexts/GametypesContext'
 import { UserContext } from '../../contexts/UserContext'
 import { GameContext } from '../../contexts/GameContext'
 
-import { getGamedata, getGameIdForPlayer, postNewMove, cancelMove } from '../../services/GamesService'
+import { getGamedata, postNewMove, cancelMove } from '../../services/GamesService'
 
 import GameBoard from '../../components/gameBoard/GameBoard'
 import GameMenu from '../../components/gameMenu/GameMenu'
@@ -25,7 +25,7 @@ export default function Game() {
         setMoves,
         board, setBoard,
         players, setPlayers,
-        setRound,
+        round, setRound,
         finished, setFinished,
         nextRoundAt, setNextRoundAt,
         zoomLevel, setZoomLevel,
@@ -37,38 +37,33 @@ export default function Game() {
         resetGameContext
     } = useContext(GameContext)
 
+    let loadDataTimeout
+
     // get gameId
     useEffect(() => {
 
-        resetGameContext()
+        // if(gameId === undefined) history.push('/')
 
-        ;(async () => {
+        if(gameId !== undefined) loadGamedata()
 
-            if(gameId === undefined){
-                const response = await getGameIdForPlayer(username)
+        return () => {
 
-                if(response !== undefined){
+            loadDataTimeout = clearTimeout(loadDataTimeout)
+            resetGameContext()
 
-                    setGameId(response)
-
-                }
-
-                if(response === undefined) history.push('/') // return to lobby
-            }
-
-        })()
+        }
 
     }, [])
 
     // start gameLoop
     useEffect(() => {
-        if(gameId !== undefined) loadGamedata()
+        if(gameId === undefined) history.push('/')
     }, [gameId])
 
     useEffect(() => {
 
-        if(Date.now() > nextRoundAt && finished === false) setTimeout(loadGamedata, 100)
-        if(Date.now() < nextRoundAt && finished === false) setTimeout(loadGamedata, (nextRoundAt - Date.now()) + 1000)
+        if(Date.now() > nextRoundAt && finished === false) loadDataTimeout = setTimeout(loadGamedata, 100)
+        if(Date.now() < nextRoundAt && finished === false) loadDataTimeout = setTimeout(loadGamedata, (nextRoundAt - Date.now()) + 1000)
 
     }, [nextRoundAt])
 
@@ -123,6 +118,8 @@ export default function Game() {
     }
 
     async function makeMove(tile){
+
+        if(round === 0) return
 
         const boardState = board[tile][0]
         const indexOfPlayer = players.indexOf(username) + 1

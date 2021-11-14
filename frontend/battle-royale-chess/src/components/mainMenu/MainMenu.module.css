@@ -1,0 +1,119 @@
+.container {
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.lobbyContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
+}
+
+.menuControls {
+    display: flex;
+    justify-content: center;
+}
+
+.chessboard-2d {
+    table-layout: fixed;
+    transition: transform .5s;
+}
+
+.chessboard-3d {
+    table-layout: fixed;
+    transform: perspective(1000px) rotateX(20deg) translateY(-20px);
+    transition: transform .5s;
+}
+
+.button {
+    font-size: 20px;
+    user-select: none;
+    cursor: pointer;
+    background-color: rgb(255, 251, 235);
+    border-radius: 5px;
+    padding: 10px 30px;
+    width: fit-content;
+    margin: 10px;
+    transition: background-color .4s, color .4s;
+    z-index: 15;
+}
+
+.button:hover {
+    color: rgb(255, 251, 235);
+    background-color: orangered;
+    transition: background-color .4s, color .4s;
+}
+
+.row {
+    font-size: 0px;
+    box-sizing: border-box;
+}
+
+.row:nth-child(odd) .tile:nth-child(even), .row:nth-child(odd) .tileMenuitem:nth-child(even) {
+    background: rgb(18, 7, 0);
+}
+
+.row:nth-child(even) .tile:nth-child(odd), .row:nth-child(even) .tileMenuitem:nth-child(odd) {
+    background: rgb(18, 7, 0);
+}
+
+.tile {
+    position: relative;
+    background-color: rgb(255, 251, 235);
+    width: 100px;
+    height: 100px;
+    border-radius:5px;
+    border: 1px solid black;
+    display: inline-block;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.tileMenuitem {
+    position: relative;
+    background-color: rgb(255, 251, 235);
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid black;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color .4s, transform .4s;
+    z-index: 0;
+    color: orangered;
+    overflow: hidden;
+    font-size: 30px;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.tileMenuitem:hover {
+    z-index: 100;
+    background-color: orangered !important;
+    color: white;
+    transition: all .4s, transform .4s;
+}
+
+.piece {
+    perspective: 400px;
+    /* transform: rotateX(30deg); */
+}
+
+.menuBtn {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-wrap: break-word;
+    text-decoration: inherit;
+    text-align: center;
+    color: inherit;
+    position: absolute;
+}

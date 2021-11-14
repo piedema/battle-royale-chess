@@ -36,7 +36,7 @@ public class GamesService {
 
         if(game.isEmpty()){
 
-            throw new GameNotFoundException(gameId);
+            throw new GameNotFoundException();
 
         }
 

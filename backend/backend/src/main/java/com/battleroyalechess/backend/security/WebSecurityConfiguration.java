@@ -64,8 +64,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .httpBasic()
-                .and()
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers(PATCH,"/users/{^[\\w]$}/password").authenticated()
@@ -74,7 +72,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/**").hasRole("ADMIN")
                 .antMatchers("/game/**").hasRole("USER")
                 .antMatchers("/lobby/**").hasRole("USER")
-                .antMatchers("/gametypes/**").hasRole("USER")
                 .antMatchers(POST,"/games/{^[\\w]$}/newMove").hasRole("USER")
                 .antMatchers(GET,"/games/{^[\\w]$}/cancelMove").hasRole("USER")
                 //.antMatchers(GET,"/games/{^[\\w]$}/cancelMove").hasRole("USER")
@@ -82,18 +79,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //.antMatchers(POST,"/games/**").permitAll()
                 .antMatchers(POST,"/register").permitAll()
                 .antMatchers(POST,"/authenticate").permitAll()
+                .antMatchers("/gametypes/**").permitAll()
                 .antMatchers(GET,"/players/**").permitAll()
                 .antMatchers(GET,"/highscores/**").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
-                .rememberMe()
-                .alwaysRemember(true)
-                .tokenValiditySeconds(60 * 60 * 24 * 7)
-                .rememberMeCookieName("jwt")
-                .key(JwtSecret.getKey())
-                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
