@@ -32,7 +32,7 @@ export default function LobbyCard({ enterQueue, leaveQueue, queue, gametype }){
 
     useEffect(() => {
 
-        setInQueueFor(queue.find(qp => qp.username === username))
+        setInQueueFor(queue.find(qp => qp.username === username && qp.gametype === name))
 
     }, [queue])
 

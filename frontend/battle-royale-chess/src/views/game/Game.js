@@ -25,7 +25,7 @@ export default function Game() {
         setMoves,
         board, setBoard,
         players, setPlayers,
-        setRound,
+        round, setRound,
         finished, setFinished,
         nextRoundAt, setNextRoundAt,
         zoomLevel, setZoomLevel,
@@ -118,6 +118,8 @@ export default function Game() {
     }
 
     async function makeMove(tile){
+
+        if(round === 0) return
 
         const boardState = board[tile][0]
         const indexOfPlayer = players.indexOf(username) + 1

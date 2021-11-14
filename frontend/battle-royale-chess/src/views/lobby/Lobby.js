@@ -35,6 +35,7 @@ export default function Lobby() {
 
     const [queue, setQueue] = useState([])
     const [isAlreadyInGame, setIsAlreadyInGame] = useState(undefined)
+    const [isQueued, setIsQueued] = useState(false)
 
     const columns = useMemo(
         () => [
@@ -75,140 +76,123 @@ export default function Lobby() {
         [dateFormat]
     )
 
-    let getGameIdInterval, refreshGamesInterval, refreshQueueInterval, isAlreadyInGameInterval
+    useEffect(async () => {
 
-    useEffect(() => {
+        const q = await getQueue()
+        setQueue(q)
 
-        console.log('mounting')
-
-        return () => {
-
-            console.log('unmounting')
-
-            getGameIdInterval = clearInterval(getGameIdInterval)
-            refreshGamesInterval = clearInterval(refreshGamesInterval)
-            refreshQueueInterval = clearInterval(refreshQueueInterval)
-            isAlreadyInGameInterval = clearInterval(isAlreadyInGameInterval)
-
-            console.log('intervals', getGameIdInterval, refreshGamesInterval, refreshQueueInterval, isAlreadyInGameInterval)
-
-        }
+        await refreshGames()
 
     }, [])
 
     useEffect(() => {
 
-        (async () => {
-
-            // clear game context
-            resetGameContext()
-
-            // check if player is already in a game
-            const result = await getGameId(username)
-
-            if(result !== undefined) setIsAlreadyInGame(result)
-            if(result === undefined) setIsAlreadyInGame(false)
-
-
-            if(refreshGamesInterval === undefined){
-
-                refreshGamesInterval = setInterval(refreshGames, 1000 * 10)
-
-            }
-
-        })()
-
-        return () => refreshGamesInterval = clearInterval(refreshGamesInterval)
-
-    }, [username])
-
-    useEffect(() => {
-
-        if(isAlreadyInGame){
-
-            isAlreadyInGameInterval = setInterval(async () => {
-
-                const result = await getGameId(username)
-
-                if(result === undefined){
-
-                    clearInterval(isAlreadyInGameInterval)
-                    setIsAlreadyInGame(false)
-
-                }
-
-            }, 1000)
-
-        }
-
-        return () => isAlreadyInGameInterval = clearInterval(isAlreadyInGameInterval)
-
-    }, [isAlreadyInGame])
-
-    useEffect(() => {
+        let refreshQueueInterval
 
         if(role === 'ADMIN' || role === 'USER'){
 
-            if(refreshGamesInterval === undefined){
+            refreshQueueInterval = setInterval(async () => {
 
-                console.log(role)
+                const result = await getQueue()
+                setQueue(result)
 
-                refreshGamesInterval = setInterval(async () => {
-
-                    const result = await getQueue()
-                    setQueue(result)
-
-                }, 1000 * 10)
-
-            }
+            }, 1000 * 10)
 
         }
 
-        return () => refreshQueueInterval = clearInterval(refreshQueueInterval)
+        return () => clearInterval(refreshQueueInterval)
 
     }, [role])
 
-    async function enterQueue(gametype){
+    useEffect(() => {
 
-        const result = await placeInQueue(gametype)
+        let refreshGamesInterval = setInterval(async () => {
 
-        if(getGameIdInterval === undefined){
+            await refreshGames()
+
+        }, 1000 * 10)
+
+        return () => clearInterval(refreshGamesInterval)
+
+    }, [])
+
+    useEffect(() => {
+
+        let getGameIdInterval
+
+        if(isQueued === true){
+
+        console.log('starting gameId fetch every second')
 
             getGameIdInterval = setInterval(async () => {
 
                 const result = await getGameId(username)
 
-                if(result !== undefined){
-
-                    setGameId(result)
-                    getGameIdInterval = clearInterval(getGameIdInterval)
-                    history.push('/game')
-
-                }
+                if(result) setGameId(result)
 
             }, 1000)
 
         }
+
+        if(isQueued === false){
+
+            console.log('stoppping gameid fetch every second')
+
+            clearInterval(getGameIdInterval)
+
+        }
+
+        return () => clearInterval(getGameIdInterval)
+
+    }, [isQueued])
+
+    useEffect(() => {
+
+        if(gameId) history.push('/game')
+
+    }, [gameId])
+
+    useEffect(() => {
+
+        if(username){
+
+            (async () => {
+
+                const result = await getGameId(username)
+                if(result) setIsAlreadyInGame(result)
+                if(!result) setIsAlreadyInGame(false)
+
+            })()
+
+        }
+
+    }, [username])
+
+    async function enterQueue(gametype){
+
+        const result = await placeInQueue(gametype)
+        setIsQueued(true)
+
+        const result2 = await getQueue()
+        setQueue(result2)
 
     }
 
     async function leaveQueue(){
 
         const result = await removeFromQueue()
+        setIsQueued(false)
 
-        getGameIdInterval = clearInterval(getGameIdInterval)
+        const result2 = await getQueue()
+        setQueue(result2)
 
     }
 
-    useEffect(() => {
+    async function enterGame(isAlreadyInGame){
 
-        if(gameId !== undefined){
+        setGameId(isAlreadyInGame)
 
-            history.push('/game')
-
-        }
-
-    }, [gameId])
+    }
 
     return (
         <div className={styles.container}>
@@ -237,13 +221,7 @@ export default function Lobby() {
                                     )
                                 : (
                                         <BasicContainer>
-                                            <div className={styles.alreadyInGameContainer} onClick={() => {
-
-                                                console.log('i am already in a game')
-
-                                                setGameId(isAlreadyInGame)
-
-                                            }}>
+                                            <div className={styles.alreadyInGameContainer} onClick={() => enterGame(isAlreadyInGame)}>
                                                 Your are already in a game, click here to go to that game.
                                             </div>
                                         </BasicContainer>
