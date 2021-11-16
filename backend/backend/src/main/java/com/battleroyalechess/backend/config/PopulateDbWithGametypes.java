@@ -220,7 +220,7 @@ public class PopulateDbWithGametypes implements CommandLineRunner {
         playerDirections2.add("south");
         playerDirections2.add("west");
         playerDirections2.add("north");
-        createGametype("4PlayerBig+", 4, 3, 20, 10, 15, board2, playerDirections2);
+        createGametype("4PlayerBig+", 4, 6, 15, 5, 5, board2, playerDirections2);
 
     }
 

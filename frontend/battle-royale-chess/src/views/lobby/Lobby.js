@@ -76,12 +76,16 @@ export default function Lobby() {
         [dateFormat]
     )
 
-    useEffect(async () => {
+    useEffect(() => {
 
-        const q = await getQueue()
-        setQueue(q)
+        (async () => {
 
-        await refreshGames()
+            const q = await getQueue()
+            setQueue(q)
+
+            await refreshGames()
+
+        })()
 
     }, [])
 

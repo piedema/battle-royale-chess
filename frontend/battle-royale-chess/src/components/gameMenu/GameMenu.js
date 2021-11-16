@@ -11,40 +11,30 @@ export default function GameMenu(){
     const history = useHistory()
 
     const { round, nextRoundAt, finished } = useContext(GameContext)
-    const roundRef = useRef(round)
-    const nextRoundAtRef = useRef(nextRoundAt)
-    const finishedRef = useRef(finished)
-    
-    roundRef.current = round
-    nextRoundAtRef.current = nextRoundAt
-    finishedRef.current = finished
 
-    const [countdownMessage, setCountdownMessage] = useState('')
+    const [countdown, setCountdown] = useState('')
 
     useEffect(() => {
 
-        const countdownInterval = setInterval(() => {
+        let countdownInterval
 
-            let message
+        countdownInterval = setInterval(() => {
 
-            let timeLeft = (nextRoundAtRef.current - Date.now()) / 1000
+            let timeLeft = (nextRoundAt - Date.now()) / 1000
 
             if(timeLeft === 0) timeLeft = Math.abs(timeLeft)
             if(timeLeft < 0) timeLeft = 0
 
             const timeLeftFixed = timeLeft.toFixed(1)
+            setCountdown(timeLeftFixed)
 
-            if(roundRef.current === 0) message = `Game will start in ${timeLeftFixed} seconds!`
-            if(roundRef.current > 0 && finishedRef.current === false) message = `Round ${roundRef.current} will end in ${timeLeftFixed} seconds!`
-            if(finishedRef.current === true) message = `Game is finished. Click exit to play a new game!`
+            if(finished === true) clearInterval(countdownInterval)
 
-            setCountdownMessage(message)
-
-        }, 50)
+        }, 100)
 
         return () => clearInterval(countdownInterval)
 
-    }, [])
+    }, [round, nextRoundAt, finished])
 
     function exitGame(){
         history.push('/')
@@ -55,10 +45,50 @@ export default function GameMenu(){
             <div className={styles.outer}>
                 <div className={styles.inner}>
                     <div className={styles.countdownContainer}>
-                        { countdownMessage }
+                        {
+                            finished === false && round === 0
+                            ? (
+                                <div>
+                                    Game will start in
+                                        <div className={styles.countdown}>
+                                            <div className={styles.timeBig}>
+                                                {countdown.split('.')[0]}
+                                            </div>
+                                            <div className={styles.timeSmall}>
+                                                {countdown.split('.')[1]}
+                                            </div>
+                                        </div>
+                                        seconds!
+                                </div>
+                            )
+                            : finished === false && round > 0
+                            ? (
+                                <div>
+                                    Round
+                                    <div className={styles.round}>
+                                        {round}
+                                    </div>
+                                    will end in
+                                    <div className={styles.countdown}>
+                                        <div className={styles.timeBig}>
+                                            {countdown.split('.')[0]}
+                                        </div>
+                                        <div className={styles.timeSmall}>
+                                            {countdown.split('.')[1]}
+                                        </div>
+                                    </div>
+                                    seconds!
+                                </div>
+                            )
+                            : (
+                                <div>
+                                    Game is finished. Click exit to play a new game!
+                                </div>
+                            )
+                        }
                     </div>
                     <div className={styles.exitButton} onClick={exitGame} >
-                        Exit this game
+                        Leave game
                     </div>
                 </div>
             </div>
