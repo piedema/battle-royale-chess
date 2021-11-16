@@ -42,13 +42,18 @@
     border: 1px solid darkred;
 }
 
+.underMenuContainer {
+    height: 300px;
+    display: flex;
+    align-items: center;
+}
+
 /* // TODO fix dat de cards normaal scrollen vanaf het begin */
 .lobbyContainer {
     display: flex;
     justify-content: center;
     overflow-x: auto;
     overflow-y: hidden;
-    /* overflow-y: hidden; */
     width: 100%;
 }
 

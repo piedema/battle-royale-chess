@@ -100,7 +100,7 @@ export default function Lobby() {
                 const result = await getQueue()
                 setQueue(result)
 
-            }, 1000 * 10)
+            }, 1000)
 
         }
 
@@ -114,7 +114,7 @@ export default function Lobby() {
 
             await refreshGames()
 
-        }, 1000 * 10)
+        }, 1000)
 
         return () => clearInterval(refreshGamesInterval)
 
@@ -125,8 +125,6 @@ export default function Lobby() {
         let getGameIdInterval
 
         if(isQueued === true){
-
-        console.log('starting gameId fetch every second')
 
             getGameIdInterval = setInterval(async () => {
 
@@ -139,8 +137,6 @@ export default function Lobby() {
         }
 
         if(isQueued === false){
-
-            console.log('stoppping gameid fetch every second')
 
             clearInterval(getGameIdInterval)
 
@@ -155,6 +151,22 @@ export default function Lobby() {
         if(gameId) history.push('/game')
 
     }, [gameId])
+
+    useEffect(() => {
+
+        if(isAlreadyInGame){
+
+            const game = games.find(g => g.gameId === isAlreadyInGame)
+
+            if(game && game.finished === true){
+
+                setIsAlreadyInGame(false)
+
+            }
+
+        }
+
+    }, [games])
 
     useEffect(() => {
 
@@ -204,41 +216,43 @@ export default function Lobby() {
                 Welcome {username} <button onClick={logout} className={styles.logoutBtn}>Logout</button>
             </div>
             <MainMenu />
-            {
-                role === 'ADMIN' || role === 'USER'
-                ?   (
-                        <div className={styles.lobbyContainer}>
-                            {
-                                isAlreadyInGame === false
-                                ?   (
-                                        gametypes.map(g => {
-                                            return  (
-                                                <LobbyCard
-                                                    key={g.gametype}
-                                                    enterQueue={enterQueue}
-                                                    leaveQueue={leaveQueue}
-                                                    queue={queue}
-                                                    gametype={g}
-                                                    />
-                                                )
-                                        })
-                                    )
-                                : (
-                                        <BasicContainer>
-                                            <div className={styles.alreadyInGameContainer} onClick={() => enterGame(isAlreadyInGame)}>
-                                                Your are already in a game, click here to go to that game.
-                                            </div>
-                                        </BasicContainer>
-                                    )
-                            }
+            <div className={styles.underMenuContainer}>
+                {
+                    role === 'ADMIN' || role === 'USER'
+                    ?   (
+                            <div className={styles.lobbyContainer}>
+                                {
+                                    isAlreadyInGame === false
+                                    ?   (
+                                            gametypes.map(g => {
+                                                return  (
+                                                    <LobbyCard
+                                                        key={g.gametype}
+                                                        enterQueue={enterQueue}
+                                                        leaveQueue={leaveQueue}
+                                                        queue={queue}
+                                                        gametype={g}
+                                                        />
+                                                    )
+                                            })
+                                        )
+                                    : (
+                                            <BasicContainer>
+                                                <div className={styles.alreadyInGameContainer} onClick={() => enterGame(isAlreadyInGame)}>
+                                                    Your are already in a game, click here to go to that game.
+                                                </div>
+                                            </BasicContainer>
+                                        )
+                                }
+                            </div>
+                        )
+                    : (
+                        <div className={styles.gamesContainer}>
+                            <BasicTable columns={columns} data={games} />
                         </div>
                     )
-                : (
-                    <div className={styles.gamesContainer}>
-                        <BasicTable columns={columns} data={games} />
-                    </div>
-                )
-            }
+                }
+            </div>
         </div>
     )
 }

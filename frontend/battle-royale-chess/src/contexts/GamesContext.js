@@ -13,7 +13,7 @@ export default function GamesContextProvider({ children }){
         refreshGames:refreshGames
     }
 
-    async function refreshGames(type = 'finished'){
+    async function refreshGames(){
 
         const response = await getGames()
         if(Array.isArray(response)) setGames(response)

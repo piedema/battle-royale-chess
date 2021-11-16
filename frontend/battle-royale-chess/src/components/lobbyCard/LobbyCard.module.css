@@ -1,5 +1,5 @@
 .container {
-    height: 300px;
+    height: 250px;
     width: 240px;
     min-width: 240px;
     margin: 10px;
@@ -32,24 +32,69 @@
     cursor: pointer;
 }
 
-.outerContainer {
-    background: rgb(255,255,255);
+.outer {
     border: 1px solid white;
     border-radius: 6px;
-    height: 100%;
+    padding: 1px;
+    user-select: none;
 }
 
-.innerContainer {
+.inner {
     border-radius: 6px;
-    background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(39,57,35,0.2) 100%);
+    background: rgb(240,240,240);
+    background: linear-gradient(0deg, rgba(255,255,255,0.5) 0%, rgba(39,57,35,0.2) 100%);
     border: 1px solid white;
     height: 100%;
+    box-sizing: border-box;
+    padding: 3px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.playerName {
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    text-shadow:0px 0px 30px #fff;
+    font-size: 22px;
+    word-wrap: break-word;
+}
+
+.subjectContainers {
+    margin-top: auto;
+
+}
+
+.subjectContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: rgba(2200, 255, 255, 0.4);
+    border: 1px solid rgb(240, 240, 240);
+    font-size: 14px;
+    height: fit-content;
     padding: 10px;
     box-sizing: border-box;
-    overflow: hidden;
-    text-align: left;
-    display: flex;
-    flex-flow: column;
+    color: black;
+}
+
+.subjectContainer + .subjectContainer {
+    margin-top: 3px;
+}
+
+.value {
+    font-size: 14px;
+    text-align: right;
+    word-break: break-all;
+}
+
+.piecesContainer {
+    margin-left: 6px;
+}
+
+.piecesContainer div {
+    display: inline-block;
 }
 
 .front {
@@ -89,32 +134,8 @@
 
 /* Styles of items on card itself */
 
-.contentContainer {
-    width: 100%;
-    color: black;
-    border: 1px solid white;
-    border-radius: 10px;
-    background: linear-gradient(180deg, white 0%, #f0f0f0 100%) !important;
-    opacity: 1;
-    padding: 4px;
-    box-sizing: border-box;
-    z-index: 100;
-    position: relative;
-    overflow: hidden;
-    font-size: 14px;
-}
-
-.content {
-    flex-grow: 1;
-}
-
-.contentContainer + .contentContainer {
-    margin-top: 10px;
-}
-
-.title {
-    text-align: center;
-    font-size: 20px;
+.subject {
+    text-align: left;
 }
 
 .decoration {
