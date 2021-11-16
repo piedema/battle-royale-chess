@@ -22,6 +22,8 @@ export default function GameBoard({ makeMove }){
     const [width, setWidth] = useState(0)
     const [height, setHeight] = useState(0)
 
+    console.log(gametype)
+
     useEffect(() => {
 
         const cellSize = 100
@@ -37,10 +39,11 @@ export default function GameBoard({ makeMove }){
         const circleShrinkInNRounds = (
             round > circleShrinkOffset
             ? circleShrinkAfterNRounds - ((round % circleShrinkAfterNRounds) % circleShrinkAfterNRounds)
-            : circleShrinkOffset - round
+            // : (circleShrinkAfterNRounds - ((round % circleShrinkAfterNRounds) % circleShrinkAfterNRounds)) + circleShrinkOffset
+            : (circleShrinkOffset - round) + (circleShrinkAfterNRounds - (circleShrinkOffset % circleShrinkAfterNRounds))
         )
 
-        const roundsLeft = circleShrinkInNRounds === circleShrinkOffset ? 0 : circleShrinkInNRounds
+        const roundsLeft = circleShrinkInNRounds === circleShrinkAfterNRounds && round > circleShrinkOffset ? 0 : circleShrinkInNRounds
 
         if(colKeysSorted.length > 0 && rowKeysSorted.length > 0){
 

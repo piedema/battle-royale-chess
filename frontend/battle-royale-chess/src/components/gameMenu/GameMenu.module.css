@@ -44,9 +44,32 @@
     user-select: none;
     cursor: pointer;
     text-align: center;
+    transition: all .3s;
 }
 
 .exitButton:hover {
     color: white;
-    background-color: orangered;
+    background-color: red;
+    outline: 1px solid orangered;
+    transition: all .3s;
+}
+
+.countdown {
+    margin: 5px;
+    display: inline-block;
+}
+
+.round {
+    margin: 5px;
+    display: inline-block;
+}
+
+.timeBig {
+    display: inline-block;
+    font-size: 30px;
+    
+}
+
+.timeSmall {
+    display: inline-block;
 }

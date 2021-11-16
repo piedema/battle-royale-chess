@@ -42,8 +42,6 @@ export default function Game() {
     // get gameId
     useEffect(() => {
 
-        // if(gameId === undefined) history.push('/')
-
         if(gameId !== undefined) loadGamedata()
 
         return () => {

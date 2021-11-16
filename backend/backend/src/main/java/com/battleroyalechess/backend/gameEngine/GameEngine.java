@@ -244,7 +244,7 @@ public class GameEngine {
         }
 
         // decrease board in finishing x amounts of round and decrease players score for pieces removed
-        if(currentRound % this.gametype.getCircleShrinkAfterNRounds() == 0){
+        if(currentRound % this.gametype.getCircleShrinkAfterNRounds() == 0 && currentRound > this.gametype.getCircleShrinkOffset()){
             // make board smaller
 
             int topLine = 0;
