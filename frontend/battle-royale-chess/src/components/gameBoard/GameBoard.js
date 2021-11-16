@@ -22,8 +22,6 @@ export default function GameBoard({ makeMove }){
     const [width, setWidth] = useState(0)
     const [height, setHeight] = useState(0)
 
-    console.log(gametype)
-
     useEffect(() => {
 
         const cellSize = 100
