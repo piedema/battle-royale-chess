@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import { UserContext } from './UserContext'
 
@@ -8,6 +9,8 @@ import { getUserdata } from '../services/UserService'
 export const AuthenticationContext = createContext({})
 
 export default function AuthenticationContextProvider({ children }){
+
+    const history = useHistory()
 
     const [authState, setAuthState] = useState("pending")
     const { setUsername, setEmail, setRole } = useContext(UserContext)
@@ -43,8 +46,10 @@ export default function AuthenticationContextProvider({ children }){
 
     async function authenticateWithCredentials(username, password){
         const result = await authenticate(username, password)
-        localStorage.setItem('token', result.jwt)
-        loadUserdata()
+        if(result && result.jwt){
+            localStorage.setItem('token', result.jwt)
+            loadUserdata()
+        }
 
     }
 

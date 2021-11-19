@@ -7,6 +7,7 @@ import Piece from '../../components/piece/Piece'
 import { UserContext } from '../../contexts/UserContext'
 
 import colors from '../../assets/js/colors'
+import buttons from './buttons.js'
 
 import styles from './MainMenu.module.css'
 
@@ -24,16 +25,6 @@ export default function MainMenu(){
     const [nCols, setNCols] = useState()
     const [boardJSX, setBoardJSX] = useState([])
     const [perspective, setPerspective] = useState(boardView)
-
-    const buttons = [
-        { text:"Games", link:"/games", role:"SPECTATOR" },
-        { text:"High scores", link:"/highscores", role:"SPECTATOR" },
-        { text:"Set tings", link:"/settings", role:"USER" },
-        { text:"Users", link:"/users", role:"ADMIN" },
-        { text:"Rules", link:"/rules", role:"SPECTATOR" },
-        // { text:"Shop", link:"/shop", role:"USER" },
-        // { text:"About", link:"/about", role:"SPECTATOR" },
-    ]
 
     useEffect(() => {
 
@@ -181,7 +172,7 @@ export default function MainMenu(){
             <div className={styles.menuControls}>
                 <div
                     className={styles.button}
-                    onClick={setRowAndColLength}>
+                    onClick={() => setBoardJSX(createBoard(nRows, nCols))}>
                     Shuffle Menu
                 </div>
                 <div

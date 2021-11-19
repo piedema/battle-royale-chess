@@ -108,6 +108,8 @@ export default function Lobby() {
 
     }, [role])
 
+
+    // deze functie laat de games elke seconde
     useEffect(() => {
 
         let refreshGamesInterval = setInterval(async () => {

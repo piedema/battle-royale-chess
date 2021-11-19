@@ -26,7 +26,7 @@ export async function getUserdata(errorHandler = false){
 export async function getSpecificUserdata(username){
 
     const options = {
-        url:`/users/${username}`,
+        url:`/admin/${username}`,
         method:'GET',
         headers: {
             Authorization:'Bearer ' + localStorage.getItem('token'),
@@ -47,7 +47,7 @@ export async function getSpecificUserdata(username){
 export async function getAllUserdata(){
 
     const options = {
-        url:'/users/all',
+        url:'/admin/users',
         method:'GET',
         headers: {
             Authorization:'Bearer ' + localStorage.getItem('token'),

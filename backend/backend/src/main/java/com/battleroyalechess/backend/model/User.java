@@ -18,8 +18,8 @@ public class User {
     @Column(nullable = false, length = 80)
     private String password;
 
-    @Column(nullable = false)
-    private boolean enabled = true;
+    @Column()
+    private Boolean enabled;
 
     @Column(unique = true)
     private String email;
@@ -51,9 +51,9 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    public boolean getEnabled() { return enabled;}
+    public Boolean getEnabled() { return enabled;}
 
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
 
     public String getEmail() { return email; }
 

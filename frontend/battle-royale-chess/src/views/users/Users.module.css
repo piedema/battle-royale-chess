@@ -1,0 +1,13 @@
+.container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.usersList {
+    display: block;
+    margin: 10px;
+}
+
+.tableIcon {
+    cursor: pointer;
+}

@@ -3,7 +3,6 @@ package com.battleroyalechess.backend.service;
 import com.battleroyalechess.backend.exception.*;
 import com.battleroyalechess.backend.model.Authority;
 import com.battleroyalechess.backend.model.User;
-import com.battleroyalechess.backend.dto.request.UserPostRequest;
 import com.battleroyalechess.backend.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +79,11 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public void deleteUser() {
+        String currentUserName = getCurrentUserName();
+        deleteUser(currentUserName);
+    }
+
     public void deleteUser(String username) {
         if (userExists(username)) userRepository.deleteById(username);
         else throw new UserNotFoundException(username);
@@ -87,26 +91,64 @@ public class UserService {
 
     public void updateUser(User newUser) {
 
+        System.out.println("updateUser " + newUser);
+
         /// to check later: password does not seem to be changed on update
 
-        String username = newUser.getUsername();
         String email = newUser.getEmail();
         String password = newUser.getPassword();
 
-        Optional<User> userOptional = userRepository.findById(username);
         Optional<User> userWithThisEmailOptional = userRepository.findByEmail(email);
 
-        if (userOptional.isEmpty()) throw new UserNotFoundException(username);
-        else if(userWithThisEmailOptional.isPresent()){
+        String currentUserName = getCurrentUserName();
+
+        System.out.println("updateUser2 " + email);
+        System.out.println("updateUser2 " + password);
+        System.out.println("updateUser2 " + userWithThisEmailOptional);
+        System.out.println("updateUser2 " + currentUserName);
+
+        if(userWithThisEmailOptional.isPresent()){
+
             String otherUserUsername = userWithThisEmailOptional.get().getUsername();
-            if(otherUserUsername.equals(username)) throw new EmailNotAvailableException(email);
+
+            if(!currentUserName.equals(otherUserUsername)){
+
+                throw new EmailNotAvailableException(email);
+
+            }
+
         }
-        else {
+
+        System.out.println("updateUser3 " + password);
+
+        if(!password.isEmpty()){
+
+            setPassword(password);
+
+        }
+
+        Optional<User> userOptional = userRepository.findById(currentUserName);
+
+        System.out.println("updateUser4 " + userOptional.get());
+
+        if(userOptional.isPresent()) {
+
             User user = userOptional.get();
-            if(!password.isEmpty()) user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            if(!email.isEmpty()) user.setEmail(newUser.getEmail());
+
+            System.out.println("updateUser5 " + user);
+
+            if (!email.isEmpty()) {
+
+                user.setEmail(email);
+
+            }
+
+            System.out.println("updateUser6 " + user);
+
             userRepository.save(user);
+
         }
+
     }
 
     public Set<Authority> getAuthorities(String username) {
@@ -151,7 +193,7 @@ public class UserService {
 
         }
     }
-
+    
     private boolean isValidPassword(String password) {
         final int MIN_LENGTH = 8;
         final int MIN_DIGITS = 1;
@@ -175,26 +217,28 @@ public class UserService {
         return validPassword;
     }
 
+    public void setPassword(String password) {
+
+        String currentUserName = getCurrentUserName();
+        setPassword(currentUserName, password);
+
+    }
+
     public void setPassword(String username, String password) {
-        if (username.equals(getCurrentUserName())) {
-            if (isValidPassword(password)) {
-                Optional<User> userOptional = userRepository.findById(username);
-                if (userOptional.isPresent()) {
-                    System.out.println(password);
-                    User user = userOptional.get();
-                    user.setPassword(passwordEncoder.encode(password));
-                    userRepository.save(user);
-                }
-                else {
-                    throw new UserNotFoundException(username);
-                }
+        if (isValidPassword(password)) {
+            Optional<User> userOptional = userRepository.findById(username);
+            if (userOptional.isPresent()) {
+                System.out.println("test " + password);
+                User user = userOptional.get();
+                user.setPassword(passwordEncoder.encode(password));
+                userRepository.save(user);
             }
             else {
-                throw new InvalidPasswordException();
+                throw new UserNotFoundException(username);
             }
         }
         else {
-            throw new NotAuthorizedException();
+            throw new InvalidPasswordException();
         }
     }
 

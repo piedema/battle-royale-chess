@@ -20,19 +20,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/all")
-    public ResponseEntity<Object> getUsers() {
-        return ResponseEntity.ok().body(userService.getUsers());
-    }
-
     @GetMapping(value = "")
     public ResponseEntity<Object> getUser() {
         return ResponseEntity.ok().body(userService.getUser());
-    }
-
-    @GetMapping(value = "/{username}")
-    public ResponseEntity<Object> getUser(@PathVariable String username) {
-        return ResponseEntity.ok().body(userService.getUser(username));
     }
 
     @PutMapping(value = "")
@@ -41,32 +31,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(value = "/{username}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
-        userService.deleteUser(username);
+    @DeleteMapping(value = "")
+    public ResponseEntity<Object> deleteUser() {
+        userService.deleteUser();
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
-        return ResponseEntity.ok().body(userService.getAuthorities(username));
-    }
-
-    @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Authority authority) {
-        userService.addAuthority(username, authority);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping(value = "/{username}/authorities/{authority}")
-    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
-        userService.removeAuthority(username, authority);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping(value = "/{username}/password")
-    public ResponseEntity<Object> setPassword(@PathVariable("username") String username, @RequestBody String password) {
-        userService.setPassword(username, password);
+    @PatchMapping(value = "/password")
+    public ResponseEntity<Object> setPassword(@RequestBody String password) {
+        userService.setPassword(password);
         return ResponseEntity.noContent().build();
     }
 
