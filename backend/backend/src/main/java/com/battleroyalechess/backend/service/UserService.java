@@ -89,29 +89,35 @@ public class UserService {
         else throw new UserNotFoundException(username);
     }
 
-    public void updateUser(User newUser) {
+    public void updateUser(User updatedUser) {
 
-        System.out.println("updateUser " + newUser);
-
-        /// to check later: password does not seem to be changed on update
-
-        String email = newUser.getEmail();
-        String password = newUser.getPassword();
+        String username = updatedUser.getUsername();
+        String email = updatedUser.getEmail();
+        String password = updatedUser.getPassword();
+        Set<Authority> authorities = updatedUser.getAuthorities();
 
         Optional<User> userWithThisEmailOptional = userRepository.findByEmail(email);
 
         String currentUserName = getCurrentUserName();
+        Set<Authority> currentUserRoles = getAuthorities(currentUserName);
+        String currentUserRole = "USER";
 
-        System.out.println("updateUser2 " + email);
-        System.out.println("updateUser2 " + password);
-        System.out.println("updateUser2 " + userWithThisEmailOptional);
-        System.out.println("updateUser2 " + currentUserName);
+        for(Authority auth: currentUserRoles) {
+            if (Objects.equals(auth.getAuthority(), "ROLE_ADMIN")) {
+                currentUserRole = "ADMIN";
+                break;
+            }
+        }
+
+        if(!username.equals(currentUserName) && !currentUserRole.equals("ADMIN")) {
+            return;
+        }
 
         if(userWithThisEmailOptional.isPresent()){
 
             String otherUserUsername = userWithThisEmailOptional.get().getUsername();
 
-            if(!currentUserName.equals(otherUserUsername)){
+            if(!username.equals(otherUserUsername)){
 
                 throw new EmailNotAvailableException(email);
 
@@ -119,23 +125,11 @@ public class UserService {
 
         }
 
-        System.out.println("updateUser3 " + password);
-
-        if(!password.isEmpty()){
-
-            setPassword(password);
-
-        }
-
-        Optional<User> userOptional = userRepository.findById(currentUserName);
-
-        System.out.println("updateUser4 " + userOptional.get());
+        Optional<User> userOptional = userRepository.findById(username);
 
         if(userOptional.isPresent()) {
 
             User user = userOptional.get();
-
-            System.out.println("updateUser5 " + user);
 
             if (!email.isEmpty()) {
 
@@ -143,9 +137,56 @@ public class UserService {
 
             }
 
-            System.out.println("updateUser6 " + user);
+            if(password != null){
+
+                if (isValidPassword(password)) {
+
+                    user.setPassword(passwordEncoder.encode(password));
+
+                }
+                else {
+                    throw new InvalidPasswordException();
+                }
+
+            }
+
+            if(currentUserRole.equals("ADMIN")) {
+
+                boolean isUserAdmin = false;
+
+                for(Authority authority: user.getAuthorities()){
+                    if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                        isUserAdmin = true;
+                        break;
+                    }
+                }
+
+                boolean makeUserAdmin = false;
+
+                for(Authority authority: updatedUser.getAuthorities()){
+                    if (authority.getAuthority().equals("ADMIN")) {
+                        makeUserAdmin = true;
+                        break;
+                    }
+                }
+
+                if(!isUserAdmin && makeUserAdmin) {
+                    user.addAuthority("ROLE_ADMIN");
+                }
+
+                if(isUserAdmin && !makeUserAdmin){
+                    user.removeAuthority("ROLE_ADMIN");
+                }
+
+            }
 
             userRepository.save(user);
+
+        }
+
+        if(userOptional.isEmpty()){
+
+            throw new UserNotFoundException(username);
 
         }
 
@@ -189,7 +230,7 @@ public class UserService {
         }
         catch (Exception ex) {
 
-            throw new BadRequestException("Cannot add authority");
+            throw new BadRequestException("Cannot remove authority");
 
         }
     }
@@ -215,31 +256,6 @@ public class UserService {
         if (countSpecial < MIN_SPECIAL) validPassword = false;
 
         return validPassword;
-    }
-
-    public void setPassword(String password) {
-
-        String currentUserName = getCurrentUserName();
-        setPassword(currentUserName, password);
-
-    }
-
-    public void setPassword(String username, String password) {
-        if (isValidPassword(password)) {
-            Optional<User> userOptional = userRepository.findById(username);
-            if (userOptional.isPresent()) {
-                System.out.println("test " + password);
-                User user = userOptional.get();
-                user.setPassword(passwordEncoder.encode(password));
-                userRepository.save(user);
-            }
-            else {
-                throw new UserNotFoundException(username);
-            }
-        }
-        else {
-            throw new InvalidPasswordException();
-        }
     }
 
 }

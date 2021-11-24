@@ -39,7 +39,7 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
-    private Set<Authority> authorities = new HashSet<>();
+    private final Set<Authority> authorities = new HashSet<>();
 
     public String getUsername() { return username; }
     public void setUsername(String username) {
@@ -77,7 +77,17 @@ public class User {
 
     public Set<Authority> getAuthorities() { return authorities; }
 
-    public void setAuthorities(Set<Authority> authorities) { this.authorities = authorities; }
+//    public void setAuthorities(Set<Authority> authorities) {
+//        for(Authority authority: authorities){
+//            addAuthority(authority);
+//        }
+//    }
+
+    public void setAuthorities(Set<String> authorities) {
+        for(String authority: authorities){
+            addAuthority(authority);
+        }
+    }
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);

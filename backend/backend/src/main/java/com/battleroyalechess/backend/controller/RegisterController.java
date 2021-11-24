@@ -23,7 +23,7 @@ public class RegisterController {
     @PostMapping(value = "")
     public ResponseEntity<Object> createUser(@RequestBody UserPostRequest userPostRequest) {
 
-        String newUsername = registerService.createUser(userPostRequest);
+        String newUsername = registerService.create(false, userPostRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();

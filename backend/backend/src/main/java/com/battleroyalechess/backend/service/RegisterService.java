@@ -2,17 +2,21 @@ package com.battleroyalechess.backend.service;
 
 import com.battleroyalechess.backend.dto.request.UserPostRequest;
 import com.battleroyalechess.backend.exception.*;
+import com.battleroyalechess.backend.model.Authority;
 import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+import java.util.Set;
+
 @Service
 public class RegisterService {
 
-    private UserRepository userRepository;
-    private UserService userService;
+    private final UserRepository userRepository;
+    private final UserService userService;
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -22,14 +26,12 @@ public class RegisterService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String createUser(UserPostRequest userPostRequest) {
+    public String create(boolean creatorIsAdmin, UserPostRequest userPostRequest) {
         try {
-
-            // TODO only allow user be created as admin when creater is admin
-            // TODO Unregistered user may also create himself
 
             String username = userPostRequest.getUsername();
             String email = userPostRequest.getEmail();
+            Set<String> authorities = userPostRequest.getAuthorities();
 
             if(userService.userExists(username)) throw new UsernameNotAvailableException();
             if(userService.emailExists(email)) throw new EmailNotAvailableException();
@@ -43,8 +45,8 @@ public class RegisterService {
             user.setEnabled(true);
             user.addAuthority("ROLE_USER");
 
-            for (String s : userPostRequest.getAuthorities()){
-                if(s.equals("ADMIN")) user.addAuthority("ROLE_" + s);
+            if(creatorIsAdmin && authorities.contains("ADMIN")){
+                user.addAuthority("ROLE_ADMIN");
             }
 
             User newUser = userRepository.save(user);
@@ -61,4 +63,71 @@ public class RegisterService {
         }
 
     }
+
+//    public String createUser(UserPostRequest userPostRequest) {
+//        try {
+//
+//            String username = userPostRequest.getUsername();
+//            String email = userPostRequest.getEmail();
+//
+//            if(userService.userExists(username)) throw new UsernameNotAvailableException();
+//            if(userService.emailExists(email)) throw new EmailNotAvailableException();
+//
+//            String encryptedPassword = passwordEncoder.encode(userPostRequest.getPassword());
+//
+//            User user = new User();
+//            user.setUsername(userPostRequest.getUsername());
+//            user.setPassword(encryptedPassword);
+//            user.setEmail(userPostRequest.getEmail());
+//            user.setEnabled(true);
+//            user.addAuthority("ROLE_USER");
+//
+//            User newUser = userRepository.save(user);
+//            return newUser.getUsername();
+//        }
+//        catch(UsernameNotAvailableException | EmailNotAvailableException ex) {
+//
+//            throw ex;
+//
+//        }
+//        catch (Exception ex) {
+//            throw new BadRequestException("Cannot create user");
+//
+//        }
+//
+//    }
+//
+//    public String createAdmin(UserPostRequest userPostRequest) {
+//        try {
+//
+//            String username = userPostRequest.getUsername();
+//            String email = userPostRequest.getEmail();
+//
+//            if(userService.userExists(username)) throw new UsernameNotAvailableException();
+//            if(userService.emailExists(email)) throw new EmailNotAvailableException();
+//
+//            String encryptedPassword = passwordEncoder.encode(userPostRequest.getPassword());
+//
+//            User user = new User();
+//            user.setUsername(userPostRequest.getUsername());
+//            user.setPassword(encryptedPassword);
+//            user.setEmail(userPostRequest.getEmail());
+//            user.setEnabled(true);
+//            user.addAuthority("ROLE_USER");
+//            user.addAuthority("ROLE_ADMIN");
+//
+//            User newUser = userRepository.save(user);
+//            return newUser.getUsername();
+//        }
+//        catch(UsernameNotAvailableException | EmailNotAvailableException ex) {
+//
+//            throw ex;
+//
+//        }
+//        catch (Exception ex) {
+//            throw new BadRequestException("Cannot create user");
+//
+//        }
+//
+//    }
 }

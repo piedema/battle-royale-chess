@@ -99,8 +99,28 @@ export async function doRegister(username, password, email){
         data:{
             username,
             password,
+            email
+        }
+    }
+
+    return apiCaller(options)
+
+}
+
+export async function createUser(username, password, email, authorities){
+
+    const options = {
+        url:'/admin',
+        method:'POST',
+        headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        },
+        data:{
+            username,
+            password,
             email,
-            authorities:["ROLE_USER"]
+            authorities:authorities
         }
     }
 

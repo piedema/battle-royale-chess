@@ -27,6 +27,7 @@ public class UserController {
 
     @PutMapping(value = "")
     public ResponseEntity<Object> updateUser(@RequestBody User user) {
+        System.out.println(user);
         userService.updateUser(user);
         return ResponseEntity.noContent().build();
     }
@@ -34,12 +35,6 @@ public class UserController {
     @DeleteMapping(value = "")
     public ResponseEntity<Object> deleteUser() {
         userService.deleteUser();
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping(value = "/password")
-    public ResponseEntity<Object> setPassword(@RequestBody String password) {
-        userService.setPassword(password);
         return ResponseEntity.noContent().build();
     }
 

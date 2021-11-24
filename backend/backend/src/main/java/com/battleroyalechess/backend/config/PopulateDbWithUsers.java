@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -22,12 +23,12 @@ public class PopulateDbWithUsers implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        createUser("admin", "password", "admin@email.com", new HashSet<>(Arrays.asList("ADMIN")));
-        createUser("peter", "password", "peter@email.com", new HashSet<>(Arrays.asList()));
-        createUser("bart", "password", "bart@email.com", new HashSet<>(Arrays.asList()));
-        createUser("robin", "password", "robin@email.com", new HashSet<>(Arrays.asList()));
-        createUser("laurens", "password", "laurens@email.com", new HashSet<>(Arrays.asList()));
-        createUser("maaike", "password", "maaike@email.com", new HashSet<>(Arrays.asList()));
+        createUser("admin", "password", "admin@email.com", new HashSet<>(List.of("ADMIN")));
+        createUser("peter", "password", "peter@email.com", new HashSet<>(List.of()));
+        createUser("bart", "password", "bart@email.com", new HashSet<>(List.of()));
+        createUser("robin", "password", "robin@email.com", new HashSet<>(List.of()));
+        createUser("laurens", "password", "laurens@email.com", new HashSet<>(List.of()));
+        createUser("maaike", "password", "maaike@email.com", new HashSet<>(List.of()));
 
     }
 
@@ -40,7 +41,7 @@ public class PopulateDbWithUsers implements CommandLineRunner {
         userPostRequest.setEmail(email);
         userPostRequest.setAuthorities(authorities);
 
-        registerService.createUser(userPostRequest);
+        registerService.create(true, userPostRequest);
 
     }
 }

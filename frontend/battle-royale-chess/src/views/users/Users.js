@@ -6,7 +6,7 @@ import moment from 'moment'
 import handleError from '../../helpers/errorHandler'
 import apiCaller from '../../helpers/apiCaller'
 
-import { doRegister } from '../../services/UserService'
+import { createUser, updateUser } from '../../services/UserService'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
@@ -46,7 +46,6 @@ export default function Users() {
             }
 
             const result = await apiCaller(options)
-            console.log(result)
             setUsers(result)
         })()
 
@@ -54,12 +53,26 @@ export default function Users() {
 
     useEffect(() => {
 
+        if(selectedUser === undefined) return
+
         if(selectedUser.username && selectedUser.email){
             reset({
-                usernameInput:selectedUser.username,
-                emailInput:selectedUser.email
+                emailInput:selectedUser.email,
+                passwordInput:'',
+                passwordInput2:'',
+                authoritiesSelect:selectedUser.authorities.find(u => u.authority === "ROLE_ADMIN") ? "ADMIN" : "USER"
             })
         }
+
+        if(selectedUser === "new user"){
+            reset({
+                emailInput:'',
+                passwordInput:'',
+                passwordInput2:'',
+                authoritiesSelect:"USER"
+            })
+        }
+
     }, [selectedUser])
 
 
@@ -102,34 +115,14 @@ export default function Users() {
         []
     )
 
-    function disableUser(event){
-
-        console.log(event)
-
-        // update user to disable
-
-    }
-
-    function saveUser(event){
-
-        console.log('saving user', selectedUser)
-
-        // make update user request
-
-    }
-
     function userSelected(user){
 
-        setSelectedUser(user.original || {})
+        setSelectedUser(user.original || "new user")
         setButtons([
-            {
-                text:"Save user",
-                onClick:saveUser
-            },
             {
                 text:"Back to userlist",
                 onClick:userDeselected
-            },
+            }
         ])
 
     }
@@ -137,7 +130,12 @@ export default function Users() {
     function userDeselected(){
 
         setSelectedUser(undefined)
-        setButtons(buttons.filter(b => b.text !== "Back to userlist"))
+        setButtons([
+            {
+                text:"New user",
+                onClick:userSelected
+            }
+        ])
 
     }
 
@@ -167,15 +165,44 @@ export default function Users() {
 
     async function onFormSubmit(data){
 
-        const {
-            usernameInput,
-            emailInput,
-            passwordInput,
-            passwordInput2
-        } = data
+        const { usernameInput, passwordInput, passwordInput2, emailInput, authoritiesSelect } = data
 
-        // send new values
-        await doRegister(usernameInput, passwordInput, emailInput)
+        if(passwordInput !== passwordInput2) return
+
+        if(selectedUser.username && selectedUser.email){
+
+            const updatedUser = {
+                username:selectedUser.username
+            }
+
+            if(passwordInput) updatedUser.password = passwordInput
+            if(emailInput) updatedUser.email = emailInput
+            if(authoritiesSelect) updatedUser.authorities = [ authoritiesSelect ]
+
+            await updateUser(updatedUser)
+
+        }
+
+        if(selectedUser === "new user"){
+
+            await createUser(usernameInput, passwordInput, emailInput, [authoritiesSelect])
+
+        }
+
+        const options = {
+            url:'/admin/users',
+            method:'GET',
+            headers: {
+                Authorization:'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+        }
+
+        const result = await apiCaller(options)
+        setUsers(result)
+
+        userDeselected()
+
     }
 
     return (
@@ -204,6 +231,13 @@ export default function Users() {
                     <BasicContainer>
                         <form onSubmit={handleSubmit(onFormSubmit)}>
                             <div className={styles.group}>
+                                <div className={styles.title}>
+                                    {
+                                        selectedUser === "new user"
+                                        ? "Create new user"
+                                        : "Update user"
+                                    }
+                                </div>
                                 <div className={styles.pair}>
                                     <div className={styles.name}>
                                         <div>
@@ -211,17 +245,23 @@ export default function Users() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        <input
-                                            type="username"
-                                            id="usernameInput"
-                                            name="usernameInput"
-                                            {...register("usernameInput", {
-                                                // validate:{
-                                                //     value: (value) => value.includes('@'),
-                                                //     message: "moet een @ bevatten jaja"
-                                                // }
-                                            })}
-                                        />
+                                        {
+                                            selectedUser === "new user"
+                                            ? (
+                                                <input
+                                                    type="username"
+                                                    id="usernameInput"
+                                                    name="usernameInput"
+                                                    {...register("usernameInput", {
+                                                        // validate:{
+                                                        //     value: (value) => value.includes('@'),
+                                                        //     message: "moet een @ bevatten jaja"
+                                                        // }
+                                                    })}
+                                                />
+                                            )
+                                            : selectedUser.username
+                                        }
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -266,6 +306,24 @@ export default function Users() {
                                         <input type="password" id="passwordInput2" name="passwordInput2" {...register("passwordInput2")} />
                                     </div>
                                 </div>
+                                <div className={styles.pair}>
+                                    <div className={styles.name}>
+                                        <div>
+                                            Authorities
+                                        </div>
+                                    </div>
+                                    <div className={styles.value}>
+                                        <select id="authoritiesSelect" name="authoritiesSelect" {...register("authoritiesSelect")}>
+                                            <option value="USER">USER</option>
+                                            <option value="ADMIN">ADMIN</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={styles.buttonGroup}>
+                                <button type='submit' className={`${styles.button} ${styles.applyButton}`}>
+                                    Save user
+                                </button>
                             </div>
                         </form>
                     </BasicContainer>

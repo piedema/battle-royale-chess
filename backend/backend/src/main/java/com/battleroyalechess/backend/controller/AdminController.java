@@ -1,11 +1,16 @@
 package com.battleroyalechess.backend.controller;
 
+import com.battleroyalechess.backend.dto.request.UserPostRequest;
 import com.battleroyalechess.backend.model.Authority;
+import com.battleroyalechess.backend.service.RegisterService;
 import com.battleroyalechess.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -13,6 +18,8 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RegisterService registerService;
 
     @GetMapping(value = "/users")
     public ResponseEntity<Object> getUsers() {
@@ -24,32 +31,20 @@ public class AdminController {
         return ResponseEntity.ok().body(userService.getUser(username));
     }
 
-    @GetMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
-        return ResponseEntity.ok().body(userService.getAuthorities(username));
-    }
+    @PostMapping(value = "")
+    public ResponseEntity<Object> createUser(@RequestBody UserPostRequest userPostRequest) {
 
-    @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Authority authority) {
-        userService.addAuthority(username, authority);
-        return ResponseEntity.noContent().build();
-    }
+        String newUsername = registerService.create(true, userPostRequest);
 
-    @DeleteMapping(value = "/{username}/authorities/{authority}")
-    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
-        userService.removeAuthority(username, authority);
-        return ResponseEntity.noContent().build();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+                .buildAndExpand(newUsername).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
         userService.deleteUser(username);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping(value = "/{username}/password")
-    public ResponseEntity<Object> setPassword(@PathVariable("username") String username, @RequestBody String password) {
-        userService.setPassword(username, password);
         return ResponseEntity.noContent().build();
     }
 
