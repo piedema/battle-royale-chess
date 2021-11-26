@@ -1,9 +1,11 @@
 package com.battleroyalechess.backend.controller;
 
+import com.battleroyalechess.backend.dto.request.GametypePostRequest;
 import com.battleroyalechess.backend.dto.request.UserPostRequest;
 import com.battleroyalechess.backend.model.Authority;
 import com.battleroyalechess.backend.service.RegisterService;
 import com.battleroyalechess.backend.service.UserService;
+import com.battleroyalechess.backend.service.GametypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,18 @@ public class AdminController {
     @Autowired
     private UserService userService;
     @Autowired
+    private GametypeService gametypeService;
+    @Autowired
     private RegisterService registerService;
 
     @GetMapping(value = "/users")
     public ResponseEntity<Object> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
+    }
+
+    @GetMapping(value = "/gametypes")
+    public ResponseEntity<Object> getGametypes() {
+        return ResponseEntity.ok().body(gametypeService.getGametypes());
     }
 
     @GetMapping(value = "/{username}")
@@ -40,6 +49,12 @@ public class AdminController {
                 .buildAndExpand(newUsername).toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @PostMapping(value = "")
+    public ResponseEntity<Object> createGametype(@RequestBody GametypePostRequest gametypePostRequest) {
+        gametypeService.createGametype(gametypePostRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{username}")

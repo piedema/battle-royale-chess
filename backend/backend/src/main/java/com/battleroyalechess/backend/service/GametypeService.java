@@ -20,7 +20,7 @@ public class GametypeService {
         this.gametypeRepository = gametypeRepository;
     }
 
-    public void createGametype(GametypePostRequest gametypePostRequest) {
+    public String createGametype(GametypePostRequest gametypePostRequest) {
         try {
 
             Gametype gametype = new Gametype();
@@ -33,7 +33,9 @@ public class GametypeService {
             gametype.setBoard(gametypePostRequest.getBoard());
             gametype.setPlayerDirections(gametypePostRequest.getPlayerDirections());
 
-            gametypeRepository.save(gametype);
+            Gametype newGametype = gametypeRepository.save(gametype);
+
+            return newGametype.getGametype();
         }
         catch (Exception ex) {
             throw new BadRequestException("Cannot create gametype.");
