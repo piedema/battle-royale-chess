@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from 'react'
+import { useEffect, useState, useContext, createRef } from 'react'
 
 import Draggable from "react-draggable"
 
@@ -12,8 +12,6 @@ import styles from './GameBoard.module.css'
 import colors from '../../assets/js/colors'
 
 export default function GameBoard({ makeMove }){
-
-    const dragRef = useRef()
 
     const { username } = useContext(UserContext)
     const { board, players, moveFrom, moveTo, round, finished, gametype, boardPosition, setBoardPosition } = useContext(GameContext)
@@ -127,8 +125,8 @@ export default function GameBoard({ makeMove }){
 
     return (
         <div className={styles.container}>
-            <Draggable dragRef={dragRef}>
-                <div ref={dragRef}>
+            <Draggable>
+                <div>
                     <table className={styles.table} style={{ width:width, height:height}}>
                         <tbody>
                             {boardJSX}

@@ -6,16 +6,15 @@ import moment from 'moment'
 import handleError from '../../helpers/errorHandler'
 import apiCaller from '../../helpers/apiCaller'
 
-import { createUser, updateUser } from '../../services/UserService'
+import { getGametypes, doCreateGametype, doUpdateGametype } from '../../services/GametypesService'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
 
-import { GamesContext } from '../../contexts/GamesContext'
 import { SettingsContext } from '../../contexts/SettingsContext'
 
-import styles from './Users.module.css'
+import styles from './Gametypes.module.css'
 
 export default function Gametypes() {
 
@@ -34,17 +33,17 @@ export default function Gametypes() {
 
         (async () => {
 
-            const options = {
-                url:'/admin/gametypes',
-                method:'GET',
-                headers: {
-                    Authorization:'Bearer ' + localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                },
+            try {
+
+                const response = await getGametypes()
+                setGametypes(response.data)
+
+            } catch (error) {
+
+                setGametypes([])
+
             }
 
-            const result = await apiCaller(options)
-            setGametype(result)
         })()
 
     }, [])
@@ -123,7 +122,7 @@ export default function Gametypes() {
         setSelectedGametype(gametype.original || "new gametype")
         setButtons([
             {
-                text:"Back to gametypelist",
+                text:"Back to gametypes list",
                 onClick:gametypeDeselected
             }
         ])
@@ -165,27 +164,42 @@ export default function Gametypes() {
             if(timePerRoundInput) updatedGametype.timePerRound = timePerRoundInput
             if(initialDelayInput) updatedGametype.initialDelay = initialDelayInput
 
-            await updateGametype(updatedGametype)
+            try {
+
+                await doUpdateGametype(updatedGametype)
+
+            } catch (error) {
+
+                console.log('Could not update gametype', error)
+
+            }
 
         }
 
         if(selectedGametype === "new gametype"){
 
-            await createGametype(gametypeInput, numberOfPlayersSelect, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput)
+            try {
+
+                await doCreateGametype(gametypeInput, numberOfPlayersSelect, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput)
+
+            } catch (error) {
+
+                console.log('Could not create gametype', error)
+
+            }
 
         }
 
-        const options = {
-            url:'/admin/gametypes',
-            method:'GET',
-            headers: {
-                Authorization:'Bearer ' + localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-        }
+        try {
 
-        const result = await apiCaller(options)
-        setGametypes(result)
+            const response = await getGametypes()
+            setGametypes(response.data)
+
+        } catch (error) {
+
+            setGametypes([])
+
+        }
 
         gametypeDeselected()
 

@@ -4,8 +4,6 @@ import styles from './Menu.module.css'
 
 export default function Menu({ title, buttons }){
 
-    console.log('rendering menu with buttons', buttons)
-
     const history = useHistory()
 
     return (

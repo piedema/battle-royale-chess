@@ -20,6 +20,12 @@
     /* text-shadow: -20px 0 var(--titleColor), 0 20px var(--titleColor), 20px 0 var(--titleColor), 0 -20px var(--titleColor); */
 }
 
+.groupTitle {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #7F592B;
+}
+
 .input {
     font-size: 14px;
     padding: 10px;

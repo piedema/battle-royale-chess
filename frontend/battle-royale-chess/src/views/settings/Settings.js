@@ -44,7 +44,7 @@ export default function Settings() {
         const updatedUser = { username:username }
 
         if(emailInput) updatedUser.email = emailInput
-        if(passwordInput === passwordInput2) updatedUser.password = passwordInput
+        if(passwordInput.length > 0 && passwordInput === passwordInput2) updatedUser.password = passwordInput
 
         localStorage.setItem('language', languageSelect)
         localStorage.setItem('dateTime', dateTimeSelect)

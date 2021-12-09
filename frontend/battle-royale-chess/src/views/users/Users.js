@@ -1,24 +1,29 @@
 import { useEffect, useContext, useMemo, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import { useForm } from 'react-hook-form'
 import moment from 'moment'
+import axios from 'axios'
 
 import handleError from '../../helpers/errorHandler'
 import apiCaller from '../../helpers/apiCaller'
 
-import { createUser, updateUser } from '../../services/UserService'
+import { createUser, updateUser, getAllUserdata } from '../../services/UserService'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
 
-import { GamesContext } from '../../contexts/GamesContext'
+import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 import { SettingsContext } from '../../contexts/SettingsContext'
 
 import styles from './Users.module.css'
 
 export default function Users() {
 
+    const history = useHistory()
+
+    const { authenticate } = useContext(AuthenticationContext)
     const { dateFormat } = useContext(SettingsContext)
 
     const [users, setUsers] = useState([])
@@ -139,68 +144,50 @@ export default function Users() {
 
     }
 
-    // async function onFormSubmit(data){
-    //
-    //     const {
-    //         emailInput,
-    //         passwordInput,
-    //         passwordInput2,
-    //         enabledSelect,
-    //         authoritySelect
-    //     } = data
-    //
-    //     const updatedUser = { username:username }
-    //
-    //     if(emailInput) updatedUser.email = emailInput
-    //     if(passwordInput === passwordInput2) updatedUser.password = passwordInput
-    //     if(enabledSelect) updatedUser.enabled = enabledSelect
-    //     if(authoritySelect) updatedUser.
-    //
-    //     // send new values
-    //     await updateUser(updatedUser)
-    //
-    //     // load new data
-    //     loadUserdata()
-    // }
-
     async function onFormSubmit(data){
 
         const { usernameInput, passwordInput, passwordInput2, emailInput, authoritiesSelect } = data
-
-        if(passwordInput !== passwordInput2) return
-
-        if(selectedUser.username && selectedUser.email){
-
-            const updatedUser = {
-                username:selectedUser.username
-            }
-
-            if(passwordInput) updatedUser.password = passwordInput
-            if(emailInput) updatedUser.email = emailInput
-            if(authoritiesSelect) updatedUser.authorities = [ authoritiesSelect ]
-
-            await updateUser(updatedUser)
-
-        }
 
         if(selectedUser === "new user"){
 
             await createUser(usernameInput, passwordInput, emailInput, [authoritiesSelect])
 
+        } else {
+
+            const updatedUser = {
+                username:selectedUser.username
+            }
+
+            if(emailInput){
+
+                updatedUser.email = emailInput
+
+            }
+
+            if(passwordInput.length > 0 && passwordInput === passwordInput2){
+
+                updatedUser.password = passwordInput
+
+            }
+
+            if(authoritiesSelect){
+
+                updatedUser.authorities = [ authoritiesSelect ]
+
+            }
+
+            await updateUser(updatedUser)
+
         }
 
-        const options = {
-            url:'/admin/users',
-            method:'GET',
-            headers: {
-                Authorization:'Bearer ' + localStorage.getItem('token'),
-                'Content-Type': 'application/json'
-            },
-        }
+        const result = await getAllUserdata(
+            async () => {
+                return await authenticate()
+                // history.push('/')
+            }
+        )
 
-        const result = await apiCaller(options)
         setUsers(result)
-
         userDeselected()
 
     }

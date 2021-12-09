@@ -51,7 +51,7 @@ export default function GameMenu(){
                                 <div>
                                     Game will start in
                                         <div className={styles.countdown}>
-                                            <div className={styles.timeBig}>
+                                            <div className={styles.timeBig} style={{ color:`${countdown <= 10 ? 'red' : 'black'}`}}>
                                                 {countdown.split('.')[0]}
                                             </div>
                                             <div className={styles.timeSmall}>
@@ -64,13 +64,16 @@ export default function GameMenu(){
                             : finished === false && round > 0
                             ? (
                                 <div>
-                                    Round
-                                    <div className={styles.round}>
-                                        {round}
+                                    <div>
+                                        <div className={styles.test}>
+                                            Round
+                                        </div>
+                                        <div className={styles.round}>
+                                            {round}
+                                        </div>
                                     </div>
-                                    will end in
                                     <div className={styles.countdown}>
-                                        <div className={styles.timeBig}>
+                                        <div className={styles.timeBig} style={{ color:`${countdown <= 10 ? 'red' : 'black'}`}}>
                                             {countdown.split('.')[0]}
                                         </div>
                                         <div className={styles.timeSmall}>
@@ -87,6 +90,10 @@ export default function GameMenu(){
                             )
                         }
                     </div>
+                </div>
+            </div>
+            <div className={styles.outer}>
+                <div className={styles.inner}>
                     <div className={styles.exitButton} onClick={exitGame} >
                         Leave game
                     </div>

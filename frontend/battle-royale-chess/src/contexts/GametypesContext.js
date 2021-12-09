@@ -15,8 +15,16 @@ export default function GametypesContextProvider({ children }){
 
     useEffect(async () => {
 
-        const response = await getGametypes()
-        if(Array.isArray(response)) setGametypes(response)
+        try {
+
+            const result = await getGametypes()
+            setGametypes(result.data)
+
+        } catch (error) {
+
+            setGametypes([])
+
+        }
 
     }, [])
 

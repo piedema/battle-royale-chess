@@ -1,8 +1,6 @@
 import axios from 'axios'
 
-import handleError from '../helpers/errorHandler'
-
-export async function fetchPlayerdata(){
+export async function getPlayerdata(){
 
     const options = {
         url:'/players',
@@ -13,16 +11,11 @@ export async function fetchPlayerdata(){
         },
     }
 
-    try {
-        return await axios(options)
-    } catch (error) {
-        handleError(error)
-        return []
-    }
+    return await axios(options)
 
 }
 
-export async function fetchAllPlayersdata(){
+export async function getAllPlayersdata(){
 
     const options = {
         url:'/players/all',
@@ -33,11 +26,6 @@ export async function fetchAllPlayersdata(){
         },
     }
 
-    try {
-        return await axios(options)
-    } catch (error) {
-        handleError(error)
-        return []
-    }
+    return await axios(options)
 
 }

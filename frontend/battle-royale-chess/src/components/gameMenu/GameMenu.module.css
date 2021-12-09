@@ -1,7 +1,6 @@
 .container {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
     width: 600px;
 }
 
@@ -11,6 +10,7 @@
     border: 1px solid white;
     border-radius: 6px;
     padding: 3px;
+    margin: 10px;
 }
 
 .inner {
@@ -67,7 +67,7 @@
 .timeBig {
     display: inline-block;
     font-size: 30px;
-    
+
 }
 
 .timeSmall {

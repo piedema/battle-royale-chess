@@ -3,8 +3,7 @@ import { useHistory } from 'react-router-dom'
 
 import { UserContext } from './UserContext'
 
-import { authenticate } from '../services/AuthenticationService'
-import { getUserdata } from '../services/UserService'
+import { getUserdata, doAuthenticate, doRegister, extractRole } from '../services/UserService'
 
 export const AuthenticationContext = createContext({})
 
@@ -17,55 +16,91 @@ export default function AuthenticationContextProvider({ children }){
 
     const contextData = {
         authState:authState,
-        authenticate:authenticateWithCredentials,
-        authenticateAsSpectator:authenticateAsSpectator,
-        loadUserdata:loadUserdata,
+        authenticate:authenticate,
+        register:register,
+        continueAsSpectator:continueAsSpectator,
         logout:logout
     }
 
     useEffect(() => {
-        if(!localStorage.getItem('token')) return setAuthState("failed")
-        loadUserdata()
+
+        const token = localStorage.getItem('token')
+
+        if(!token){
+
+            return setAuthState("failed")
+
+        }
+
+        if(token){
+
+            ;(async () => {
+
+                try {
+
+                    const userdata = await getUserdata()
+
+                    setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities))
+
+                } catch (error) {
+
+                    console.log(error)
+
+                    unsetUser()
+
+                }
+
+            })()
+
+        }
+
     }, [])
 
-    async function loadUserdata(){
+    async function authenticate(username, password){
+
         try {
-            const result = await getUserdata()
-            setAuthState("success")
-            setUsername(result.username)
-            setEmail(result.email)
 
-            if(result.authorities.map(a => a.authority).includes("ROLE_ADMIN")) return setRole("ADMIN")
-            setRole("USER")
-            console.log("loading data is succes", result)
-        } catch (error){
-            setAuthState("failed")
-            console.log(error)
+            const result = await doAuthenticate(username, password)
+
+            localStorage.setItem('token', result.data.jwt)
+
+            const userdata = await getUserdata()
+
+            setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities))
+
+        } catch (error) {
+
+            unsetUser()
+
         }
     }
 
-    async function authenticateWithCredentials(username, password){
-        const result = await authenticate(username, password)
-        if(result && result.jwt){
-            localStorage.setItem('token', result.jwt)
-            loadUserdata()
-        }
-
+    async function register(username, password, email){
+        await doRegister(username, password, email)
+        authenticate(username, password)
     }
 
-    function authenticateAsSpectator(){
-        setUsername("Spectator")
-        setRole("SPECTATOR")
-        setAuthState("success")
-
+    function continueAsSpectator(){
+        setUser("Spectator", undefined, "SPECTATOR")
     }
 
     function logout(){
         localStorage.removeItem('token')
-        setAuthState("failed")
+        unsetUser()
+    }
+
+    function setUser(username, email, role){
+        setUsername(username)
+        setEmail(email)
+        setRole(role)
+        setAuthState("success")
+    }
+
+    function unsetUser(){
         setUsername(undefined)
         setEmail(undefined)
         setRole(undefined)
+        setAuthState("failed")
     }
 
     return (

@@ -35,31 +35,39 @@ public class AdminController {
         return ResponseEntity.ok().body(gametypeService.getGametypes());
     }
 
-    @GetMapping(value = "/{username}")
+    @GetMapping(value = "/user/{username}")
     public ResponseEntity<Object> getUser(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getUser(username));
     }
 
-    @PostMapping(value = "")
+    @GetMapping(value = "/gametype/{gametype}")
+    public ResponseEntity<Object> getGametype(@PathVariable String gametype) {
+        return ResponseEntity.ok().body(gametypeService.getGametype(gametype));
+    }
+
+    @PostMapping(value = "/user")
     public ResponseEntity<Object> createUser(@RequestBody UserPostRequest userPostRequest) {
-
         String newUsername = registerService.create(true, userPostRequest);
-
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();
-
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping(value = "")
+    @PostMapping(value = "/gametype")
     public ResponseEntity<Object> createGametype(@RequestBody GametypePostRequest gametypePostRequest) {
         gametypeService.createGametype(gametypePostRequest);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(value = "/{username}")
+    @DeleteMapping(value = "/user/{username}")
     public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
         userService.deleteUser(username);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/gametype/{gametype}")
+    public ResponseEntity<Object> deleteGametype(@PathVariable("gametype") String gametype) {
+        gametypeService.deleteGametype(gametype);
         return ResponseEntity.noContent().build();
     }
 

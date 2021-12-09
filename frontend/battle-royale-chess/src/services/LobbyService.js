@@ -1,5 +1,4 @@
-import handleError from '../helpers/errorHandler'
-import apiCaller from '../helpers/apiCaller'
+import axios from 'axios'
 
 export async function getQueue(){
 
@@ -12,17 +11,11 @@ export async function getQueue(){
         },
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return []
-        }
-    )
+    return await axios(options)
 
 }
 
-export async function placeInQueue(gametype){
+export async function doPlaceInQueue(gametype){
 
     const options = {
         url:'/lobby/queue/' + gametype,
@@ -33,11 +26,11 @@ export async function placeInQueue(gametype){
         },
     }
 
-    return apiCaller(options)
+    return await axios(options)
 
 }
 
-export async function removeFromQueue(){
+export async function doRemoveFromQueue(){
 
     const options = {
         url:'/lobby/queue/',
@@ -48,7 +41,7 @@ export async function removeFromQueue(){
         },
     }
 
-    return apiCaller(options)
+    return await axios(options)
 
 }
 
@@ -63,12 +56,6 @@ export async function getGameId(username){
         },
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return undefined
-        }
-    )
+    return await axios(options)
 
 }
