@@ -4,7 +4,7 @@ import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
 
-import { fetchAllPlayersdata } from '../../services/PlayerService'
+import { getAllPlayersdata } from '../../services/PlayerService'
 
 import styles from './Highscores.module.css'
 
@@ -16,7 +16,7 @@ export default function Highscores() {
 
         (async () => {
 
-            const players = await fetchAllPlayersdata()
+            const players = await getAllPlayersdata()
             setPlayers([...players.data])
 
         })()

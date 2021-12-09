@@ -1,5 +1,37 @@
-import handleError from '../helpers/errorHandler'
-import apiCaller from '../helpers/apiCaller'
+import axios from 'axios'
+
+export async function doAuthenticate(username, password){
+
+    const options = {
+        url:'/authenticate',
+        method:'POST',
+        data:{
+            username,
+            password
+        }
+    }
+
+    return await axios(options)
+
+}
+
+export function extractRole(authorities){
+
+    let role = "USER"
+
+    for(let a of authorities){
+
+        if(a.authority === "ROLE_ADMIN"){
+
+            role = "ADMIN"
+
+        }
+
+    }
+
+    return role
+
+}
 
 export async function getUserdata(errorHandler = false){
 
@@ -12,21 +44,14 @@ export async function getUserdata(errorHandler = false){
         }
     }
 
-    return apiCaller(
-        options,
-        error => {
-            if(errorHandler !== false) errorHandler()
-            handleError(error)
-            return {}
-        }
-    )
+    return await axios(options)
 
 }
 
 export async function getSpecificUserdata(username){
 
     const options = {
-        url:`/users/${username}`,
+        url:`/admin/${username}`,
         method:'GET',
         headers: {
             Authorization:'Bearer ' + localStorage.getItem('token'),
@@ -34,20 +59,14 @@ export async function getSpecificUserdata(username){
         }
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return {}
-        }
-    )
+    return await axios(options)
 
 }
 
-export async function getAllUserdata(){
+export async function getAllUserdata(errorHandler = false){
 
     const options = {
-        url:'/users/all',
+        url:'/admin/users',
         method:'GET',
         headers: {
             Authorization:'Bearer ' + localStorage.getItem('token'),
@@ -55,13 +74,7 @@ export async function getAllUserdata(){
         }
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return []
-        }
-    )
+    return await axios(options)
 
 }
 
@@ -77,13 +90,7 @@ export async function updateUser(updatedUser){
         data:updatedUser
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return []
-        }
-    )
+    return await axios(options)
 
 }
 
@@ -99,11 +106,31 @@ export async function doRegister(username, password, email){
         data:{
             username,
             password,
-            email,
-            authorities:["ROLE_USER"]
+            email
         }
     }
 
-    return apiCaller(options)
+    return await axios(options)
+
+}
+
+export async function createUser(username, password, email, authorities){
+
+    const options = {
+        url:'/admin/user',
+        method:'POST',
+        headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        },
+        data:{
+            username,
+            password,
+            email,
+            authorities:authorities
+        }
+    }
+
+    return await axios(options)
 
 }

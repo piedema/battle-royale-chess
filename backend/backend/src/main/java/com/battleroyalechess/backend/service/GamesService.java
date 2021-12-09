@@ -53,7 +53,7 @@ public class GamesService {
 
         }
 
-        throw new GameNotFoundException();
+        return null;
 
     }
 

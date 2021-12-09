@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form"
 
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
-import { doRegister } from '../../services/UserService'
-
 import BasicContainer from '../../components/basicContainer/BasicContainer.js'
 
 import styles from './Login.module.css'
@@ -22,19 +20,18 @@ export default function Login() {
     const [registerPasswordCheckValue, setRegisterPasswordCheckValue] = useState("")
     const [registerEmailValue, setRegisterEmailValue] = useState("")
 
-    const { authenticate, authenticateAsSpectator } = useContext(AuthenticationContext)
+    const { authenticate, register, continueAsSpectator } = useContext(AuthenticationContext)
 
     async function handleLogin(){
         authenticate(loginUsernameValue, loginPasswordValue)
     }
 
-    function continueAsSpectator(){
-        authenticateAsSpectator()
+    function handleRegister(){
+        register(registerUsernameValue, registerPasswordValue, registerEmailValue)
     }
 
-    async function handleRegister(){
-        await doRegister(registerUsernameValue, registerPasswordValue, registerEmailValue)
-        authenticate(registerUsernameValue, registerPasswordValue)
+    function handleLoginAsSpectator(){
+        continueAsSpectator()
     }
 
     return (
@@ -42,8 +39,9 @@ export default function Login() {
             <div className={styles.title}>Battle Royale Chess</div>
             <form onSubmit={handleSubmit(handleLogin)} id="login" className={styles.formContainer}>
                 <BasicContainer>
-                    Login
-                    <br />
+                    <div className={styles.groupTitle}>
+                        Login
+                    </div>
                     <input
                         name="loginUsername"
                         type="text"
@@ -67,8 +65,9 @@ export default function Login() {
             </form>
             <form onSubmit={handleSubmit(handleRegister)} id="register" className={styles.formContainer}>
                 <BasicContainer>
-                    Register as new player
-                    <br />
+                    <div className={styles.groupTitle}>
+                        Register as new player
+                    </div>
                     <input
                         name="registerUsername"
                         type="text"
@@ -110,9 +109,7 @@ export default function Login() {
             </form>
             <div id="spectator" className={styles.formContainer}>
                 <BasicContainer>
-                    Continue as spectator
-                    <br />
-                    <button className={styles.spectatorBtn} type="button" onClick={continueAsSpectator}>Continue as Spectator</button><br />
+                    <button className={styles.spectatorBtn} type="button" onClick={handleLoginAsSpectator}>Continue as Spectator</button><br />
                 </BasicContainer>
             </div>
         </div>

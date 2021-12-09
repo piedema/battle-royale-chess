@@ -1,5 +1,4 @@
-import handleError from '../helpers/errorHandler'
-import apiCaller from '../helpers/apiCaller'
+import axios from 'axios'
 
 export async function getGametypes(){
 
@@ -11,12 +10,56 @@ export async function getGametypes(){
         },
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return []
+    return await axios(options)
+
+}
+
+export async function doUpdateGametype(updatedGametype){
+
+    const options = {
+        url:'/admin/gametype',
+        method:'PUT',
+        headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        },
+        data:updatedGametype
+    }
+
+    return await axios(options)
+
+}
+
+export async function doCreateGametype(
+    gametype,
+    numberOfPlayers,
+    circleShrinkAfterNRounds,
+    circleShrinkOffset,
+    timePerRound,
+    initialDelay,
+    board,
+    playerDirections
+){
+
+    const options = {
+        url:'/admin/gametype',
+        method:'POST',
+        headers: {
+            Authorization:'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        },
+        data:{
+            gametype,
+            numberOfPlayers,
+            circleShrinkAfterNRounds,
+            circleShrinkOffset,
+            timePerRound,
+            initialDelay,
+            board,
+            playerDirections
         }
-    )
+    }
+
+    return await axios(options)
 
 }

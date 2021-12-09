@@ -1,5 +1,4 @@
-import handleError from '../helpers/errorHandler'
-import apiCaller from '../helpers/apiCaller'
+import axios from 'axios'
 
 export async function getGames(){
 
@@ -12,13 +11,7 @@ export async function getGames(){
         },
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return []
-        }
-    )
+    return await axios(options)
 
 }
 
@@ -33,17 +26,11 @@ export async function getGamedata(gameId){
         },
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return undefined
-        }
-    )
+    return await axios(options)
 
 }
 
-export async function postNewMove(gameId, from, to){
+export async function doNewMove(gameId, from, to){
 
     const options = {
         url:'/games/' + gameId + "/newMove",
@@ -55,17 +42,11 @@ export async function postNewMove(gameId, from, to){
         data:{ from, to }
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return {}
-        }
-    )
+    return await axios(options)
 
 }
 
-export async function cancelMove(gameId, username){
+export async function doCancelMove(gameId, username){
 
     // this endpoint is not available on backend yet
 
@@ -78,12 +59,6 @@ export async function cancelMove(gameId, username){
         },
     }
 
-    return apiCaller(
-        options,
-        error => {
-            handleError(error)
-            return {}
-        }
-    )
+    return await axios(options)
 
 }

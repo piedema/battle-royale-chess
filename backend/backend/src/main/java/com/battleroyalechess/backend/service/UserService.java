@@ -3,7 +3,6 @@ package com.battleroyalechess.backend.service;
 import com.battleroyalechess.backend.exception.*;
 import com.battleroyalechess.backend.model.Authority;
 import com.battleroyalechess.backend.model.User;
-import com.battleroyalechess.backend.dto.request.UserPostRequest;
 import com.battleroyalechess.backend.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,33 +79,117 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public void deleteUser() {
+        String currentUserName = getCurrentUserName();
+        deleteUser(currentUserName);
+    }
+
     public void deleteUser(String username) {
         if (userExists(username)) userRepository.deleteById(username);
         else throw new UserNotFoundException(username);
     }
 
-    public void updateUser(User newUser) {
+    public void updateUser(User updatedUser) {
 
-        /// to check later: password does not seem to be changed on update
+        String username = updatedUser.getUsername();
+        String email = updatedUser.getEmail();
+        String password = updatedUser.getPassword();
+        Set<Authority> authorities = updatedUser.getAuthorities();
 
-        String username = newUser.getUsername();
-        String email = newUser.getEmail();
-        String password = newUser.getPassword();
-
-        Optional<User> userOptional = userRepository.findById(username);
         Optional<User> userWithThisEmailOptional = userRepository.findByEmail(email);
 
-        if (userOptional.isEmpty()) throw new UserNotFoundException(username);
-        else if(userWithThisEmailOptional.isPresent()){
+        String currentUserName = getCurrentUserName();
+        Set<Authority> currentUserRoles = getAuthorities(currentUserName);
+        String currentUserRole = "USER";
+
+        for(Authority auth: currentUserRoles) {
+            if (Objects.equals(auth.getAuthority(), "ROLE_ADMIN")) {
+                currentUserRole = "ADMIN";
+                break;
+            }
+        }
+
+        if(!username.equals(currentUserName) && !currentUserRole.equals("ADMIN")) {
+            return;
+        }
+
+        if(userWithThisEmailOptional.isPresent()){
+
             String otherUserUsername = userWithThisEmailOptional.get().getUsername();
-            if(otherUserUsername.equals(username)) throw new EmailNotAvailableException(email);
+
+            if(!username.equals(otherUserUsername)){
+
+                throw new EmailNotAvailableException(email);
+
+            }
+
         }
-        else {
+
+        Optional<User> userOptional = userRepository.findById(username);
+
+        if(userOptional.isPresent()) {
+
             User user = userOptional.get();
-            if(!password.isEmpty()) user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            if(!email.isEmpty()) user.setEmail(newUser.getEmail());
+
+            if (!email.isEmpty()) {
+
+                user.setEmail(email);
+
+            }
+
+            if(password != null){
+
+                if (isValidPassword(password)) {
+
+                    user.setPassword(passwordEncoder.encode(password));
+
+                }
+                else {
+                    throw new InvalidPasswordException();
+                }
+
+            }
+
+            if(currentUserRole.equals("ADMIN")) {
+
+                boolean isUserAdmin = false;
+
+                for(Authority authority: user.getAuthorities()){
+                    if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                        isUserAdmin = true;
+                        break;
+                    }
+                }
+
+                boolean makeUserAdmin = false;
+
+                for(Authority authority: updatedUser.getAuthorities()){
+                    if (authority.getAuthority().equals("ADMIN")) {
+                        makeUserAdmin = true;
+                        break;
+                    }
+                }
+
+                if(!isUserAdmin && makeUserAdmin) {
+                    user.addAuthority("ROLE_ADMIN");
+                }
+
+                if(isUserAdmin && !makeUserAdmin){
+                    user.removeAuthority("ROLE_ADMIN");
+                }
+
+            }
+
             userRepository.save(user);
+
         }
+
+        if(userOptional.isEmpty()){
+
+            throw new UserNotFoundException(username);
+
+        }
+
     }
 
     public Set<Authority> getAuthorities(String username) {
@@ -147,11 +230,11 @@ public class UserService {
         }
         catch (Exception ex) {
 
-            throw new BadRequestException("Cannot add authority");
+            throw new BadRequestException("Cannot remove authority");
 
         }
     }
-
+    
     private boolean isValidPassword(String password) {
         final int MIN_LENGTH = 8;
         final int MIN_DIGITS = 1;
@@ -173,29 +256,6 @@ public class UserService {
         if (countSpecial < MIN_SPECIAL) validPassword = false;
 
         return validPassword;
-    }
-
-    public void setPassword(String username, String password) {
-        if (username.equals(getCurrentUserName())) {
-            if (isValidPassword(password)) {
-                Optional<User> userOptional = userRepository.findById(username);
-                if (userOptional.isPresent()) {
-                    System.out.println(password);
-                    User user = userOptional.get();
-                    user.setPassword(passwordEncoder.encode(password));
-                    userRepository.save(user);
-                }
-                else {
-                    throw new UserNotFoundException(username);
-                }
-            }
-            else {
-                throw new InvalidPasswordException();
-            }
-        }
-        else {
-            throw new NotAuthorizedException();
-        }
     }
 
 }

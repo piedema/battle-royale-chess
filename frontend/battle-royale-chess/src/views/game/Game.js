@@ -5,7 +5,7 @@ import { GametypesContext } from '../../contexts/GametypesContext'
 import { UserContext } from '../../contexts/UserContext'
 import { GameContext } from '../../contexts/GameContext'
 
-import { getGamedata, postNewMove, cancelMove } from '../../services/GamesService'
+import { getGamedata, doNewMove, doCancelMove } from '../../services/GamesService'
 
 import GameBoard from '../../components/gameBoard/GameBoard'
 import GameMenu from '../../components/gameMenu/GameMenu'
@@ -71,8 +71,15 @@ export default function Game() {
 
             ;(async () => {
 
-                const result = await postNewMove(gameId, moveFrom, moveTo)
-                console.log(result)
+                try {
+
+                    const result = await doNewMove(gameId, moveFrom, moveTo)
+
+                } catch (error) {
+
+                    console.log('Could not psot move to server', error)
+
+                }
 
             })()
 
@@ -82,9 +89,10 @@ export default function Game() {
 
     async function loadGamedata(){
 
-        const gamedata = await getGamedata(gameId)
+        try {
 
-        if(gamedata !== undefined){
+            const result = await getGamedata(gameId)
+            const gamedata = result.data
 
             setMoveFrom(undefined)
             setMoveTo(undefined)
@@ -99,9 +107,11 @@ export default function Game() {
             setGameStartedAt(gamedata.gameStartedAt)
             setGameEndedAt(gamedata.gameEndedAt)
 
-        }
+        } catch (error) {
 
-        if(gamedata === undefined) history.push('/')
+            history.push('/')
+
+        }
 
     }
 
@@ -137,7 +147,16 @@ export default function Game() {
 
             setMoveFrom(undefined)
             setMoveTo(undefined)
-            cancelMove(gameId, username)
+
+            try {
+
+                doCancelMove(gameId, username)
+
+            } catch (error) {
+
+                console.log('Could not cancel move at server', error)
+
+            }
 
         }
 

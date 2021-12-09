@@ -8,6 +8,8 @@ import Highscores from './views/highscores/Highscores'
 import Settings from './views/settings/Settings'
 import Rules from './views/rules/Rules'
 import Game from './views/game/Game'
+import Users from './views/users/Users'
+import Gametypes from './views/gametypes/Gametypes'
 
 import { AuthenticationContext } from './contexts/AuthenticationContext'
 
@@ -40,6 +42,12 @@ export default function App() {
                             </Route>
                             <Route path="/game">
                                 <Game />
+                            </Route>
+                            <Route path="/users">
+                                <Users />
+                            </Route>
+                            <Route path="/gametypes">
+                                <Gametypes />
                             </Route>
                         </Switch>
                     </Router>

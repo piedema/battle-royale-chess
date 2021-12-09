@@ -44,7 +44,7 @@ export default function Settings() {
         const updatedUser = { username:username }
 
         if(emailInput) updatedUser.email = emailInput
-        if(passwordInput === passwordInput2) updatedUser.password = passwordInput
+        if(passwordInput.length > 0 && passwordInput === passwordInput2) updatedUser.password = passwordInput
 
         localStorage.setItem('language', languageSelect)
         localStorage.setItem('dateTime', dateTimeSelect)
@@ -146,10 +146,10 @@ export default function Settings() {
                                 </div>
                             </div>
                             <div className={styles.value}>
-                            <select id="dateTimeSelect" name="dateTimeSelect" {...register("dateTimeSelect")}>
-                                <option value="DD-MM-YYYY HH:mm:ss">dd-mm-yyyy hh:mm:ss</option>
-                                <option value="MM-DD-YYYY HH:mm:ss">mm-dd-yyyy hh:mm:ss</option>
-                            </select>
+                                <select id="dateTimeSelect" name="dateTimeSelect" {...register("dateTimeSelect")}>
+                                    <option value="DD-MM-YYYY HH:mm:ss">dd-mm-yyyy hh:mm:ss</option>
+                                    <option value="MM-DD-YYYY HH:mm:ss">mm-dd-yyyy hh:mm:ss</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -164,10 +164,10 @@ export default function Settings() {
                                 </div>
                             </div>
                             <div className={styles.value}>
-                            <select id="boardViewSelect" name="boardViewSelect" {...register("boardViewSelect")}>
-                                <option value="2d">2d</option>
-                                <option value="3d">3d</option>
-                            </select>
+                                <select id="boardViewSelect" name="boardViewSelect" {...register("boardViewSelect")}>
+                                    <option value="2d">2d</option>
+                                    <option value="3d">3d</option>
+                                </select>
                             </div>
                         </div>
                         <div className={styles.pair}>
@@ -177,10 +177,10 @@ export default function Settings() {
                                 </div>
                             </div>
                             <div className={styles.value}>
-                            <select id="piecesStyleSelect" name="piecesStyleSelect" {...register("piecesStyleSelect")}>
-                                <option value="outlined">Outlined</option>
-                                <option value="filled">Filled</option>
-                            </select>
+                                <select id="piecesStyleSelect" name="piecesStyleSelect" {...register("piecesStyleSelect")}>
+                                    <option value="outlined">Outlined</option>
+                                    <option value="filled">Filled</option>
+                                </select>
                             </div>
                         </div>
                     </div>
