@@ -11,6 +11,7 @@ import { getGametypes, doCreateGametype, doUpdateGametype } from '../../services
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
+import GameBoardEditor from '../../components/gameBoardEditor/GameBoardEditor'
 
 import { SettingsContext } from '../../contexts/SettingsContext'
 
@@ -52,31 +53,31 @@ export default function Gametypes() {
 
         if(selectedGametype === undefined) return
 
-        if(selectedGametype.username && selectedGametype.email){
+        if(selectedGametype.gametype){
             reset({
-                gametypeInput:selectedGametype.gametype,
-                numberOfPlayersSelect:selectedGametype.numberOfPlayers,
+                nameInput:selectedGametype.gametype,
+                numberOfPlayersInput:selectedGametype.numberOfPlayers,
                 circleShrinkAfterNRoundsInput:selectedGametype.circleShrinkAfterNRounds,
                 circleShrinkOffsetInput:selectedGametype.circleShrinkOffset,
                 timePerRoundInput:selectedGametype.timePerRound,
                 initialDelayInput:selectedGametype.initialDelay,
-                boardInput:selectedGametype.board,
-                playerDirectionsInput:selectedGametype.playerDirections,
+                boardInput:selectedGametype.board
             })
         }
 
         if(selectedGametype === "new gametype"){
             reset({
-                gametypeInput:'',
-                numberOfPlayersSelect:2,
-                circleShrinkAfterNRoundsInput:'-',
-                circleShrinkOffsetInput:'-',
-                timePerRoundInput:'-',
-                initialDelayInput:'-',
-                boardInput:{},
-                playerDirectionsInput:[],
+                nameInput:'name',
+                numberOfPlayersInput:'number',
+                circleShrinkAfterNRoundsInput:'number',
+                circleShrinkOffsetInput:'number',
+                timePerRoundInput:'number',
+                initialDelayInput:'number',
+                boardInput:{}
             })
         }
+
+        // GameBoardEditor.reset()
 
     }, [selectedGametype])
 
@@ -88,7 +89,7 @@ export default function Gametypes() {
                 Header: 'Gametypes',
                 columns: [
                     {
-                        Header: 'Gametype',
+                        Header: 'Name',
                         accessor: 'gametype'
                     },
                     {
@@ -228,105 +229,120 @@ export default function Gametypes() {
                     </div>
                 )
                 : (
-                    <BasicContainer>
-                        <form onSubmit={handleSubmit(onFormSubmit)}>
-                            <div className={styles.group}>
-                                <div className={styles.title}>
-                                    {
-                                        selectedGametype === "new gametype"
-                                        ? "Create new gametype"
-                                        : "Update gametype"
-                                    }
-                                </div>
-                                <div className={styles.pair}>
-                                    <div className={styles.name}>
-                                        <div>
-                                            Username
-                                        </div>
-                                    </div>
-                                    <div className={styles.value}>
+                    <div>
+                        <BasicContainer>
+                            <form onSubmit={handleSubmit(onFormSubmit)}>
+                                <div className={styles.group}>
+                                    <div className={styles.title}>
                                         {
                                             selectedGametype === "new gametype"
-                                            ? (
-                                                <input
-                                                    type="username"
-                                                    id="usernameInput"
-                                                    name="usernameInput"
-                                                    {...register("usernameInput", {
-                                                        // validate:{
-                                                        //     value: (value) => value.includes('@'),
-                                                        //     message: "moet een @ bevatten jaja"
-                                                        // }
-                                                    })}
-                                                />
-                                            )
-                                            : selectedGametype.username
+                                            ? "Create new gametype"
+                                            : "Update gametype"
                                         }
                                     </div>
-                                </div>
-                                <div className={styles.pair}>
-                                    <div className={styles.name}>
-                                        <div>
-                                            Email
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                Name
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            {
+                                                selectedGametype === "new gametype"
+                                                ? (
+                                                    <input
+                                                        type="text"
+                                                        id="nameInput"
+                                                        name="nameInput"
+                                                        {...register("nameInput", {
+                                                            // validate:{
+                                                            //     value: (value) => value.includes('@'),
+                                                            //     message: "moet een @ bevatten jaja"
+                                                            // }
+                                                        })}
+                                                    />
+                                                )
+                                                : selectedGametype.gametype
+                                            }
                                         </div>
                                     </div>
-                                    <div className={styles.value}>
-                                        <input
-                                            type="email"
-                                            id="emailInput"
-                                            name="emailInput"
-                                            {...register("emailInput", {
-                                                // validate:{
-                                                //     value: (value) => value.includes('@'),
-                                                //     message: "moet een @ bevatten jaja"
-                                                // }
-                                            })}
-                                        />
-                                        {errors.name}
-                                    </div>
-                                </div>
-                                <div className={styles.pair}>
-                                    <div className={styles.name}>
-                                        <div>
-                                            Password
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                numberOfPlayers
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            <input
+                                                type="text"
+                                                id="numberOfPlayersInput"
+                                                name="numberOfPlayersInput"
+                                                {...register("numberOfPlayersInput", {
+                                                    // validate:{
+                                                    //     value: (value) => value.includes('@'),
+                                                    //     message: "moet een @ bevatten jaja"
+                                                    // }
+                                                })}
+                                            />
+                                            {errors.name}
                                         </div>
                                     </div>
-                                    <div className={styles.value}>
-                                        <input type="password" id="passwordInput" name="passwordInput" {...register("passwordInput", { minLength:8, maxLength:80 })} />
-                                        { errors.name && errors.name.type === 'minLength' && <span role="alert">Value is too short</span>}
-                                    </div>
-                                </div>
-                                <div className={styles.pair}>
-                                    <div className={styles.name}>
-                                        <div>
-                                            Repeat password
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                Circle Shrink After N Rounds
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            <input
+                                                type="text"
+                                                id="circleShrinkAfterNRoundsInput"
+                                                name="circleShrinkAfterNRoundsInput"
+                                                {...register("circleShrinkAfterNRoundsInput", {
+                                                })} />
+                                            { errors.name && errors.name.type === 'minLength' && <span role="alert">Value is too short</span>}
                                         </div>
                                     </div>
-                                    <div className={styles.value}>
-                                        <input type="password" id="passwordInput2" name="passwordInput2" {...register("passwordInput2")} />
-                                    </div>
-                                </div>
-                                <div className={styles.pair}>
-                                    <div className={styles.name}>
-                                        <div>
-                                            Authorities
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                Circle Shrink Offset
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            <input type="text" id="circleShrinkOffsetInput" name="circleShrinkOffsetInput" {...register("circleShrinkOffsetInput")} />
                                         </div>
                                     </div>
-                                    <div className={styles.value}>
-                                        <select id="authoritiesSelect" name="authoritiesSelect" {...register("authoritiesSelect")}>
-                                            <option value="USER">USER</option>
-                                            <option value="ADMIN">ADMIN</option>
-                                        </select>
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                Time Per Round
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            <input type="text" id="timePerRoundInput" name="timePerRoundInput" {...register("timePerRoundInput")} />
+                                        </div>
+                                    </div>
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                Initial Delay
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            <input type="text" id="initialDelayInput" name="initialDelayInput" {...register("initialDelayInput")} />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className={styles.buttonGroup}>
-                                <button type='submit' className={`${styles.button} ${styles.applyButton}`}>
-                                    Save user
-                                </button>
-                            </div>
-                        </form>
-                    </BasicContainer>
+                                <div className={styles.buttonGroup}>
+                                    <button type='submit' className={`${styles.button} ${styles.applyButton}`}>
+                                        Save gametype
+                                    </button>
+                                </div>
+                            </form>
+                        </BasicContainer>
+                        <GameBoardEditor />
+                    </div>
                 )
             }
         </div>

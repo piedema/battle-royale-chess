@@ -54,12 +54,14 @@ export default function BasicTable(params){
                                         ])}>
                                         {column.render('Header')}
                                         <span>
-                                            {column.isSorted
-                                              ? column.isSortedDesc
-                                                ? ' ▼'
-                                                : ' ▲'
-                                              : '\u00A0\u00A0\u00A0\u00A0'}
-                                          </span>
+                                            {
+                                                column.isSorted
+                                                  ? column.isSortedDesc
+                                                    ? ' ▼'
+                                                    : ' ▲'
+                                                  : ''
+                                            }
+                                        </span>
                                       </th>
                                     ))}
                                   </tr>

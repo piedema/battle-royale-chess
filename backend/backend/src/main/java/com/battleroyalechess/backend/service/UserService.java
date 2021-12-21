@@ -150,7 +150,7 @@ public class UserService {
 
             }
 
-            if(currentUserRole.equals("ADMIN")) {
+            if(authorities != null && currentUserRole.equals("ADMIN")) {
 
                 boolean isUserAdmin = false;
 
