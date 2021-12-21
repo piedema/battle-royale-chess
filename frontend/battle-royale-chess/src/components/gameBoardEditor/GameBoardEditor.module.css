@@ -1,0 +1,113 @@
+.container {
+    cursor: pointer;
+}
+
+.table {
+    table-layout: fixed;
+}
+
+.td {
+  width: 110px;
+  height: 110px;
+  max-width: 110px;
+  max-height: 110px;
+  min-width: 110px;
+  min-height: 110px;
+}
+
+.tile {
+  border: 1px solid #000;
+  background: rgb(255, 251, 235);
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 10px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* effect is making the app slow */
+/* @keyframes glow {
+    to {
+        box-shadow: inset 0 0 40px 10px rgba(255,215,0, .7), 0px 0px 20px 10px rgba(255, 215, 0, 1);
+    }
+} */
+
+.lastTileFading{
+    z-index: 10;
+    border: 1px solid darkgoldenrod;
+    box-shadow: inset 0 0 40px 10px rgba(255,215,0, .6), 0px 0px 20px 10px rgba(255, 215, 0, 1);
+    /* animation: glow 1s infinite alternate; */
+}
+
+.tile.faded {
+    opacity: 0.2;
+    border: 0px;
+}
+
+.faded:hover .tileId {
+    color: rgb(18, 7, 0, 1);
+}
+
+.tr:nth-child(odd) .td:nth-child(even).faded .tileId {
+    color: rgb(255, 251, 235);
+}
+.tr:nth-child(even) .td:nth-child(odd).faded .tileId {
+    color: rgb(255, 251, 235);
+}
+
+.isSelected {
+    cursor: pointer;
+    background: rgb(11,146,231) !important;
+    background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
+    border: 1px solid rgb(0,54,236);
+}
+
+.hoverable:hover {
+    cursor: pointer;
+    background: rgb(11,146,231) !important;
+    background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
+    border: 1px solid rgb(0,54,236);
+}
+
+.tr:nth-child(odd) .tile:nth-child(even) {
+    background: rgb(18, 7, 0);
+}
+.tr:nth-child(even) .tile:nth-child(odd) {
+    background: rgb(18, 7, 0);
+}
+
+.tileId {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 16px;
+    color: rgb(18, 7, 0, 1);
+    font-style: italic;
+    opacity: 0;
+    user-select: none;
+}
+
+.tile:hover .tileId {
+    opacity: 1;
+}
+
+.hoverable:hover .tileId {
+    color: rgb(255, 251, 235);
+}
+
+.tr:nth-child(odd) .tile:nth-child(even) .tileId {
+    color: rgb(255, 251, 235);
+}
+.tr:nth-child(even) .tile:nth-child(odd) .tileId {
+    color: rgb(255, 251, 235);
+}
+
+.tileFadesSoon {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    font-size: 16px;
+    color: orangered;
+    font-weight: bold;
+    user-select: none;
+}
