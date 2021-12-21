@@ -312,13 +312,15 @@ export default function Lobby() {
                                                     )
                                             })
                                         )
-                                    : (
+                                    : isAlreadyInGame === true
+                                    ? (
                                             <BasicContainer>
                                                 <div className={styles.alreadyInGameContainer} onClick={() => enterGame(isAlreadyInGame)}>
                                                     You're already in a game, click here to go to that game.
                                                 </div>
                                             </BasicContainer>
                                         )
+                                    : ''
                                 }
                             </div>
                         )
