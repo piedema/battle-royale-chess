@@ -20,6 +20,7 @@ import styles from './Gametypes.module.css'
 export default function Gametypes() {
 
     const [gametypes, setGametypes] = useState([])
+    const [gameBoard, setGameBoard] = useState(undefined)
     const [selectedGametype, setSelectedGametype] = useState(undefined)
     const [buttons, setButtons] = useState([
         {
@@ -60,10 +61,11 @@ export default function Gametypes() {
                 circleShrinkAfterNRoundsInput:selectedGametype.circleShrinkAfterNRounds,
                 circleShrinkOffsetInput:selectedGametype.circleShrinkOffset,
                 timePerRoundInput:selectedGametype.timePerRound,
-                initialDelayInput:selectedGametype.initialDelay,
-                boardInput:selectedGametype.board
+                initialDelayInput:selectedGametype.initialDelay
             })
         }
+
+        setGameBoard(selectedGametype.board)
 
         if(selectedGametype === "new gametype"){
             reset({
@@ -75,9 +77,9 @@ export default function Gametypes() {
                 initialDelayInput:'number',
                 boardInput:{}
             })
-        }
 
-        // GameBoardEditor.reset()
+            setGameBoard(undefined)
+        }
 
     }, [selectedGametype])
 
@@ -334,6 +336,7 @@ export default function Gametypes() {
                                         </div>
                                     </div>
                                 </div>
+                                <GameBoardEditor gameBoard={gameBoard} />
                                 <div className={styles.buttonGroup}>
                                     <button type='submit' className={`${styles.button} ${styles.applyButton}`}>
                                         Save gametype
@@ -341,7 +344,6 @@ export default function Gametypes() {
                                 </div>
                             </form>
                         </BasicContainer>
-                        <GameBoardEditor />
                     </div>
                 )
             }

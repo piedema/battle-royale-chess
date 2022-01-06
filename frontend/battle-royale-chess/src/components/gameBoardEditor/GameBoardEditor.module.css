@@ -1,18 +1,18 @@
 .container {
     cursor: pointer;
+    width: 100%;
+    max-width: 1000px;
 }
 
 .table {
     table-layout: fixed;
+    margin: auto;
+    margin-top: 20px;
 }
 
 .td {
-  width: 110px;
-  height: 110px;
-  max-width: 110px;
-  max-height: 110px;
-  min-width: 110px;
-  min-height: 110px;
+    width: 30px;
+    height: 30px;
 }
 
 .tile {
@@ -20,7 +20,7 @@
   background: rgb(255, 251, 235);
   text-align: center;
   vertical-align: middle;
-  border-radius: 10px;
+  border-radius: 5px !important;
   box-sizing: border-box;
   position: relative;
 }
@@ -56,13 +56,6 @@
 }
 
 .isSelected {
-    cursor: pointer;
-    background: rgb(11,146,231) !important;
-    background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
-    border: 1px solid rgb(0,54,236);
-}
-
-.hoverable:hover {
     cursor: pointer;
     background: rgb(11,146,231) !important;
     background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
@@ -110,4 +103,29 @@
     color: orangered;
     font-weight: bold;
     user-select: none;
+}
+
+.group {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.name {
+    width: 50%;
+    text-align: right;
+    display: inline-block;
+    padding: 1px;
+    padding-right: 12px;
+    box-sizing: border-box;
+}
+
+.value {
+    width: 50%;
+    text-align: left;
+    display: inline-block;
+    padding: 1px;
+    padding-left: 12px;
+    box-sizing: border-box;
+    border-left: 1px solid brown;
 }
