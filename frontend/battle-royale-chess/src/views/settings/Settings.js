@@ -8,14 +8,14 @@ import BasicContainer from '../../components/basicContainer/BasicContainer'
 import { UserContext } from '../../contexts/UserContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
-import { updateUser } from '../../services/UserService'
+import { doUpdateUser } from '../../services/UserService'
 
 import styles from './Settings.module.css'
 
 export default function Settings() {
 
     const { username, email } = useContext(UserContext)
-    const { loadUserdata } = useContext(AuthenticationContext)
+    const { refreshUser } = useContext(AuthenticationContext)
 
     const { register, handleSubmit, reset, formState:{ errors } } = useForm()
 
@@ -52,10 +52,11 @@ export default function Settings() {
         localStorage.setItem('piecesStyle', piecesStyleSelect)
 
         // send new values
-        await updateUser(updatedUser)
+        await doUpdateUser(updatedUser)
 
         // load new data
-        loadUserdata()
+        refreshUser()
+
     }
 
     return (

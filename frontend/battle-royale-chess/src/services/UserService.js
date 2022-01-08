@@ -33,7 +33,7 @@ export function extractRole(authorities){
 
 }
 
-export async function getUserdata(errorHandler = false){
+export async function getUserdata(){
 
     const options = {
         url:'/users',
@@ -63,7 +63,7 @@ export async function getSpecificUserdata(username){
 
 }
 
-export async function getAllUserdata(errorHandler = false){
+export async function getAllUserdata(){
 
     const options = {
         url:'/admin/users',
@@ -78,7 +78,7 @@ export async function getAllUserdata(errorHandler = false){
 
 }
 
-export async function updateUser(updatedUser){
+export async function doUpdateUser(updatedUser){
 
     const options = {
         url:'/users',
@@ -114,7 +114,7 @@ export async function doRegister(username, password, email){
 
 }
 
-export async function createUser(username, password, email, authorities){
+export async function doCreateUser(username, password, email, authorities){
 
     const options = {
         url:'/admin/user',

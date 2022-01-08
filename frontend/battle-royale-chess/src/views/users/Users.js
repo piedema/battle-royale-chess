@@ -8,7 +8,7 @@ import axios from 'axios'
 import handleError from '../../helpers/errorHandler'
 import apiCaller from '../../helpers/apiCaller'
 
-import { createUser, updateUser, getAllUserdata } from '../../services/UserService'
+import { doCreateUser, doUpdateUser, getAllUserdata } from '../../services/UserService'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
@@ -150,7 +150,7 @@ export default function Users() {
 
         if(selectedUser === "new user"){
 
-            await createUser(usernameInput, passwordInput, emailInput, [authoritiesSelect])
+            await doCreateUser(usernameInput, passwordInput, emailInput, [authoritiesSelect])
 
         } else {
 
@@ -176,7 +176,7 @@ export default function Users() {
 
             }
 
-            await updateUser(updatedUser)
+            await doUpdateUser(updatedUser)
 
         }
 

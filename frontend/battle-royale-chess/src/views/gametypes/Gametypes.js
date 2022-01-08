@@ -52,7 +52,22 @@ export default function Gametypes() {
 
     useEffect(() => {
 
-        if(selectedGametype === undefined) return
+        if(selectedGametype === undefined){
+
+            reset({
+                nameInput:undefined,
+                numberOfPlayersInput:undefined,
+                circleShrinkAfterNRoundsInput:undefined,
+                circleShrinkOffsetInput:undefined,
+                timePerRoundInput:undefined,
+                initialDelayInput:undefined
+            })
+
+            setGameBoard(undefined)
+
+            return
+
+        }
 
         if(selectedGametype.gametype){
             reset({
@@ -63,9 +78,11 @@ export default function Gametypes() {
                 timePerRoundInput:selectedGametype.timePerRound,
                 initialDelayInput:selectedGametype.initialDelay
             })
-        }
 
-        setGameBoard(selectedGametype.board)
+            setGameBoard(selectedGametype.board)
+
+            return
+        }
 
         if(selectedGametype === "new gametype"){
             reset({
@@ -78,7 +95,19 @@ export default function Gametypes() {
                 boardInput:{}
             })
 
-            setGameBoard(undefined)
+            setGameBoard({
+                "1:1":['normal'],
+                "1:2":['normal'],
+                "1:3":['normal'],
+                "2:1":['normal'],
+                "2:2":['normal'],
+                "2:3":['normal'],
+                "3:1":['normal'],
+                "3:2":['normal'],
+                "3:3":['normal']
+            })
+
+            return
         }
 
     }, [selectedGametype])
@@ -145,6 +174,10 @@ export default function Gametypes() {
     }
 
     async function onFormSubmit(data){
+
+        console.log(gameBoard)
+
+        return
 
         const {
             gametypeInput,
@@ -336,7 +369,7 @@ export default function Gametypes() {
                                         </div>
                                     </div>
                                 </div>
-                                <GameBoardEditor gameBoard={gameBoard} />
+                                <GameBoardEditor gameBoard={gameBoard} setGameBoard={gb => setGameBoard(gb)} />
                                 <div className={styles.buttonGroup}>
                                     <button type='submit' className={`${styles.button} ${styles.applyButton}`}>
                                         Save gametype

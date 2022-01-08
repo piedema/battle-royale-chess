@@ -19,7 +19,8 @@ export default function AuthenticationContextProvider({ children }){
         authenticate:authenticate,
         register:register,
         continueAsSpectator:continueAsSpectator,
-        logout:logout
+        logout:logout,
+        refreshUser:refreshUser
     }
 
     useEffect(() => {
@@ -78,6 +79,26 @@ export default function AuthenticationContextProvider({ children }){
     async function register(username, password, email){
         await doRegister(username, password, email)
         authenticate(username, password)
+    }
+
+    async function refreshUser(){
+
+        try {
+
+            const userdata = await getUserdata()
+
+            console.log(userdata)
+
+            setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities))
+
+        } catch (error) {
+
+            console.log(error)
+
+            unsetUser()
+
+        }
+
     }
 
     function continueAsSpectator(){
