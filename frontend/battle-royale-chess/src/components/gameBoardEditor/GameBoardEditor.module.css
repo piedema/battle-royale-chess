@@ -7,23 +7,38 @@
     grid-template-areas:
         ". . ."
         ". . ."
+        ". . ."
         ". . .";
+}
+
+.tableContainer {
+    overflow-x: auto;
+    overflow-y:hidden;
+    width: 806px;
 }
 
 .table {
     table-layout: fixed;
+    margin: auto;
     /* margin: auto; */
     /* margin-top: 20px; */
-    margin: 10px;
 }
 
 .td {
     width: 30px;
     height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
     cursor: pointer;
 }
 
-.tile {
+.td:hover {
+    background-color: lightblue !important;
+}
+
+.active {
   border: 1px solid #000;
   background: rgb(255, 251, 235);
   text-align: center;
@@ -35,7 +50,7 @@
 
 .inactive {
   border: 1px solid #000;
-  background: red;
+  background: orange;
   text-align: center;
   vertical-align: middle;
   border-radius: 5px !important;
@@ -57,7 +72,7 @@
     /* animation: glow 1s infinite alternate; */
 }
 
-.tile.faded {
+.active.faded {
     opacity: 0.2;
     border: 0px;
 }
@@ -74,16 +89,13 @@
 }
 
 .isSelected {
-    cursor: pointer;
-    background: rgb(11,146,231) !important;
-    background: linear-gradient(225deg, rgba(11,146,231,1) 0%, rgba(119,201,245,1) 100%) !important;
-    border: 1px solid rgb(0,54,236);
+    background-color: lightblue !important;
 }
 
-.tr:nth-child(odd) .tile:nth-child(even) {
+.tr:nth-child(odd) .active:nth-child(even) {
     background: rgb(18, 7, 0);
 }
-.tr:nth-child(even) .tile:nth-child(odd) {
+.tr:nth-child(even) .active:nth-child(odd) {
     background: rgb(18, 7, 0);
 }
 
@@ -98,7 +110,7 @@
     user-select: none;
 }
 
-.tile:hover .tileId {
+.active:hover .tileId {
     opacity: 1;
 }
 
@@ -106,10 +118,10 @@
     color: rgb(255, 251, 235);
 }
 
-.tr:nth-child(odd) .tile:nth-child(even) .tileId {
+.tr:nth-child(odd) .active:nth-child(even) .tileId {
     color: rgb(255, 251, 235);
 }
-.tr:nth-child(even) .tile:nth-child(odd) .tileId {
+.tr:nth-child(even) .active:nth-child(odd) .tileId {
     color: rgb(255, 251, 235);
 }
 

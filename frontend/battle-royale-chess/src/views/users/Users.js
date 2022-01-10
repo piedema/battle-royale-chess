@@ -5,9 +5,6 @@ import { useForm } from 'react-hook-form'
 import moment from 'moment'
 import axios from 'axios'
 
-import handleError from '../../helpers/errorHandler'
-import apiCaller from '../../helpers/apiCaller'
-
 import { doCreateUser, doUpdateUser, getAllUserdata } from '../../services/UserService'
 
 import Menu from '../../components/menu/Menu'
@@ -41,17 +38,25 @@ export default function Users() {
 
         (async () => {
 
-            const options = {
-                url:'/admin/users',
-                method:'GET',
-                headers: {
-                    Authorization:'Bearer ' + localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                },
-            }
+            try {
 
-            const result = await apiCaller(options)
-            setUsers(result)
+                const options = {
+                    url:'/admin/users',
+                    method:'GET',
+                    headers: {
+                        Authorization:'Bearer ' + localStorage.getItem('token'),
+                        'Content-Type': 'application/json'
+                    },
+                }
+
+                const result = await axios(options)
+                setUsers(result)
+
+            } catch (error){
+
+                console.log(error)
+
+            }
         })()
 
     }, [])

@@ -3,21 +3,18 @@ import { useEffect, useContext, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import moment from 'moment'
 
-import handleError from '../../helpers/errorHandler'
-import apiCaller from '../../helpers/apiCaller'
-
 import { getGametypes, doCreateGametype, doUpdateGametype } from '../../services/GametypesService'
+
+import { SettingsContext } from '../../contexts/SettingsContext'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
 import GameBoardEditor from '../../components/gameBoardEditor/GameBoardEditor'
 
-import { SettingsContext } from '../../contexts/SettingsContext'
-
 import styles from './Gametypes.module.css'
 
-export default function Gametypes() {
+export default function Gametypes(){
 
     const [gametypes, setGametypes] = useState([])
     const [gameBoard, setGameBoard] = useState(undefined)
@@ -28,8 +25,47 @@ export default function Gametypes() {
             onClick:gametypeSelected
         }
     ])
-
     const { register, handleSubmit, reset, formState:{ errors } } = useForm()
+    const columns = useMemo(
+        () => [
+            {
+                Header: 'Gametypes',
+                columns: [
+                    {
+                        Header: 'Name',
+                        accessor: 'gametype'
+                    },
+                    {
+                        Header: 'Number of players',
+                        accessor: data => <div className={styles.tableIcon}>{data.numberOfPlayers}</div>,
+                    },
+                    {
+                        Header: 'Circle Shrink after N Rounds',
+                        accessor: data => <div className={styles.tableIcon}>{data.circleShrinkAfterNRounds}</div>,
+                    },
+                    {
+                        Header: 'Circle Shrink Offset',
+                        accessor: data => <div className={styles.tableIcon}>{data.circleShrinkOffset}</div>,
+                    },
+                    {
+                        Header: 'Time Per Round',
+                        accessor: data => <div className={styles.tableIcon}>{data.timePerRound}</div>,
+                    },
+                    {
+                        Header: 'Initial Delay',
+                        accessor: data => <div className={styles.tableIcon}>{data.initialDelay}</div>,
+                    },
+                ],
+            }
+        ],
+        []
+    )
+
+    useEffect(() => {
+
+        console.log('updated gamebaord in gametypes', gameBoard)
+
+    }, [gameBoard])
 
     useEffect(() => {
 
@@ -42,6 +78,7 @@ export default function Gametypes() {
 
             } catch (error) {
 
+                console.log(error)
                 setGametypes([])
 
             }
@@ -91,63 +128,13 @@ export default function Gametypes() {
                 circleShrinkAfterNRoundsInput:'number',
                 circleShrinkOffsetInput:'number',
                 timePerRoundInput:'number',
-                initialDelayInput:'number',
-                boardInput:{}
-            })
-
-            setGameBoard({
-                "1:1":['normal'],
-                "1:2":['normal'],
-                "1:3":['normal'],
-                "2:1":['normal'],
-                "2:2":['normal'],
-                "2:3":['normal'],
-                "3:1":['normal'],
-                "3:2":['normal'],
-                "3:3":['normal']
+                initialDelayInput:'number'
             })
 
             return
         }
 
     }, [selectedGametype])
-
-
-
-    const columns = useMemo(
-        () => [
-            {
-                Header: 'Gametypes',
-                columns: [
-                    {
-                        Header: 'Name',
-                        accessor: 'gametype'
-                    },
-                    {
-                        Header: 'Number of players',
-                        accessor: data => <div className={styles.tableIcon}>{data.numberOfPlayers}</div>,
-                    },
-                    {
-                        Header: 'Circle Shrink after N Rounds',
-                        accessor: data => <div className={styles.tableIcon}>{data.circleShrinkAfterNRounds}</div>,
-                    },
-                    {
-                        Header: 'Circle Shrink Offset',
-                        accessor: data => <div className={styles.tableIcon}>{data.circleShrinkOffset}</div>,
-                    },
-                    {
-                        Header: 'Time Per Round',
-                        accessor: data => <div className={styles.tableIcon}>{data.timePerRound}</div>,
-                    },
-                    {
-                        Header: 'Initial Delay',
-                        accessor: data => <div className={styles.tableIcon}>{data.initialDelay}</div>,
-                    },
-                ],
-            }
-        ],
-        []
-    )
 
     function gametypeSelected(gametype){
 
@@ -175,7 +162,7 @@ export default function Gametypes() {
 
     async function onFormSubmit(data){
 
-        console.log(gameBoard)
+        console.log(data, gameBoard)
 
         return
 
@@ -191,7 +178,8 @@ export default function Gametypes() {
         if(selectedGametype.gametype){
 
             const updatedGametype = {
-                gametype:selectedGametype.gametype
+                gametype:selectedGametype.gametype,
+                gameBoard:gameBoard
             }
 
             if(numberOfPlayersSelect) updatedGametype.numberOfPlayers = numberOfPlayersSelect
@@ -216,7 +204,7 @@ export default function Gametypes() {
 
             try {
 
-                await doCreateGametype(gametypeInput, numberOfPlayersSelect, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput)
+                await doCreateGametype(gametypeInput, numberOfPlayersSelect, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput, gameBoard)
 
             } catch (error) {
 
@@ -369,12 +357,12 @@ export default function Gametypes() {
                                         </div>
                                     </div>
                                 </div>
-                                <GameBoardEditor gameBoard={gameBoard} setGameBoard={gb => setGameBoard(gb)} />
                                 <div className={styles.buttonGroup}>
                                     <button type='submit' className={`${styles.button} ${styles.applyButton}`}>
                                         Save gametype
                                     </button>
                                 </div>
+                                <GameBoardEditor gameBoard={gameBoard} setGameBoard={setGameBoard} />
                             </form>
                         </BasicContainer>
                     </div>

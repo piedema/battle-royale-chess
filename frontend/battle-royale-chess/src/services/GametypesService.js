@@ -37,7 +37,7 @@ export async function doCreateGametype(
     circleShrinkOffset,
     timePerRound,
     initialDelay,
-    board,
+    gameBoard,
     playerDirections
 ){
 
@@ -55,7 +55,7 @@ export async function doCreateGametype(
             circleShrinkOffset,
             timePerRound,
             initialDelay,
-            board,
+            gameBoard,
             playerDirections
         }
     }
