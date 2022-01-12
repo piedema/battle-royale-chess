@@ -229,6 +229,24 @@ export default function Gametypes(){
 
     }
 
+    function getAllPlayersOnBoard(){
+
+        const resultArray = []
+
+        for(let key in gameBoard){
+
+            if(gameBoard[key].length > 1 && !resultArray.includes(gameBoard[key][1])){
+
+                resultArray.push(gameBoard[key][1])
+
+            }
+
+        }
+
+        return resultArray.sort((a, b) => a - b)
+
+    }
+
     return (
         <div className={styles.container}>
             <Menu
@@ -296,18 +314,7 @@ export default function Gametypes(){
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            <input
-                                                type="text"
-                                                id="numberOfPlayersInput"
-                                                name="numberOfPlayersInput"
-                                                {...register("numberOfPlayersInput", {
-                                                    // validate:{
-                                                    //     value: (value) => value.includes('@'),
-                                                    //     message: "moet een @ bevatten jaja"
-                                                    // }
-                                                })}
-                                            />
-                                            {errors.name}
+                                            {getAllPlayersOnBoard().length}
                                         </div>
                                     </div>
                                     <div className={styles.pair}>
@@ -354,6 +361,18 @@ export default function Gametypes(){
                                         </div>
                                         <div className={styles.value}>
                                             <input type="text" id="initialDelayInput" name="initialDelayInput" {...register("initialDelayInput")} />
+                                        </div>
+                                    </div>
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                player directions
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            {
+                                                getAllPlayersOnBoard().map(p => { return <div>{p} arrow</div> })
+                                            }
                                         </div>
                                     </div>
                                 </div>
