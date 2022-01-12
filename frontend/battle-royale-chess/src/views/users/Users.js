@@ -50,7 +50,7 @@ export default function Users() {
                 }
 
                 const result = await axios(options)
-                setUsers(result)
+                setUsers(result.data || [])
 
             } catch (error){
 

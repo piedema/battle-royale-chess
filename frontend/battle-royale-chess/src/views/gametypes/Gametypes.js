@@ -14,10 +14,13 @@ import GameBoardEditor from '../../components/gameBoardEditor/GameBoardEditor'
 
 import styles from './Gametypes.module.css'
 
+import colors from '../../assets/js/colors'
+
 export default function Gametypes(){
 
     const [gametypes, setGametypes] = useState([])
     const [gameBoard, setGameBoard] = useState(undefined)
+    const [playersDirections, setPlayersDirections] = useState(['north', 'south'])
     const [selectedGametype, setSelectedGametype] = useState(undefined)
     const [buttons, setButtons] = useState([
         {
@@ -117,6 +120,7 @@ export default function Gametypes(){
             })
 
             setGameBoard(selectedGametype.board)
+            setPlayersDirections(selectedGametype.playerDirections)
 
             return
         }
@@ -162,13 +166,10 @@ export default function Gametypes(){
 
     async function onFormSubmit(data){
 
-        console.log(data, gameBoard)
-
         return
 
         const {
             gametypeInput,
-            numberOfPlayersSelect,
             circleShrinkAfterNRoundsInput,
             circleShrinkOffsetInput,
             timePerRoundInput,
@@ -179,10 +180,10 @@ export default function Gametypes(){
 
             const updatedGametype = {
                 gametype:selectedGametype.gametype,
-                gameBoard:gameBoard
+                gameBoard:gameBoard,
+                numberOfPlayers:selectedGametype.numberOfPlayers
             }
 
-            if(numberOfPlayersSelect) updatedGametype.numberOfPlayers = numberOfPlayersSelect
             if(circleShrinkAfterNRoundsInput) updatedGametype.circleShrinkAfterNRounds = circleShrinkAfterNRoundsInput
             if(circleShrinkOffsetInput) updatedGametype.circleShrinkOffset = circleShrinkOffsetInput
             if(timePerRoundInput) updatedGametype.timePerRound = timePerRoundInput
@@ -204,7 +205,7 @@ export default function Gametypes(){
 
             try {
 
-                await doCreateGametype(gametypeInput, numberOfPlayersSelect, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput, gameBoard)
+                await doCreateGametype(gametypeInput, selectedGametype.numberOfPlayers, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput, selectedGametype.gameBoard)
 
             } catch (error) {
 
@@ -244,6 +245,64 @@ export default function Gametypes(){
         }
 
         return resultArray.sort((a, b) => a - b)
+
+    }
+
+    function getCorrespondingArrow(p){
+
+        switch(p) {
+            case 'north':
+                return '▲'
+                break;
+            case 'east':
+                return '▶'
+                break;
+            case 'south':
+                return '▼'
+                break;
+            case 'west':
+                return '◀'
+                break;
+        }
+
+    }
+
+    function switchPlayerDirection(e, i){
+
+        e.preventDefault()
+
+            switch(playersDirections[i]) {
+                case 'north':
+                    setPlayersDirections(playersDirections => {
+                        const pd = [...playersDirections]
+                        pd[i] = 'east'
+                        return pd
+                    })
+                    break;
+                case 'east':
+                    setPlayersDirections(playersDirections => {
+                        const pd = [...playersDirections]
+                        pd[i] = 'south'
+                        return pd
+                    })
+                    break;
+                case 'south':
+                    setPlayersDirections(playersDirections => {
+                        const pd = [...playersDirections]
+                        pd[i] = 'west'
+                        return pd
+                    })
+                    break;
+                case 'west':
+                    setPlayersDirections(playersDirections => {
+                        const pd = [...playersDirections]
+                        pd[i] = 'north'
+                        return pd
+                    })
+                    break;
+            }
+
+        console.log()
 
     }
 
@@ -366,13 +425,11 @@ export default function Gametypes(){
                                     <div className={styles.pair}>
                                         <div className={styles.name}>
                                             <div>
-                                                player directions
+                                                Player directions
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            {
-                                                getAllPlayersOnBoard().map(p => { return <div>{p} arrow</div> })
-                                            }
+                                            {playersDirections.map((p, i) => { return <div key={i} className={styles.playerDirectionButton} onClick={e => switchPlayerDirection(e, i)} style={{ color:colors.pieces(i).fill, display:'inline-block' }}>{getCorrespondingArrow(p)}</div> })}
                                         </div>
                                     </div>
                                 </div>

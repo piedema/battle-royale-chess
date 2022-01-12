@@ -25,10 +25,10 @@ public class User {
     private String email;
 
     @Column
-    private Integer score;
+    private Integer score = 0;
 
     @Column
-    private Integer gamesPlayed;
+    private Integer gamesPlayed = 0;
 
     @Column
     private final ArrayList<Integer> scores = new ArrayList<>();

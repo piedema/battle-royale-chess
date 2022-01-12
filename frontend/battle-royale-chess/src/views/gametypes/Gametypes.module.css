@@ -36,6 +36,7 @@
 
 .value {
     width: 50%;
+    height: 25px;
     text-align: left;
     display: inline-block;
     padding: 1px;
@@ -83,4 +84,11 @@
     color: white;
     background-color: red;
     transition: background .3s;
+}
+
+.playerDirectionButton {
+    cursor: pointer;
+    user-select: none;
+    font-size: 22px;
+    margin-right: 4px;
 }
