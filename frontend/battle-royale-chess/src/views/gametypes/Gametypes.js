@@ -3,23 +3,24 @@ import { useEffect, useContext, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import moment from 'moment'
 
-import handleError from '../../helpers/errorHandler'
-import apiCaller from '../../helpers/apiCaller'
-
 import { getGametypes, doCreateGametype, doUpdateGametype } from '../../services/GametypesService'
+
+import { SettingsContext } from '../../contexts/SettingsContext'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
 import GameBoardEditor from '../../components/gameBoardEditor/GameBoardEditor'
 
-import { SettingsContext } from '../../contexts/SettingsContext'
-
 import styles from './Gametypes.module.css'
 
-export default function Gametypes() {
+import colors from '../../assets/js/colors'
+
+export default function Gametypes(){
 
     const [gametypes, setGametypes] = useState([])
+    const [gameBoard, setGameBoard] = useState(undefined)
+    const [playerDirections, setPlayerDirections] = useState([])
     const [selectedGametype, setSelectedGametype] = useState(undefined)
     const [buttons, setButtons] = useState([
         {
@@ -27,62 +28,7 @@ export default function Gametypes() {
             onClick:gametypeSelected
         }
     ])
-
     const { register, handleSubmit, reset, formState:{ errors } } = useForm()
-
-    useEffect(() => {
-
-        (async () => {
-
-            try {
-
-                const response = await getGametypes()
-                setGametypes(response.data)
-
-            } catch (error) {
-
-                setGametypes([])
-
-            }
-
-        })()
-
-    }, [])
-
-    useEffect(() => {
-
-        if(selectedGametype === undefined) return
-
-        if(selectedGametype.gametype){
-            reset({
-                nameInput:selectedGametype.gametype,
-                numberOfPlayersInput:selectedGametype.numberOfPlayers,
-                circleShrinkAfterNRoundsInput:selectedGametype.circleShrinkAfterNRounds,
-                circleShrinkOffsetInput:selectedGametype.circleShrinkOffset,
-                timePerRoundInput:selectedGametype.timePerRound,
-                initialDelayInput:selectedGametype.initialDelay,
-                boardInput:selectedGametype.board
-            })
-        }
-
-        if(selectedGametype === "new gametype"){
-            reset({
-                nameInput:'name',
-                numberOfPlayersInput:'number',
-                circleShrinkAfterNRoundsInput:'number',
-                circleShrinkOffsetInput:'number',
-                timePerRoundInput:'number',
-                initialDelayInput:'number',
-                boardInput:{}
-            })
-        }
-
-        // GameBoardEditor.reset()
-
-    }, [selectedGametype])
-
-
-
     const columns = useMemo(
         () => [
             {
@@ -118,6 +64,101 @@ export default function Gametypes() {
         []
     )
 
+    useEffect(() => {
+
+        const allPlayersOnBoard = getAllPlayersOnBoard()
+
+        if(playerDirections.length < allPlayersOnBoard.length){
+
+            setPlayerDirections(playerDirections => {
+                const pd = [...playerDirections]
+
+                for(let i = pd.length; i < allPlayersOnBoard.length; i++){
+
+                    pd.push('north')
+
+                }
+
+                return pd
+            })
+
+        }
+
+    }, [gameBoard, playerDirections])
+
+    useEffect(() => {
+
+        (async () => {
+
+            try {
+
+                const response = await getGametypes()
+                setGametypes(response.data)
+
+            } catch (error) {
+
+                console.log(error)
+                setGametypes([])
+
+            }
+
+        })()
+
+    }, [])
+
+    useEffect(() => {
+
+        if(selectedGametype === undefined){
+
+            reset({
+                nameInput:undefined,
+                numberOfPlayersInput:undefined,
+                circleShrinkAfterNRoundsInput:undefined,
+                circleShrinkOffsetInput:undefined,
+                timePerRoundInput:undefined,
+                initialDelayInput:undefined
+            })
+
+            setGameBoard(undefined)
+            setPlayerDirections([])
+
+            return
+
+        }
+
+        if(selectedGametype.gametype){
+            reset({
+                nameInput:selectedGametype.gametype,
+                numberOfPlayersInput:selectedGametype.numberOfPlayers,
+                circleShrinkAfterNRoundsInput:selectedGametype.circleShrinkAfterNRounds,
+                circleShrinkOffsetInput:selectedGametype.circleShrinkOffset,
+                timePerRoundInput:selectedGametype.timePerRound,
+                initialDelayInput:selectedGametype.initialDelay
+            })
+
+            setGameBoard(selectedGametype.board)
+            setPlayerDirections(selectedGametype.playerDirections)
+
+            return
+        }
+
+        if(selectedGametype === "new gametype"){
+            reset({
+                nameInput:'name',
+                numberOfPlayersInput:'number',
+                circleShrinkAfterNRoundsInput:'number',
+                circleShrinkOffsetInput:'number',
+                timePerRoundInput:'number',
+                initialDelayInput:'number'
+            })
+
+            setPlayerDirections([])
+
+            return
+        }
+
+    }, [selectedGametype])
+
     function gametypeSelected(gametype){
 
         setSelectedGametype(gametype.original || "new gametype")
@@ -146,7 +187,6 @@ export default function Gametypes() {
 
         const {
             gametypeInput,
-            numberOfPlayersSelect,
             circleShrinkAfterNRoundsInput,
             circleShrinkOffsetInput,
             timePerRoundInput,
@@ -156,10 +196,12 @@ export default function Gametypes() {
         if(selectedGametype.gametype){
 
             const updatedGametype = {
-                gametype:selectedGametype.gametype
+                gametype:selectedGametype.gametype,
+                board:gameBoard,
+                numberOfPlayers:getAllPlayersOnBoard().length,
+                playerDirections:playerDirections
             }
 
-            if(numberOfPlayersSelect) updatedGametype.numberOfPlayers = numberOfPlayersSelect
             if(circleShrinkAfterNRoundsInput) updatedGametype.circleShrinkAfterNRounds = circleShrinkAfterNRoundsInput
             if(circleShrinkOffsetInput) updatedGametype.circleShrinkOffset = circleShrinkOffsetInput
             if(timePerRoundInput) updatedGametype.timePerRound = timePerRoundInput
@@ -179,9 +221,22 @@ export default function Gametypes() {
 
         if(selectedGametype === "new gametype"){
 
+            const createdGametype = {
+                gametype:gametypeInput,
+                numberOfPlayers:getAllPlayersOnBoard().length,
+                circleShrinkAfterNRounds:circleShrinkAfterNRoundsInput,
+                circleShrinkOffset:circleShrinkOffsetInput,
+                timePerRound:timePerRoundInput,
+                initialDelay:initialDelayInput,
+                board:gameBoard,
+                playerDirections:playerDirections
+            }
+
+            console.log('created', createdGametype)
+
             try {
 
-                await doCreateGametype(gametypeInput, numberOfPlayersSelect, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput)
+                await doCreateGametype(createdGametype)
 
             } catch (error) {
 
@@ -203,6 +258,80 @@ export default function Gametypes() {
         }
 
         gametypeDeselected()
+
+    }
+
+    function getAllPlayersOnBoard(){
+
+        const resultArray = []
+
+        for(let key in gameBoard){
+
+            if(gameBoard[key].length > 1 && !resultArray.includes(gameBoard[key][1])){
+
+                resultArray.push(gameBoard[key][1])
+
+            }
+
+        }
+
+        return resultArray.sort((a, b) => a - b)
+
+    }
+
+    function getCorrespondingArrow(p){
+
+        switch(p) {
+            case 'north':
+                return '▲'
+                break;
+            case 'east':
+                return '▶'
+                break;
+            case 'south':
+                return '▼'
+                break;
+            case 'west':
+                return '◀'
+                break;
+        }
+
+    }
+
+    function switchPlayerDirection(e, i){
+
+        e.preventDefault()
+
+            switch(playerDirections[i]) {
+                case 'north':
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
+                        pd[i] = 'east'
+                        return pd
+                    })
+                    break;
+                case 'east':
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
+                        pd[i] = 'south'
+                        return pd
+                    })
+                    break;
+                case 'south':
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
+                        pd[i] = 'west'
+                        return pd
+                    })
+                    break;
+                case 'west':
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
+                        pd[i] = 'north'
+                        return pd
+                    })
+                    break;
+            }
 
     }
 
@@ -252,9 +381,9 @@ export default function Gametypes() {
                                                 ? (
                                                     <input
                                                         type="text"
-                                                        id="nameInput"
-                                                        name="nameInput"
-                                                        {...register("nameInput", {
+                                                        id="gametypeInput"
+                                                        name="gametypeInput"
+                                                        {...register("gametypeInput", {
                                                             // validate:{
                                                             //     value: (value) => value.includes('@'),
                                                             //     message: "moet een @ bevatten jaja"
@@ -273,18 +402,7 @@ export default function Gametypes() {
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            <input
-                                                type="text"
-                                                id="numberOfPlayersInput"
-                                                name="numberOfPlayersInput"
-                                                {...register("numberOfPlayersInput", {
-                                                    // validate:{
-                                                    //     value: (value) => value.includes('@'),
-                                                    //     message: "moet een @ bevatten jaja"
-                                                    // }
-                                                })}
-                                            />
-                                            {errors.name}
+                                            {getAllPlayersOnBoard().length}
                                         </div>
                                     </div>
                                     <div className={styles.pair}>
@@ -333,15 +451,25 @@ export default function Gametypes() {
                                             <input type="text" id="initialDelayInput" name="initialDelayInput" {...register("initialDelayInput")} />
                                         </div>
                                     </div>
+                                    <div className={styles.pair}>
+                                        <div className={styles.name}>
+                                            <div>
+                                                Player directions
+                                            </div>
+                                        </div>
+                                        <div className={styles.value}>
+                                            {playerDirections.map((p, i) => { return <div key={i} className={styles.playerDirectionButton} onClick={e => switchPlayerDirection(e, i)} style={{ color:colors.pieces(i).fill, display:'inline-block' }}>{getCorrespondingArrow(p)}</div> })}
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className={styles.buttonGroup}>
                                     <button type='submit' className={`${styles.button} ${styles.applyButton}`}>
                                         Save gametype
                                     </button>
                                 </div>
+                                <GameBoardEditor gameBoard={gameBoard} setGameBoard={setGameBoard} />
                             </form>
                         </BasicContainer>
-                        <GameBoardEditor />
                     </div>
                 )
             }

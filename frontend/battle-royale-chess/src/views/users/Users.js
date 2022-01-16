@@ -5,10 +5,7 @@ import { useForm } from 'react-hook-form'
 import moment from 'moment'
 import axios from 'axios'
 
-import handleError from '../../helpers/errorHandler'
-import apiCaller from '../../helpers/apiCaller'
-
-import { createUser, updateUser, getAllUserdata } from '../../services/UserService'
+import { doCreateUser, doUpdateUser, getAllUserdata } from '../../services/UserService'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
@@ -41,17 +38,25 @@ export default function Users() {
 
         (async () => {
 
-            const options = {
-                url:'/admin/users',
-                method:'GET',
-                headers: {
-                    Authorization:'Bearer ' + localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                },
-            }
+            try {
 
-            const result = await apiCaller(options)
-            setUsers(result)
+                const options = {
+                    url:'/admin/users',
+                    method:'GET',
+                    headers: {
+                        Authorization:'Bearer ' + localStorage.getItem('token'),
+                        'Content-Type': 'application/json'
+                    },
+                }
+
+                const result = await axios(options)
+                setUsers(result.data || [])
+
+            } catch (error){
+
+                console.log(error)
+
+            }
         })()
 
     }, [])
@@ -150,7 +155,7 @@ export default function Users() {
 
         if(selectedUser === "new user"){
 
-            await createUser(usernameInput, passwordInput, emailInput, [authoritiesSelect])
+            await doCreateUser(usernameInput, passwordInput, emailInput, [authoritiesSelect])
 
         } else {
 
@@ -176,7 +181,7 @@ export default function Users() {
 
             }
 
-            await updateUser(updatedUser)
+            await doUpdateUser(updatedUser)
 
         }
 

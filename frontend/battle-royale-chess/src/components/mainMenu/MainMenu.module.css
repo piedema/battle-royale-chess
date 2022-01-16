@@ -5,6 +5,7 @@
     align-items: center;
     flex-direction: column;
     justify-content: space-evenly;
+    min-width: 300px;
 }
 
 .lobbyContainer {

@@ -59,6 +59,12 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping(value = "/gametype")
+    public ResponseEntity<Object> updateGametype(@RequestBody GametypePostRequest gametypePostRequest) {
+        gametypeService.updateGametype(gametypePostRequest);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping(value = "/user/{username}")
     public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
         userService.deleteUser(username);

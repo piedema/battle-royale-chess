@@ -67,6 +67,8 @@ export default function MainMenu(){
 
         })
 
+        let nTilesAvailableForPieces = nRows * nCols
+
         const boardElements = {}
 
         while(buttonsFilteredByRole.length !== 0){
@@ -75,12 +77,17 @@ export default function MainMenu(){
             const randomY = Math.ceil((Math.random() * nRows))
             const key = randomY + '' + randomX
 
-            if(boardElements[key] === undefined) boardElements[key] = buttonsFilteredByRole.shift()
+            if(boardElements[key] === undefined){
+
+                boardElements[key] = buttonsFilteredByRole.shift()
+                nTilesAvailableForPieces--
+
+            }
 
         }
 
         // create shuffled pieces
-        const numberOfPiecesWanted = Math.min(Math.ceil((nRows * nCols) / 3), 8)
+        const numberOfPiecesWanted = Math.min(Math.ceil((nRows * nCols) / 3), nTilesAvailableForPieces)
         const piecesWanted = []
 
         for(let i = 0; i < numberOfPiecesWanted; i++){

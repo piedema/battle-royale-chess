@@ -24,7 +24,7 @@ public class GametypeService {
         this.gametypeRepository = gametypeRepository;
     }
 
-    public String createGametype(GametypePostRequest gametypePostRequest) {
+    public void createGametype(GametypePostRequest gametypePostRequest) {
         try {
 
             Gametype gametype = new Gametype();
@@ -37,9 +37,7 @@ public class GametypeService {
             gametype.setBoard(gametypePostRequest.getBoard());
             gametype.setPlayerDirections(gametypePostRequest.getPlayerDirections());
 
-            Gametype newGametype = gametypeRepository.save(gametype);
-
-            return newGametype.getGametype();
+            gametypeRepository.save(gametype);
         }
         catch (Exception ex) {
             throw new BadRequestException("Cannot create gametype.");
@@ -62,9 +60,28 @@ public class GametypeService {
         return gametypeRepository.findAll();
     }
 
-    public void updateGametype(Gametype updatedGametype){
+    public void updateGametype(GametypePostRequest updatedGametype){
+        System.out.println(updatedGametype);
+        try {
 
-        String name = updatedGametype.getGametype();
+            Optional<Gametype> gametypeOptional = gametypeRepository.findById(updatedGametype.getGametype());
+
+            if(gametypeOptional.isPresent()) {
+                Gametype gametype = gametypeOptional.get();
+                gametype.setNumberOfPlayers(updatedGametype.getNumberOfPlayers());
+                gametype.setCircleShrinkAfterNRounds(updatedGametype.getCircleShrinkAfterNRounds());
+                gametype.setCircleShrinkOffset(updatedGametype.getCircleShrinkOffset());
+                gametype.setTimePerRound(updatedGametype.getTimePerRound());
+                gametype.setInitialDelay(updatedGametype.getInitialDelay());
+                gametype.setBoard(updatedGametype.getBoard());
+                gametype.setPlayerDirections(updatedGametype.getPlayerDirections());
+
+                gametypeRepository.save(gametype);
+            }
+        }
+        catch (Exception ex) {
+            throw new BadRequestException("Cannot create gametype.");
+        }
 
     }
 
