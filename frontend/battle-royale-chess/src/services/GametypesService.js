@@ -30,16 +30,7 @@ export async function doUpdateGametype(updatedGametype){
 
 }
 
-export async function doCreateGametype(
-    gametype,
-    numberOfPlayers,
-    circleShrinkAfterNRounds,
-    circleShrinkOffset,
-    timePerRound,
-    initialDelay,
-    gameBoard,
-    playerDirections
-){
+export async function doCreateGametype(createdGametype){
 
     const options = {
         url:'/admin/gametype',
@@ -48,16 +39,7 @@ export async function doCreateGametype(
             Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
         },
-        data:{
-            gametype,
-            numberOfPlayers,
-            circleShrinkAfterNRounds,
-            circleShrinkOffset,
-            timePerRound,
-            initialDelay,
-            gameBoard,
-            playerDirections
-        }
+        data:createdGametype
     }
 
     return await axios(options)

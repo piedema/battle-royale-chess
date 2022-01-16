@@ -20,7 +20,7 @@ export default function Gametypes(){
 
     const [gametypes, setGametypes] = useState([])
     const [gameBoard, setGameBoard] = useState(undefined)
-    const [playersDirections, setPlayersDirections] = useState(['north', 'south'])
+    const [playerDirections, setPlayerDirections] = useState([])
     const [selectedGametype, setSelectedGametype] = useState(undefined)
     const [buttons, setButtons] = useState([
         {
@@ -66,9 +66,25 @@ export default function Gametypes(){
 
     useEffect(() => {
 
-        console.log('updated gamebaord in gametypes', gameBoard)
+        const allPlayersOnBoard = getAllPlayersOnBoard()
 
-    }, [gameBoard])
+        if(playerDirections.length < allPlayersOnBoard.length){
+
+            setPlayerDirections(playerDirections => {
+                const pd = [...playerDirections]
+
+                for(let i = pd.length; i < allPlayersOnBoard.length; i++){
+
+                    pd.push('north')
+
+                }
+
+                return pd
+            })
+
+        }
+
+    }, [gameBoard, playerDirections])
 
     useEffect(() => {
 
@@ -104,6 +120,7 @@ export default function Gametypes(){
             })
 
             setGameBoard(undefined)
+            setPlayerDirections([])
 
             return
 
@@ -120,7 +137,7 @@ export default function Gametypes(){
             })
 
             setGameBoard(selectedGametype.board)
-            setPlayersDirections(selectedGametype.playerDirections)
+            setPlayerDirections(selectedGametype.playerDirections)
 
             return
         }
@@ -134,6 +151,8 @@ export default function Gametypes(){
                 timePerRoundInput:'number',
                 initialDelayInput:'number'
             })
+
+            setPlayerDirections([])
 
             return
         }
@@ -166,8 +185,6 @@ export default function Gametypes(){
 
     async function onFormSubmit(data){
 
-        return
-
         const {
             gametypeInput,
             circleShrinkAfterNRoundsInput,
@@ -180,8 +197,9 @@ export default function Gametypes(){
 
             const updatedGametype = {
                 gametype:selectedGametype.gametype,
-                gameBoard:gameBoard,
-                numberOfPlayers:selectedGametype.numberOfPlayers
+                board:gameBoard,
+                numberOfPlayers:getAllPlayersOnBoard().length,
+                playerDirections:playerDirections
             }
 
             if(circleShrinkAfterNRoundsInput) updatedGametype.circleShrinkAfterNRounds = circleShrinkAfterNRoundsInput
@@ -203,9 +221,22 @@ export default function Gametypes(){
 
         if(selectedGametype === "new gametype"){
 
+            const createdGametype = {
+                gametype:gametypeInput,
+                numberOfPlayers:getAllPlayersOnBoard().length,
+                circleShrinkAfterNRounds:circleShrinkAfterNRoundsInput,
+                circleShrinkOffset:circleShrinkOffsetInput,
+                timePerRound:timePerRoundInput,
+                initialDelay:initialDelayInput,
+                board:gameBoard,
+                playerDirections:playerDirections
+            }
+
+            console.log('created', createdGametype)
+
             try {
 
-                await doCreateGametype(gametypeInput, selectedGametype.numberOfPlayers, circleShrinkAfterNRoundsInput, circleShrinkOffsetInput, timePerRoundInput, initialDelayInput, selectedGametype.gameBoard)
+                await doCreateGametype(createdGametype)
 
             } catch (error) {
 
@@ -271,38 +302,36 @@ export default function Gametypes(){
 
         e.preventDefault()
 
-            switch(playersDirections[i]) {
+            switch(playerDirections[i]) {
                 case 'north':
-                    setPlayersDirections(playersDirections => {
-                        const pd = [...playersDirections]
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
                         pd[i] = 'east'
                         return pd
                     })
                     break;
                 case 'east':
-                    setPlayersDirections(playersDirections => {
-                        const pd = [...playersDirections]
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
                         pd[i] = 'south'
                         return pd
                     })
                     break;
                 case 'south':
-                    setPlayersDirections(playersDirections => {
-                        const pd = [...playersDirections]
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
                         pd[i] = 'west'
                         return pd
                     })
                     break;
                 case 'west':
-                    setPlayersDirections(playersDirections => {
-                        const pd = [...playersDirections]
+                    setPlayerDirections(playerDirections => {
+                        const pd = [...playerDirections]
                         pd[i] = 'north'
                         return pd
                     })
                     break;
             }
-
-        console.log()
 
     }
 
@@ -352,9 +381,9 @@ export default function Gametypes(){
                                                 ? (
                                                     <input
                                                         type="text"
-                                                        id="nameInput"
-                                                        name="nameInput"
-                                                        {...register("nameInput", {
+                                                        id="gametypeInput"
+                                                        name="gametypeInput"
+                                                        {...register("gametypeInput", {
                                                             // validate:{
                                                             //     value: (value) => value.includes('@'),
                                                             //     message: "moet een @ bevatten jaja"
@@ -429,7 +458,7 @@ export default function Gametypes(){
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            {playersDirections.map((p, i) => { return <div key={i} className={styles.playerDirectionButton} onClick={e => switchPlayerDirection(e, i)} style={{ color:colors.pieces(i).fill, display:'inline-block' }}>{getCorrespondingArrow(p)}</div> })}
+                                            {playerDirections.map((p, i) => { return <div key={i} className={styles.playerDirectionButton} onClick={e => switchPlayerDirection(e, i)} style={{ color:colors.pieces(i).fill, display:'inline-block' }}>{getCorrespondingArrow(p)}</div> })}
                                         </div>
                                     </div>
                                 </div>

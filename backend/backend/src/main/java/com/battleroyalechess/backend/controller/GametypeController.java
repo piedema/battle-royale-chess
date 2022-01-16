@@ -1,5 +1,6 @@
 package com.battleroyalechess.backend.controller;
 
+import com.battleroyalechess.backend.model.User;
 import com.battleroyalechess.backend.service.GametypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
