@@ -13,7 +13,23 @@ export default function GametypesContextProvider({ children }){
         getGametypeByName:getGametypeByName
     }
 
-    useEffect(async () => {
+    useEffect(() => {
+
+        const interval = setInterval(fetchGametypes, 1000)
+
+        fetchGametypes()
+
+        return () => clearInterval(interval)
+
+    }, [])
+
+    function getGametypeByName(name){
+
+        return gametypes.find(g => g.gametype === name)
+
+    }
+
+    async function fetchGametypes(){
 
         try {
 
@@ -25,12 +41,6 @@ export default function GametypesContextProvider({ children }){
             setGametypes([])
 
         }
-
-    }, [])
-
-    function getGametypeByName(name){
-
-        return gametypes.find(g => g.gametype === name)
 
     }
 

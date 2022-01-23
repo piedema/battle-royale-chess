@@ -11,12 +11,13 @@ import LobbyCard from '../../components/lobbyCard/LobbyCard'
 
 import { UserContext } from '../../contexts/UserContext'
 import { GametypesContext } from '../../contexts/GametypesContext'
+import { QueuesContext } from '../../contexts/QueuesContext'
+import { GamesContext } from '../../contexts/GamesContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 import { GameContext } from '../../contexts/GameContext'
 import { SettingsContext } from '../../contexts/SettingsContext'
 
-import { getQueue, doPlaceInQueue, doRemoveFromQueue, getGameId } from '../../services/LobbyService'
-import { getGames } from '../../services/GamesService'
+import { doPlaceInQueue, doRemoveFromQueue, getGameId } from '../../services/LobbyService'
 
 import colors from '../../assets/js/colors'
 
@@ -27,13 +28,13 @@ export default function Lobby() {
     const history = useHistory()
 
     const { username, role } = useContext(UserContext)
-    const { gametypes, refreshGametypes } = useContext(GametypesContext)
+    const { gametypes } = useContext(GametypesContext)
+    const { queues } = useContext(QueuesContext)
+    const { games } = useContext(GamesContext)
     const { logout } = useContext(AuthenticationContext)
     const { gameId, setGameId, resetGameContext } = useContext(GameContext)
     const { dateFormat } = useContext(SettingsContext)
 
-    const [queue, setQueue] = useState([])
-    const [games, setGames] = useState([])
     const [isAlreadyInGame, setIsAlreadyInGame] = useState(undefined)
     const [isQueued, setIsQueued] = useState(false)
 
@@ -75,41 +76,41 @@ export default function Lobby() {
         [dateFormat]
     )
 
-    useEffect(() => {
-
-        if(role === "ADMIN" || role === "USER"){
-
-            (async () => {
-
-                try {
-
-                    const result = await getQueue()
-
-                    setQueue(result.data)
-
-                } catch (error) {
-
-                    setQueue([])
-
-                }
-
-            })()
-
-        }
-
-        if(role === "SPECTATOR"){
-
-            (async () => {
-
-                const result = await getGames()
-
-                setGames(result.data)
-
-            })()
-
-        }
-
-    }, [])
+    // useEffect(() => {
+    //
+    //     if(role === "ADMIN" || role === "USER"){
+    //
+    //         (async () => {
+    //
+    //             try {
+    //
+    //                 const result = await getQueue()
+    //
+    //                 setQueue(result.data)
+    //
+    //             } catch (error) {
+    //
+    //                 setQueue([])
+    //
+    //             }
+    //
+    //         })()
+    //
+    //     }
+    //
+    //     if(role === "SPECTATOR"){
+    //
+    //         (async () => {
+    //
+    //             const result = await getGames()
+    //
+    //             setGames(result.data)
+    //
+    //         })()
+    //
+    //     }
+    //
+    // }, [])
 
     useEffect(() => {
 
@@ -119,11 +120,11 @@ export default function Lobby() {
 
                 try {
 
-                    const result = await getQueue()
+                    // const result = await getQueue()
+                    //
+                    // setQueue(result.data)
 
-                    setQueue(result.data)
-
-                    const isUserInQueue = result.data.find(p => p.username === username)
+                    const isUserInQueue = queues.find(p => p.username === username)
 
                     if(isUserInQueue !== undefined){
 
@@ -133,7 +134,7 @@ export default function Lobby() {
 
                 } catch (error) {
 
-                    setQueue([])
+                    // setQueue([])
 
                 }
 
@@ -171,19 +172,19 @@ export default function Lobby() {
 
         }
 
-        if(username && role === "SPECTATOR"){
-
-            const  refreshGamesInterval = setInterval(async () => {
-
-                const result = await getGames()
-
-                setGames(result.data)
-
-            }, 1000)
-
-            return () => clearInterval(refreshGamesInterval)
-
-        }
+        // if(username && role === "SPECTATOR"){
+        //
+        //     const  refreshGamesInterval = setInterval(async () => {
+        //
+        //         const result = await getGames()
+        //
+        //         setGames(result.data)
+        //
+        //     }, 1000)
+        //
+        //     return () => clearInterval(refreshGamesInterval)
+        //
+        // }
 
     }, [role, username])
 
@@ -251,12 +252,12 @@ export default function Lobby() {
 
             await doPlaceInQueue(gametype)
 
-            const result = await getQueue()
-            setQueue(result.data)
+            // const result = await getQueue()
+            // setQueue(result.data)
 
         } catch (error) {
 
-            setQueue([])
+            // setQueue([])
 
         }
 
@@ -269,12 +270,12 @@ export default function Lobby() {
             await doRemoveFromQueue()
             setIsQueued(false)
 
-            const result = await getQueue()
-            setQueue(result.data)
+            // const result = await getQueue()
+            // setQueue(result.data)
 
         } catch (error) {
 
-            setQueue([])
+            // setQueue([])
 
         }
 
@@ -306,7 +307,7 @@ export default function Lobby() {
                                                         key={g.gametype}
                                                         enterQueue={enterQueue}
                                                         leaveQueue={leaveQueue}
-                                                        queue={queue}
+                                                        queue={queues}
                                                         gametype={g}
                                                         />
                                                     )

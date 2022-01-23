@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 import GametypesContextProvider from './contexts/GametypesContext'
+import GamesContextProvider from './contexts/GamesContext'
+import QueuesContextProvider from './contexts/QueuesContext'
 import AuthenticationContextProvider from './contexts/AuthenticationContext'
 import UserContextProvider from './contexts/UserContext'
 import GameContextProvider from './contexts/GameContext'
@@ -18,11 +20,15 @@ ReactDOM.render(
         <UserContextProvider>
             <AuthenticationContextProvider>
                 <SettingsContextProvider>
-                        <GametypesContextProvider>
-                            <GameContextProvider>
-                                <App />
-                            </GameContextProvider>
-                        </GametypesContextProvider>
+                    <GametypesContextProvider>
+                        <QueuesContextProvider>
+                            <GamesContextProvider>
+                                <GameContextProvider>
+                                    <App />
+                                </GameContextProvider>
+                            </GamesContextProvider>
+                        </QueuesContextProvider>
+                    </GametypesContextProvider>
                 </SettingsContextProvider>
             </AuthenticationContextProvider>
         </UserContextProvider>

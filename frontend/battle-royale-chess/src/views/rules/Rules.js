@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import Piece from '../../components/piece/Piece'
 import Menu from '../../components/menu/Menu'
 
-// import { SettingsContext } from '../../contexts/SettingsContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 
 import colors from '../../assets/js/colors'
 
@@ -14,8 +14,7 @@ export default function Rules() {
 
     const history = useHistory()
 
-    const language = localStorage.getItem('language')
-    const piecesStyle = localStorage.getItem('piecesStyle')
+    const { piecesStyle } = useContext(SettingsContext)
 
     const [sameColor, setSameColor] = useState(undefined)
     const [pieceColors, setPieceColors] = useState(Array(6).fill().map(a => colors.pieces(Math.floor(Math.random() * 8))))
@@ -169,22 +168,22 @@ export default function Rules() {
                     <div className={styles.mainMoves}>
                         <div className={styles.pieces}>
                             <div onMouseEnter={() => setSameColor(pieceColors[0])} onMouseLeave={() => setSameColor(undefined)}>
-                                <Piece type="King" styling={piecesStyle} color={pieceColors[0]} />
+                                <Piece type="King" styling={piecesStyle()} color={pieceColors[0]} />
                             </div>
                             <div onMouseEnter={() => setSameColor(pieceColors[1])} onMouseLeave={() => setSameColor(undefined)}>
-                                <Piece type="Queen" styling={piecesStyle} color={pieceColors[1]} />
+                                <Piece type="Queen" styling={piecesStyle()} color={pieceColors[1]} />
                             </div>
                             <div onMouseEnter={() => setSameColor(pieceColors[2])} onMouseLeave={() => setSameColor(undefined)}>
-                                <Piece type="Tower" styling={piecesStyle} color={pieceColors[2]} />
+                                <Piece type="Tower" styling={piecesStyle()} color={pieceColors[2]} />
                             </div>
                             <div onMouseEnter={() => setSameColor(pieceColors[3])} onMouseLeave={() => setSameColor(undefined)}>
-                                <Piece type="Bishop" styling={piecesStyle} color={pieceColors[3]} />
+                                <Piece type="Bishop" styling={piecesStyle()} color={pieceColors[3]} />
                             </div>
                             <div onMouseEnter={() => setSameColor(pieceColors[4])} onMouseLeave={() => setSameColor(undefined)}>
-                                <Piece type="Knight" styling={piecesStyle} color={pieceColors[4]} />
+                                <Piece type="Knight" styling={piecesStyle()} color={pieceColors[4]} />
                             </div>
                             <div onMouseEnter={() => setSameColor(pieceColors[5])} onMouseLeave={() => setSameColor(undefined)}>
-                                <Piece type="Pawn" styling={piecesStyle} color={pieceColors[5]} />
+                                <Piece type="Pawn" styling={piecesStyle()} color={pieceColors[5]} />
                             </div>
                         </div>
                         <div className={styles.textUnderneath}>
@@ -195,7 +194,7 @@ export default function Rules() {
                     </div>
                     <div className={styles.ruleContainer}>
                         <div className={styles.piece}>
-                            <Piece type="King" styling={piecesStyle} color={sameColor || pieceColors[0]} />
+                            <Piece type="King" styling={piecesStyle()} color={sameColor || pieceColors[0]} />
                         </div>
                         <div className={styles.textfieldOuter}>
                             <div className={styles.textfieldInner}>
@@ -218,12 +217,12 @@ export default function Rules() {
                             </div>
                         </div>
                         <div className={styles.piece}>
-                            <Piece type="Queen" styling={piecesStyle} color={sameColor || pieceColors[1]} />
+                            <Piece type="Queen" styling={piecesStyle()} color={sameColor || pieceColors[1]} />
                         </div>
                     </div>
                     <div className={styles.ruleContainer}>
                         <div className={styles.piece}>
-                            <Piece type="Tower" styling={piecesStyle} color={sameColor || pieceColors[2]} />
+                            <Piece type="Tower" styling={piecesStyle()} color={sameColor || pieceColors[2]} />
                         </div>
                         <div className={styles.textfieldOuter}>
                             <div className={styles.textfieldInner}>
@@ -246,12 +245,12 @@ export default function Rules() {
                             </div>
                         </div>
                         <div className={styles.piece}>
-                            <Piece type="Bishop" styling={piecesStyle} color={sameColor || pieceColors[3]} />
+                            <Piece type="Bishop" styling={piecesStyle()} color={sameColor || pieceColors[3]} />
                         </div>
                     </div>
                     <div className={styles.ruleContainer}>
                         <div className={styles.piece}>
-                            <Piece type="Knight" styling={piecesStyle} color={sameColor || pieceColors[4]} />
+                            <Piece type="Knight" styling={piecesStyle()} color={sameColor || pieceColors[4]} />
                         </div>
                         <div className={styles.textfieldOuter}>
                             <div className={styles.textfieldInner}>
@@ -275,7 +274,7 @@ export default function Rules() {
                             </div>
                         </div>
                         <div className={styles.piece}>
-                            <Piece type="Pawn" styling={piecesStyle} color={sameColor || pieceColors[5]} />
+                            <Piece type="Pawn" styling={piecesStyle()} color={sameColor || pieceColors[5]} />
                         </div>
                     </div>
                 </div>)
