@@ -1,4 +1,6 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useContext } from 'react'
+
+import { AuthenticationContext } from './AuthenticationContext'
 
 import { getGametypes } from '../services/GametypesService'
 
@@ -6,22 +8,23 @@ export const GametypesContext = createContext({})
 
 export default function GametypesContextProvider({ children }){
 
-    const [gametypes, setGametypes] = useState([])
+    const { authState } = useContext(AuthenticationContext)
+
+    const [gametypes, setGametypes] = useState(undefined)
 
     const contextData = {
-        gametypes:gametypes,
-        getGametypeByName:getGametypeByName
+        gametypes,
+        getGametypeByName,
+        fetchGametypes
     }
 
     useEffect(() => {
 
-        const interval = setInterval(fetchGametypes, 1000)
+        if(authState !== 'success') return
 
         fetchGametypes()
 
-        return () => clearInterval(interval)
-
-    }, [])
+    }, [authState])
 
     function getGametypeByName(name){
 

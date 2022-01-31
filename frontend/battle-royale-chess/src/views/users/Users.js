@@ -52,6 +52,8 @@ export default function Users() {
                 const result = await axios(options)
                 setUsers(result.data || [])
 
+                console.log(result.data)
+
             } catch (error){
 
                 console.log(error)

@@ -59,16 +59,12 @@ public class User {
 
     public void setEmail(String email) { this.email = email;}
 
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
     public Integer getGamesPlayed() {
         return gamesPlayed;
     }
 
-    public void setGamesPlayed(Integer gamesPlayed) {
-        this.gamesPlayed = gamesPlayed;
+    public void increaseGamesPlayed() {
+        this.gamesPlayed++;
     }
 
     public ArrayList<Integer> getScores() {
@@ -108,19 +104,17 @@ public class User {
         return score;
     }
 
-    public Integer setScore(int points){
+    public void setScore(int points){
         if(this.scores.size() == 50) this.scores.remove(0);
         this.scores.add(points);
 
         int sum = 0;
 
-        for(int i = 0; i < this.scores.size() - 1; i++){
-            sum += this.scores.get(i);
+        for (Integer integer : this.scores) {
+            sum += integer;
         }
 
         this.score = sum / this.scores.size();
-
-        return this.score;
     }
 
 }

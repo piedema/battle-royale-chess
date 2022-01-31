@@ -1,26 +1,32 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useContext } from 'react'
+import { useLocation } from 'react-router-dom'
 
 import { getGames } from '../services/GamesService'
+
+import { AuthenticationContext } from './AuthenticationContext'
+import { UserContext } from './UserContext'
 
 export const GamesContext = createContext({})
 
 export default function GamesContextProvider({ children }){
 
-    const [games, setGames] = useState([])
+    const { authState } = useContext(AuthenticationContext)
+    const { role } = useContext(UserContext)
+
+    const [games, setGames] = useState(undefined)
 
     const contextData = {
-        games:games
+        games,
+        fetchGames
     }
 
     useEffect(() => {
 
-        const interval = setInterval(fetchGames, 1000)
+        if(authState !== 'success') return
 
         fetchGames()
 
-        return () => clearInterval(interval)
-
-    }, [])
+    }, [authState])
 
     async function fetchGames(){
 

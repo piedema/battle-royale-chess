@@ -6,9 +6,8 @@ export async function getGames(){
         url:'/games',
         method:'GET',
         headers: {
-            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
-        },
+        }
     }
 
     return await axios(options)
@@ -21,9 +20,8 @@ export async function getGamedata(gameId){
         url:'/games/' + gameId,
         method:'GET',
         headers: {
-            Authorization:'Bearer ' + localStorage.getItem('token'),
             'Content-Type': 'application/json'
-        },
+        }
     }
 
     return await axios(options)
@@ -47,8 +45,6 @@ export async function doNewMove(gameId, from, to){
 }
 
 export async function doCancelMove(gameId, username){
-
-    // this endpoint is not available on backend yet
 
     const options = {
         url:'/games/' + gameId + "/cancelMove",

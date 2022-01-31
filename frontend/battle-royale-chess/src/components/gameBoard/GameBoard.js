@@ -14,13 +14,22 @@ import colors from '../../assets/js/colors'
 export default function GameBoard({ makeMove }){
 
     const { username } = useContext(UserContext)
-    const { board, players, moveFrom, moveTo, round, finished, gametype, boardPosition, setBoardPosition } = useContext(GameContext)
+    const { board, players, moveFrom, moveTo, round, finished, boardPosition, setBoardPosition, gametype } = useContext(GameContext)
 
     const [boardJSX, setBoardJSX] = useState([])
     const [width, setWidth] = useState(0)
     const [height, setHeight] = useState(0)
 
     useEffect(() => {
+
+        if(
+            board === undefined
+            || players === undefined
+            || round === undefined
+            || finished === undefined
+            || boardPosition === undefined
+            || gametype === undefined
+        ) return
 
         const cellSize = 100
         const pieceStyle = localStorage.getItem('piecesStyle') || 'outlined'
@@ -35,7 +44,6 @@ export default function GameBoard({ makeMove }){
         const circleShrinkInNRounds = (
             round > circleShrinkOffset
             ? circleShrinkAfterNRounds - ((round % circleShrinkAfterNRounds) % circleShrinkAfterNRounds)
-            // : (circleShrinkAfterNRounds - ((round % circleShrinkAfterNRounds) % circleShrinkAfterNRounds)) + circleShrinkOffset
             : (circleShrinkOffset - round) + (circleShrinkAfterNRounds - (circleShrinkOffset % circleShrinkAfterNRounds))
         )
 
@@ -97,10 +105,22 @@ export default function GameBoard({ makeMove }){
 
                         const classListJoined = Object.values(classList).join(" ")
 
+                        let rowInChar = ''
+                        let nRowChars = Math.ceil(i / 26)
+
+                        for(let k = 0; k < nRowChars; k++){
+
+                            let char = i % 26
+
+                            rowInChar += String.fromCharCode(char+64)
+
+                        }
+
+
                         row.push(
                             <td key={key} className={classListJoined} onClick={() => makeMove(key) }>
                                 { pieceOnTile !== undefined ? <Piece type={pieceOnTile} styling={pieceStyle} color={color}/> : null }
-                                <div className={styles.tileId}>{i + ' ' + j}</div>
+                                <div className={styles.tileId}>{rowInChar + j}</div>
                                 { tileFadesSoon !== null && <div className={styles.tileFadesSoon}>{tileFadesSoon}</div> }
                             </td>
                         )
@@ -121,7 +141,7 @@ export default function GameBoard({ makeMove }){
 
         }
 
-    }, [board, players, moveFrom, moveTo, username, round, finished])
+    }, [board, players, moveFrom, moveTo, username, round, finished, gametype, boardPosition])
 
     return (
         <div className={styles.container}>

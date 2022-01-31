@@ -62,10 +62,6 @@ public class Game {
         return gameEndedAt;
     }
 
-    public void setGameEndedAt(Long gameEndedAt) {
-        this.gameEndedAt = gameEndedAt;
-    }
-
     public HashMap<String, ArrayList<String>> getBoard() {
         return board;
     }
@@ -96,6 +92,7 @@ public class Game {
 
     public void setFinished() {
         this.finished = true;
+        this.gameEndedAt = new Date().getTime();
     }
 
     public String getGametype() {

@@ -17,7 +17,11 @@ export default function Highscores() {
         (async () => {
 
             const players = await getAllPlayersdata()
-            setPlayers([...players.data])
+            const rankedPlayers = [...players.data]
+            const rankedPlayersSorted = sortPlayers(rankedPlayers)
+            const rankedPlayersWithScore = addRank(rankedPlayersSorted)
+
+            setPlayers(rankedPlayers)
 
         })()
 
@@ -49,6 +53,26 @@ export default function Highscores() {
         ],
         []
     )
+
+    function sortPlayers(array){
+
+        return array.sort((a, b) => b.score - a.score)
+
+    }
+
+    function addRank(rankedPlayersSorted){
+
+        return rankedPlayersSorted.map((p, i, a) => {
+
+            if(i === 0) p.rank = 1
+            if(i > 0 && p.score === a[i-1].score) p.rank = a[i-1].rank
+            if(i > 0 && p.score < a[i-1].score) p.rank = i + 1
+
+            return p
+
+        })
+
+    }
 
     return (
         <div className={styles.container}>

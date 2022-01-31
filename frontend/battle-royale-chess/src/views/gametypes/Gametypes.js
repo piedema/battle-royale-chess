@@ -5,8 +5,6 @@ import moment from 'moment'
 
 import { getGametypes, doCreateGametype, doUpdateGametype } from '../../services/GametypesService'
 
-import { SettingsContext } from '../../contexts/SettingsContext'
-
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'

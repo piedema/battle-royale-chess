@@ -35,23 +35,7 @@ export default function AuthenticationContextProvider({ children }){
 
         if(token){
 
-            ;(async () => {
-
-                try {
-
-                    const userdata = await getUserdata()
-
-                    setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities))
-
-                } catch (error) {
-
-                    console.log(error)
-
-                    unsetUser()
-
-                }
-
-            })()
+            refreshUser()
 
         }
 
@@ -65,9 +49,7 @@ export default function AuthenticationContextProvider({ children }){
 
             localStorage.setItem('token', result.data.jwt)
 
-            const userdata = await getUserdata()
-
-            setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities))
+            refreshUser()
 
         } catch (error) {
 
@@ -87,13 +69,9 @@ export default function AuthenticationContextProvider({ children }){
 
             const userdata = await getUserdata()
 
-            console.log(userdata)
-
             setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities))
 
         } catch (error) {
-
-            console.log(error)
 
             unsetUser()
 

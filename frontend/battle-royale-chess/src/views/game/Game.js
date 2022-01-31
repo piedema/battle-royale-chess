@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { GametypesContext } from '../../contexts/GametypesContext'
 import { UserContext } from '../../contexts/UserContext'
 import { GameContext } from '../../contexts/GameContext'
+import { GamesContext } from '../../contexts/GamesContext'
 
 import { getGamedata, doNewMove, doCancelMove } from '../../services/GamesService'
 
@@ -18,7 +19,8 @@ export default function Game() {
     const history = useHistory()
 
     const { username } = useContext(UserContext)
-    const { gametypes } = useContext(GametypesContext)
+    const { getGametypeByName, gametypes } = useContext(GametypesContext)
+    const { games } = useContext(GamesContext)
     const {
         gameId, setGameId,
         setScores,
@@ -39,24 +41,45 @@ export default function Game() {
 
     let loadDataTimeout
 
-    // get gameId
+    // get gameId & start gameloop with loadGamedata call
     useEffect(() => {
 
-        if(gameId !== undefined) loadGamedata()
+        resetGameContext()
 
-        return () => {
+        if(games === undefined) return
 
-            loadDataTimeout = clearTimeout(loadDataTimeout)
-            resetGameContext()
+        const game = games.find(g => g.players.includes(username) && g.finished === false)
+
+        // an active game for this player has been found, set this games gameId
+        if(game !== undefined){
+
+            setGameId(game.gameId)
 
         }
 
-    }, [])
+        // an active game has not been found and gameId is undefined, so go back to lobby
+        // this invokes going back to lobby on refresh after game has ended, but the gameId check
+        // provokes automatically going back to lobby when current game has ended so players can
+        // see the endscreen until the leave the game or refresh
+        if(game === undefined && gameId === undefined){
 
-    // start gameLoop
+            history.push('/')
+
+        }
+
+        return () => clearTimeout(loadDataTimeout)
+
+    }, [games, gameId, gametypes])
+
     useEffect(() => {
-        if(gameId === undefined) history.push('/')
-    }, [gameId])
+
+        if(gametypes === undefined) return
+        if(gameId === undefined) return
+        if(finished === true) return
+
+        loadGamedata()
+
+    }, [gameId, gametypes])
 
     useEffect(() => {
 
@@ -96,7 +119,7 @@ export default function Game() {
 
             setMoveFrom(undefined)
             setMoveTo(undefined)
-            setGametype(gametypes.find(g => g.gametype === gamedata.gametype))
+            setGametype(getGametypeByName(gamedata.gametype))
             setScores(gamedata.scores)
             setMoves(gamedata.moves)
             setBoard(gamedata.board)

@@ -1,4 +1,7 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useContext } from 'react'
+
+import { AuthenticationContext } from './AuthenticationContext'
+import { UserContext } from './UserContext'
 
 import { getQueue } from '../services/LobbyService'
 
@@ -6,21 +9,29 @@ export const QueuesContext = createContext({})
 
 export default function QueuesContextProvider({ children }){
 
-    const [queues, setQueues] = useState([])
+    const { authState } = useContext(AuthenticationContext)
+    const { role } = useContext(UserContext)
+
+    const [queues, setQueues] = useState(undefined)
 
     const contextData = {
-        queues:queues
+        queues,
+        fetchQueues
     }
 
     useEffect(() => {
 
-        const interval = setInterval(fetchQueues, 1000)
+        if(
+            authState !== 'success'
+            || (
+                role !== 'USER'
+                && role !== 'ADMIN'
+            )
+        ) return
 
         fetchQueues()
 
-        return () => clearInterval(interval)
-
-    }, [])
+    }, [authState, role])
 
     async function fetchQueues(){
 

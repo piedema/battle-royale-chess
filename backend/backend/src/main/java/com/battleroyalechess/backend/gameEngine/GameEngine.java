@@ -317,23 +317,21 @@ public class GameEngine {
 
     public void endGame(){
 
-        // calculate new total scores for players (add this score to their previous scores)
-
-        // setting game on finished
-        this.game.setFinished();
-        this.game.setGameEndedAt(new Date().getTime());
-        this.gameRepository.save(this.game);
-
-        // calculate new average scores for players in user table
+        // calculate and store new score per player
         ArrayList<String> players = this.game.getPlayers();
         for(int i = 0; i < players.size(); i++) {
             Optional<User> userOptional = this.userRepository.findById(players.get(i));
             if(userOptional.isPresent()){
                 User user = userOptional.get();
                 user.setScore(this.game.getScore(i));
+                user.increaseGamesPlayed();
                 this.userRepository.save(user);
             }
         }
+
+        // setting game on finished
+        this.game.setFinished();
+        this.gameRepository.save(this.game);
 
         // orphan Game instance
         this.gamesService.orphanGame(this.gameId);

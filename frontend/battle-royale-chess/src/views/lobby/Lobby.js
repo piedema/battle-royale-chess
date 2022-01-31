@@ -28,15 +28,14 @@ export default function Lobby() {
     const history = useHistory()
 
     const { username, role } = useContext(UserContext)
-    const { gametypes } = useContext(GametypesContext)
-    const { queues } = useContext(QueuesContext)
-    const { games } = useContext(GamesContext)
+    const { gametypes, fetchGametypes } = useContext(GametypesContext)
+    const { queues, fetchQueues } = useContext(QueuesContext)
+    const { games, fetchGames } = useContext(GamesContext)
     const { logout } = useContext(AuthenticationContext)
     const { gameId, setGameId, resetGameContext } = useContext(GameContext)
     const { dateFormat } = useContext(SettingsContext)
 
-    const [isAlreadyInGame, setIsAlreadyInGame] = useState(undefined)
-    const [isQueued, setIsQueued] = useState(false)
+    const [isInGame, setIsInGame] = useState(undefined)
 
     const columns = useMemo(
         () => [
@@ -76,175 +75,56 @@ export default function Lobby() {
         [dateFormat]
     )
 
-    // useEffect(() => {
-    //
-    //     if(role === "ADMIN" || role === "USER"){
-    //
-    //         (async () => {
-    //
-    //             try {
-    //
-    //                 const result = await getQueue()
-    //
-    //                 setQueue(result.data)
-    //
-    //             } catch (error) {
-    //
-    //                 setQueue([])
-    //
-    //             }
-    //
-    //         })()
-    //
-    //     }
-    //
-    //     if(role === "SPECTATOR"){
-    //
-    //         (async () => {
-    //
-    //             const result = await getGames()
-    //
-    //             setGames(result.data)
-    //
-    //         })()
-    //
-    //     }
-    //
-    // }, [])
+    useEffect(() => {
+
+        const dataRefreshInterval = setInterval(() => {
+
+            fetchGames()
+            fetchGametypes()
+            fetchQueues()
+
+        }, 1000)
+
+        return () => clearInterval(dataRefreshInterval)
+
+    }, [])
 
     useEffect(() => {
 
-        if(username && role === 'ADMIN' || role === 'USER'){
+        if(games === undefined) return
 
-            const refreshQueueInterval = setInterval(async () => {
+        const game = games.find(g => g.players.includes(username) && g.finished === false)
 
-                try {
+        // if user is a game and isInGame === false then user jsut entered game and should move to game screen
+        if(game !== undefined && isInGame === false){
 
-                    // const result = await getQueue()
-                    //
-                    // setQueue(result.data)
-
-                    const isUserInQueue = queues.find(p => p.username === username)
-
-                    if(isUserInQueue !== undefined){
-
-                        setIsQueued(true)
-
-                    }
-
-                } catch (error) {
-
-                    // setQueue([])
-
-                }
-
-            }, 1000)
-
-            if(username !== undefined){
-
-                (async () => {
-
-                    try {
-
-                        const result = await getGameId(username)
-
-                        if(typeof result.data === 'number'){
-
-                            setIsAlreadyInGame(result.data)
-
-                        }
-
-                        if(typeof result.data !== 'number'){
-
-                            setIsAlreadyInGame(false)
-
-                        }
-
-                    } catch (error) {
-
-                    }
-
-                })()
-
-            }
-
-            return () => clearInterval(refreshQueueInterval)
+            setIsInGame(true)
+            history.push('/game')
 
         }
 
-        // if(username && role === "SPECTATOR"){
-        //
-        //     const  refreshGamesInterval = setInterval(async () => {
-        //
-        //         const result = await getGames()
-        //
-        //         setGames(result.data)
-        //
-        //     }, 1000)
-        //
-        //     return () => clearInterval(refreshGamesInterval)
-        //
-        // }
+        // user refreshed page and is in game, show the return to game element
+        if(game !== undefined && isInGame === undefined){
 
-    }, [role, username])
-
-    useEffect(() => {
-
-        let getGameIdInterval
-
-        if(isQueued === true){
-
-            getGameIdInterval = setInterval(async () => {
-
-                try {
-
-                    const result = await getGameId(username)
-
-                    if(typeof result.data === 'number'){
-
-                        setGameId(result.data)
-
-                    }
-
-                } catch (error) {
-
-                }
-
-            }, 1000)
+            setIsInGame(true)
 
         }
 
-        if(isQueued === false){
+        // user recently was in game which has finished. show lobby queue by setting isInGame to false
+        if(game === undefined && isInGame === true){
 
-            clearInterval(getGameIdInterval)
-
-        }
-
-        return () => clearInterval(getGameIdInterval)
-
-    }, [isQueued])
-
-    useEffect(() => {
-
-        if(gameId) history.push('/game')
-
-    }, [gameId])
-
-    useEffect(() => {
-
-        if(isAlreadyInGame){
-
-            const game = games.find(g => g.gameId === isAlreadyInGame)
-
-            if(game && game.finished === true){
-
-                setIsAlreadyInGame(false)
-
-            }
+            setIsInGame(false)
 
         }
 
-    }, [games])
+        // user is not in a game and refreshed page. set isInGame to false to load lobby queue
+        if(game === undefined && isInGame === undefined){
+
+            setIsInGame(false)
+
+        }
+
+    }, [games, username, isInGame])
 
     async function enterQueue(gametype){
 
@@ -252,12 +132,7 @@ export default function Lobby() {
 
             await doPlaceInQueue(gametype)
 
-            // const result = await getQueue()
-            // setQueue(result.data)
-
         } catch (error) {
-
-            // setQueue([])
 
         }
 
@@ -268,14 +143,8 @@ export default function Lobby() {
         try {
 
             await doRemoveFromQueue()
-            setIsQueued(false)
-
-            // const result = await getQueue()
-            // setQueue(result.data)
 
         } catch (error) {
-
-            // setQueue([])
 
         }
 
@@ -283,7 +152,7 @@ export default function Lobby() {
 
     async function enterGame(isAlreadyInGame){
 
-        setGameId(isAlreadyInGame)
+        setIsInGame(false)
 
     }
 
@@ -299,7 +168,7 @@ export default function Lobby() {
                     ?   (
                             <div className={styles.lobbyContainer}>
                                 {
-                                    isAlreadyInGame === false
+                                    isInGame === false && gametypes !== undefined && queues !== undefined
                                     ?   (
                                             gametypes.map(g => {
                                                 return  (
@@ -313,10 +182,10 @@ export default function Lobby() {
                                                     )
                                             })
                                         )
-                                    : isAlreadyInGame === true
+                                    : isInGame
                                     ? (
                                             <BasicContainer>
-                                                <div className={styles.alreadyInGameContainer} onClick={() => enterGame(isAlreadyInGame)}>
+                                                <div className={styles.alreadyInGameContainer} onClick={() => enterGame()}>
                                                     You're already in a game, click here to go to that game.
                                                 </div>
                                             </BasicContainer>

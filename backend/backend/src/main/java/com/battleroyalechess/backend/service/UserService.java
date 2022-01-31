@@ -45,6 +45,8 @@ public class UserService {
             throw new UserNotFoundException(username);
         }
 
+        userOptional.ifPresent(user -> user.setPassword(null));
+
         return userOptional;
     }
 
@@ -238,22 +240,22 @@ public class UserService {
     private boolean isValidPassword(String password) {
         final int MIN_LENGTH = 8;
         final int MIN_DIGITS = 1;
-        final int MIN_LOWER = 1;
-        final int MIN_UPPER = 1;
-        final int MIN_SPECIAL = 1;
-        final String SPECIAL_CHARS = "@#$%&*!()+=-_";
+//        final int MIN_LOWER = 1;
+//        final int MIN_UPPER = 1;
+//        final int MIN_SPECIAL = 1;
+//        final String SPECIAL_CHARS = "@#$%&*!()+=-_";
 
         long countDigit = password.chars().filter(ch -> ch >= '0' && ch <= '9').count();
-        long countLower = password.chars().filter(ch -> ch >= 'a' && ch <= 'z').count();
-        long countUpper = password.chars().filter(ch -> ch >= 'A' && ch <= 'Z').count();
-        long countSpecial = password.chars().filter(ch -> SPECIAL_CHARS.indexOf(ch) >= 0).count();
+//        long countLower = password.chars().filter(ch -> ch >= 'a' && ch <= 'z').count();
+//        long countUpper = password.chars().filter(ch -> ch >= 'A' && ch <= 'Z').count();
+//        long countSpecial = password.chars().filter(ch -> SPECIAL_CHARS.indexOf(ch) >= 0).count();
 
         boolean validPassword = true;
         if (password.length() < MIN_LENGTH) validPassword = false;
-        if (countLower < MIN_LOWER) validPassword = false;
-        if (countUpper < MIN_UPPER) validPassword = false;
+//        if (countLower < MIN_LOWER) validPassword = false;
+//        if (countUpper < MIN_UPPER) validPassword = false;
         if (countDigit < MIN_DIGITS) validPassword = false;
-        if (countSpecial < MIN_SPECIAL) validPassword = false;
+//        if (countSpecial < MIN_SPECIAL) validPassword = false;
 
         return validPassword;
     }
