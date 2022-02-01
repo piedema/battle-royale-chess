@@ -1,18 +1,21 @@
-import { useEffect, useContext, useMemo, useState } from 'react'
+import { useEffect, useContext, useMemo, useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { useForm } from 'react-hook-form'
 import moment from 'moment'
 import axios from 'axios'
 
-import { doCreateUser, doUpdateUser, getAllUserdata } from '../../services/UserService'
-
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
+import Tooltip from '../../components/form/tooltip/Tooltip'
 
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 import { SettingsContext } from '../../contexts/SettingsContext'
+
+import { doCreateUser, doUpdateUser, getAllUserdata, usernameExists, emailExists } from '../../services/UserService'
+
+import containsDigit from '../../helpers/containsDigit'
 
 import styles from './Users.module.css'
 
@@ -23,6 +26,11 @@ export default function Users() {
     const { authenticate } = useContext(AuthenticationContext)
     const { dateFormat } = useContext(SettingsContext)
 
+    const { register, handleSubmit, reset, watch, formState:{ errors } } = useForm()
+
+    const password = useRef({})
+    password.current = watch('passwordInput', '')
+
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState(undefined)
     const [buttons, setButtons] = useState([
@@ -32,33 +40,19 @@ export default function Users() {
         }
     ])
 
-    const { register, handleSubmit, reset, formState:{ errors } } = useForm()
-
     useEffect(() => {
 
         (async () => {
 
             try {
 
-                const options = {
-                    url:'/admin/users',
-                    method:'GET',
-                    headers: {
-                        Authorization:'Bearer ' + localStorage.getItem('token'),
-                        'Content-Type': 'application/json'
-                    },
-                }
-
-                const result = await axios(options)
-                setUsers(result.data || [])
-
-                console.log(result.data)
+                const result = await getAllUserdata()
+                setUsers(result.data)
 
             } catch (error){
 
-                console.log(error)
-
             }
+
         })()
 
     }, [])
@@ -71,7 +65,7 @@ export default function Users() {
             reset({
                 emailInput:selectedUser.email,
                 passwordInput:'',
-                passwordInput2:'',
+                passwordCheck:'',
                 authoritiesSelect:selectedUser.authorities.find(u => u.authority === "ROLE_ADMIN") ? "ADMIN" : "USER"
             })
         }
@@ -80,7 +74,7 @@ export default function Users() {
             reset({
                 emailInput:'',
                 passwordInput:'',
-                passwordInput2:'',
+                passwordCheck:'',
                 authoritiesSelect:"USER"
             })
         }
@@ -113,14 +107,6 @@ export default function Users() {
                             .sort((a, b) => a.localeCompare(b))
                             .join(', '),
                     },
-                    // {
-                    //     Header: 'Disable user',
-                    //     accessor: data => <div className={styles.tableIcon} onClick={disableUser}>⨯</div>,
-                    // },
-                    // {
-                    //     Header: 'Save',
-                    //     accessor: data => <div className={styles.tableIcon} onClick={saveUser}>🖫</div>
-                    // },
                 ],
             }
         ],
@@ -153,7 +139,7 @@ export default function Users() {
 
     async function onFormSubmit(data){
 
-        const { usernameInput, passwordInput, passwordInput2, emailInput, authoritiesSelect } = data
+        const { usernameInput, passwordInput,  emailInput, authoritiesSelect } = data
 
         if(selectedUser === "new user"){
 
@@ -171,7 +157,7 @@ export default function Users() {
 
             }
 
-            if(passwordInput.length > 0 && passwordInput === passwordInput2){
+            if(passwordInput.length > 0){
 
                 updatedUser.password = passwordInput
 
@@ -187,12 +173,7 @@ export default function Users() {
 
         }
 
-        const result = await getAllUserdata(
-            async () => {
-                return await authenticate()
-                // history.push('/')
-            }
-        )
+        const result = await getAllUserdata()
 
         setUsers(result)
         userDeselected()
@@ -242,17 +223,22 @@ export default function Users() {
                                         {
                                             selectedUser === "new user"
                                             ? (
-                                                <input
-                                                    type="username"
-                                                    id="usernameInput"
-                                                    name="usernameInput"
-                                                    {...register("usernameInput", {
-                                                        // validate:{
-                                                        //     value: (value) => value.includes('@'),
-                                                        //     message: "moet een @ bevatten jaja"
-                                                        // }
-                                                    })}
-                                                />
+                                                <>
+                                                    <input
+                                                        type="username"
+                                                        id="usernameInput"
+                                                        name="usernameInput"
+                                                        {...register('usernameInput', {
+                                                            required: true,
+                                                            validate: async value => {
+                                                                const result = await usernameExists(value)
+                                                                return !result
+                                                            }
+                                                        })}
+                                                    />
+                                                    {errors.usernameInput?.type === "required" && <Tooltip>Username is required</Tooltip>}
+                                                    {errors.usernameInput?.type === "validate" && <Tooltip>Username is not available</Tooltip>}
+                                                </>
                                             )
                                             : selectedUser.username
                                         }
@@ -269,14 +255,16 @@ export default function Users() {
                                             type="email"
                                             id="emailInput"
                                             name="emailInput"
-                                            {...register("emailInput", {
-                                                // validate:{
-                                                //     value: (value) => value.includes('@'),
-                                                //     message: "moet een @ bevatten jaja"
-                                                // }
+                                            {...register('emailInput', {
+                                                required: true,
+                                                validate: async value => {
+                                                    const result = await emailExists(value)
+                                                    return !result
+                                                }
                                             })}
                                         />
-                                        {errors.name}
+                                        {errors.emailInput?.type === "required" && <Tooltip>Email is required</Tooltip>}
+                                        {errors.emailInput?.type === "validate" && <Tooltip>Email is not available</Tooltip>}
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -286,8 +274,19 @@ export default function Users() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        <input type="password" id="passwordInput" name="passwordInput" {...register("passwordInput", { minLength:8, maxLength:80 })} />
-                                        { errors.name && errors.name.type === 'minLength' && <span role="alert">Value is too short</span>}
+                                        <input
+                                            type="password"
+                                            id="passwordInput"
+                                            name="passwordInput"
+                                            {...register('passwordInput', {
+                                                required: true,
+                                                minLength: 8,
+                                                validate: containsDigit
+                                            })}
+                                        />
+                                        {errors.password?.type === "required" && <Tooltip>Password is required</Tooltip>}
+                                        {errors.password?.type === "minLength" && <Tooltip>Password needs to be at least 8 characters</Tooltip>}
+                                        {errors.password?.type === "validate" && <Tooltip>Password needs at least 1 digit</Tooltip>}
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -297,7 +296,15 @@ export default function Users() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        <input type="password" id="passwordInput2" name="passwordInput2" {...register("passwordInput2")} />
+                                        <input
+                                            type="password"
+                                            id="passwordCheck"
+                                            name="passwordCheck"
+                                            {...register('passwordCheck', {
+                                                validate: pw => pw === password.current
+                                            })}
+                                        />
+                                        {errors.passwordCheck?.type === "validate" && <Tooltip>Second password does not match first password</Tooltip>}
                                     </div>
                                 </div>
                                 <div className={styles.pair}>

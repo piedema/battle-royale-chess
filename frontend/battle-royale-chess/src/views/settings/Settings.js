@@ -1,14 +1,17 @@
-import { useState, useContext, useEffect, useMemo } from 'react'
+import { useState, useContext, useEffect, useMemo, useRef } from 'react'
 
 import { useForm } from 'react-hook-form'
 
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
+import Tooltip from '../../components/form/tooltip/Tooltip'
 
 import { UserContext } from '../../contexts/UserContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
-import { doUpdateUser } from '../../services/UserService'
+import { usernameExists, emailExists, doUpdateUser } from '../../services/UserService'
+
+import containsDigit from '../../helpers/containsDigit'
 
 import styles from './Settings.module.css'
 
@@ -17,7 +20,10 @@ export default function Settings() {
     const { username, email } = useContext(UserContext)
     const { refreshUser } = useContext(AuthenticationContext)
 
-    const { register, handleSubmit, reset, formState:{ errors } } = useForm()
+    const { register, handleSubmit, reset, watch, formState:{ errors } } = useForm()
+
+    const password = useRef({})
+    password.current = watch('passwordInput', '')
 
     useEffect(() => {
         reset({
@@ -34,7 +40,7 @@ export default function Settings() {
         const {
             emailInput,
             passwordInput,
-            passwordInput2,
+            passwordCheck,
             languageSelect,
             dateTimeSelect,
             boardViewSelect,
@@ -44,7 +50,7 @@ export default function Settings() {
         const updatedUser = { username:username }
 
         if(emailInput) updatedUser.email = emailInput
-        if(passwordInput.length > 0 && passwordInput === passwordInput2) updatedUser.password = passwordInput
+        if(passwordInput.length > 0 && passwordInput === passwordCheck) updatedUser.password = passwordInput
 
         localStorage.setItem('language', languageSelect)
         localStorage.setItem('dateTime', dateTimeSelect)
@@ -91,14 +97,16 @@ export default function Settings() {
                                     type="email"
                                     id="emailInput"
                                     name="emailInput"
-                                    {...register("emailInput", {
-                                        // validate:{
-                                        //     value: (value) => value.includes('@'),
-                                        //     message: "moet een @ bevatten jaja"
-                                        // }
+                                    {...register('emailInput', {
+                                        required: true,
+                                        validate: async value => {
+                                            const result = await emailExists(value)
+                                            return !result
+                                        }
                                     })}
                                 />
-                                {errors.name}
+                                {errors.emailInput?.type === "required" && <Tooltip>Email is required</Tooltip>}
+                                {errors.emailInput?.type === "validate" && <Tooltip>Email is not available</Tooltip>}
                             </div>
                         </div>
                         <div className={styles.pair}>
@@ -108,8 +116,21 @@ export default function Settings() {
                                 </div>
                             </div>
                             <div className={styles.value}>
-                                <input type="password" id="passwordInput" name="passwordInput" {...register("passwordInput", { minLength:8, maxLength:80 })} />
-                                { errors.name && errors.name.type === 'minLength' && <span role="alert">Value is too short</span>}
+                                <input
+                                    id="passwordInput"
+                                    name="passwordInput"
+                                    type="password"
+                                    placeholder="password"
+                                    className={styles.input}
+                                    {...register('passwordInput', {
+                                        required: true,
+                                        minLength: 8,
+                                        validate: containsDigit
+                                    })}
+                                />
+                                {errors.password?.type === "required" && <Tooltip>Password is required</Tooltip>}
+                                {errors.password?.type === "minLength" && <Tooltip>Password needs to be at least 8 characters</Tooltip>}
+                                {errors.password?.type === "validate" && <Tooltip>Password needs at least 1 digit</Tooltip>}
                             </div>
                         </div>
                         <div className={styles.pair}>
@@ -119,7 +140,17 @@ export default function Settings() {
                                 </div>
                             </div>
                             <div className={styles.value}>
-                                <input type="password" id="passwordInput2" name="passwordInput2" {...register("passwordInput2")} />
+                                <input
+                                    id="passwordCheck"
+                                    name="passwordCheck"
+                                    type="password"
+                                    placeholder="password"
+                                    className={styles.input}
+                                    {...register('passwordCheck', {
+                                        validate: pw => pw === password.current
+                                    })}
+                                />
+                                {errors.passwordCheck?.type === "validate" && <Tooltip>Second password does not match first password</Tooltip>}
                             </div>
                         </div>
                     </div>

@@ -15,12 +15,12 @@ export default function AuthenticationContextProvider({ children }){
     const { setUsername, setEmail, setRole } = useContext(UserContext)
 
     const contextData = {
-        authState:authState,
-        authenticate:authenticate,
-        register:register,
-        continueAsSpectator:continueAsSpectator,
-        logout:logout,
-        refreshUser:refreshUser
+        authState,
+        authenticate,
+        registerUser:register,
+        continueAsSpectator,
+        logout,
+        refreshUser
     }
 
     useEffect(() => {
@@ -52,6 +52,8 @@ export default function AuthenticationContextProvider({ children }){
             refreshUser()
 
         } catch (error) {
+
+            return error
 
             unsetUser()
 

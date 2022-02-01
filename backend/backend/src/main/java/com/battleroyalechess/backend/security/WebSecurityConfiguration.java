@@ -72,6 +72,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/lobby/**").hasRole("USER")
                 .antMatchers(POST,"/games/{^[\\w]$}/newMove").hasRole("USER")
                 .antMatchers(GET,"/games/{^[\\w]$}/cancelMove").hasRole("USER")
+                .antMatchers(POST,"/users/usernameExists").permitAll()
+                .antMatchers(POST,"/users/emailExists").permitAll()
                 .antMatchers(GET,"/games/**").permitAll()
                 .antMatchers(POST,"/register").permitAll()
                 .antMatchers(POST,"/authenticate").permitAll()

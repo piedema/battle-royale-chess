@@ -230,8 +230,6 @@ export default function Gametypes(){
                 playerDirections:playerDirections
             }
 
-            console.log('created', createdGametype)
-
             try {
 
                 await doCreateGametype(createdGametype)

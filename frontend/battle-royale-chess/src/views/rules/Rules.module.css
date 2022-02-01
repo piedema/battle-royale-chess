@@ -131,7 +131,7 @@
     display: block;
 }
 
-li::marker {
+.container li::marker {
     color: #7F592B;
     content: '♔';
 }

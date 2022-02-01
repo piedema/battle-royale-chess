@@ -37,4 +37,16 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping(value = "/usernameExists")
+    public ResponseEntity<Object> usernameExists(@RequestBody UserPostRequest userPostRequest) {
+        String username = userPostRequest.getUsername();
+        return ResponseEntity.ok().body(userService.userExists(username));
+    }
+
+    @PostMapping(value = "/emailExists")
+    public ResponseEntity<Object> emailExists(@RequestBody UserPostRequest userPostRequest) {
+        String email = userPostRequest.getEmail();
+        return ResponseEntity.ok().body(userService.emailExists(email));
+    }
+
 }

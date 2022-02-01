@@ -133,3 +133,41 @@ export async function doCreateUser(username, password, email, authorities){
     return await axios(options)
 
 }
+
+export async function emailExists(email){
+
+    const options = {
+        url:'/users/emailExists',
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data:{
+            email
+        }
+    }
+
+    let result = await axios(options)
+
+    return result.data
+
+}
+
+export async function usernameExists(username){
+
+    const options = {
+        url:'/users/usernameExists',
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data:{
+            username
+        }
+    }
+
+    let result = await axios(options)
+
+    return result.data
+
+}

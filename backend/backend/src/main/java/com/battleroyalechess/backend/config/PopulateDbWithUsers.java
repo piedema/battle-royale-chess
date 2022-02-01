@@ -23,12 +23,12 @@ public class PopulateDbWithUsers implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        createUser("admin", "password", "admin@email.com", new HashSet<>(List.of("ADMIN")));
-        createUser("peter", "password", "peter@email.com", new HashSet<>(List.of()));
-        createUser("bart", "password", "bart@email.com", new HashSet<>(List.of()));
-        createUser("robin", "password", "robin@email.com", new HashSet<>(List.of()));
-        createUser("laurens", "password", "laurens@email.com", new HashSet<>(List.of()));
-        createUser("maaike", "password", "maaike@email.com", new HashSet<>(List.of()));
+        createUser("adminadmin", "password1", "admin@email.com", new HashSet<>(List.of("ADMIN")));
+        createUser("peterpeter", "password1", "peter@email.com", new HashSet<>(List.of()));
+        createUser("bartbart", "password1", "bart@email.com", new HashSet<>(List.of()));
+        createUser("robinrobin", "password1", "robin@email.com", new HashSet<>(List.of()));
+        createUser("laurenslaurens", "password1", "laurens@email.com", new HashSet<>(List.of()));
+        createUser("maaikemaaike", "password1", "maaike@email.com", new HashSet<>(List.of()));
 
     }
 

@@ -1,0 +1,15 @@
+.container {
+    width: 100%;
+    margin: 0px;
+    color: red;
+    text-align: left;
+    list-style-type: none;
+}
+
+.container ul {
+    margin: 4px 0px;
+}
+
+.container li {
+    content: none;
+}

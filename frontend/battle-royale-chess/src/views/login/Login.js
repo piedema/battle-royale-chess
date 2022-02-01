@@ -1,33 +1,37 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 
 import { useForm } from "react-hook-form"
 
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
 import BasicContainer from '../../components/basicContainer/BasicContainer.js'
+import Tooltip from '../../components/form/tooltip/Tooltip'
+
+import { usernameExists, emailExists } from '../../services/UserService'
+
+import containsDigit from '../../helpers/containsDigit'
 
 import styles from './Login.module.css'
 
 export default function Login() {
 
-    const { handleSubmit } = useForm()
+    const { handleSubmit, register, formState: { errors } } = useForm()
+    const { handleSubmit: handleSubmit2, register: register2, watch, formState: { errors: errors2 } } = useForm()
 
-    const [loginUsernameValue, setLoginUsernameValue] = useState("")
-    const [loginPasswordValue, setLoginPasswordValue] = useState("")
+    const registerPassword = useRef({})
+    registerPassword.current = watch('registerPassword', '')
 
-    const [registerUsernameValue, setRegisterUsernameValue] = useState("")
-    const [registerPasswordValue, setRegisterPasswordValue] = useState("")
-    const [registerPasswordCheckValue, setRegisterPasswordCheckValue] = useState("")
-    const [registerEmailValue, setRegisterEmailValue] = useState("")
+    const { authenticate, registerUser, continueAsSpectator } = useContext(AuthenticationContext)
 
-    const { authenticate, register, continueAsSpectator } = useContext(AuthenticationContext)
+    const [resultStatus, setResultStatus] = useState(undefined)
 
-    async function handleLogin(){
-        authenticate(loginUsernameValue, loginPasswordValue)
+    async function handleLogin({ loginUsername, loginPassword }){
+        const result = await authenticate(loginUsername, loginPassword)
+        setResultStatus(result?.response?.status)
     }
 
-    function handleRegister(){
-        register(registerUsernameValue, registerPasswordValue, registerEmailValue)
+    function handleRegister({ registerUsername, registerPassword, registerEmail }){
+        registerUser(registerUsername, registerPassword, registerEmail)
     }
 
     function handleLoginAsSpectator(){
@@ -47,23 +51,28 @@ export default function Login() {
                         type="text"
                         placeholder="player name"
                         className={styles.input}
-                        value={loginUsernameValue}
-                        onChange={e => setLoginUsernameValue(e.target.value)}
-                        />
-                    <br />
+                        {...register('loginUsername', { required: true })}
+                    />
+                    {errors.loginUsername?.type === "required" && <Tooltip>Username is required</Tooltip>}
                     <input
                         name="loginPassword"
-                        type="text"
+                        type="password"
                         placeholder="password"
                         className={styles.input}
-                        value={loginPasswordValue}
-                        onChange={e => setLoginPasswordValue(e.target.value)}
-                        />
-                    <br />
-                    <button className={styles.loginSubmitBtn} type="submit">Login</button><br />
+                        {...register('loginPassword', {
+                            required: true,
+                            minLength: 8,
+                            validate: containsDigit
+                        })}
+                    />
+                    {errors.loginPassword?.type === "required" && <Tooltip>Password is required</Tooltip>}
+                    {errors.loginPassword?.type === "minLength" && <Tooltip>Password needs to be at least 8 characters</Tooltip>}
+                    {errors.loginPassword?.type === "validate" && <Tooltip>Password needs at least 1 digit</Tooltip>}
+                    { resultStatus === 403 ? <Tooltip>Wrong username/password combination</Tooltip> : null }
+                    <button className={styles.loginSubmitBtn} type="submit">Login</button>
                 </BasicContainer>
             </form>
-            <form onSubmit={handleSubmit(handleRegister)} id="register" className={styles.formContainer}>
+            <form onSubmit={handleSubmit2(handleRegister)} id="register" className={styles.formContainer}>
                 <BasicContainer>
                     <div className={styles.groupTitle}>
                         Register as new player
@@ -73,43 +82,63 @@ export default function Login() {
                         type="text"
                         placeholder="player name"
                         className={styles.input}
-                        value={registerUsernameValue}
-                        onChange={e => setRegisterUsernameValue(e.target.value)}
-                        />
-                    <br />
+                        {...register2('registerUsername', {
+                            required: true,
+                            minLength: 8,
+                            validate: async value => {
+                                const result = await usernameExists(value)
+                                return !result
+                            }
+                        })}
+                    />
+                    {errors2.registerUsername?.type === "required" && <Tooltip>Username is required</Tooltip>}
+                    {errors2.registerUsername?.type === "minLength" && <Tooltip>Username needs to be at least 8 characters</Tooltip>}
+                    {errors2.registerUsername?.type === "validate" && <Tooltip>Username is not available</Tooltip>}
                     <input
                         name="registerPassword"
-                        type="text"
+                        type="password"
                         placeholder="password"
                         className={styles.input}
-                        value={registerPasswordValue}
-                        onChange={e => setRegisterPasswordValue(e.target.value)}
-                        />
-                    <br />
+                        {...register2('registerPassword', {
+                            required: true,
+                            minLength: 8,
+                            validate: containsDigit
+                        })}
+                    />
+                    {errors2.registerPassword?.type === "required" && <Tooltip>Password is required</Tooltip>}
+                    {errors2.registerPassword?.type === "minLength" && <Tooltip>Password needs to be at least 8 characters</Tooltip>}
+                    {errors2.registerPassword?.type === "validate" && <Tooltip>Password needs at least 1 digit</Tooltip>}
                     <input
                         name="registerPasswordCheck"
-                        type="text"
+                        type="password"
                         placeholder="password"
                         className={styles.input}
-                        value={registerPasswordCheckValue}
-                        onChange={e => setRegisterPasswordCheckValue(e.target.value)}
-                        />
-                    <br />
+                        {...register2('registerPasswordCheck', {
+                            validate: pw => pw === registerPassword.current
+                        })}
+                    />
+                    {errors2.registerPasswordCheck?.type === "validate" && <Tooltip>Second password does not match first password</Tooltip>}
                     <input
                         name="registerEmail"
                         type="text"
                         placeholder="email"
                         className={styles.input}
-                        value={registerEmailValue}
-                        onChange={e => setRegisterEmailValue(e.target.value)}
-                        />
-                    <br />
-                    <button className={styles.registerSubmitBtn} type="submit">Register</button><br />
+                        {...register2('registerEmail', {
+                            required: true,
+                            validate: async value => {
+                                const result = await emailExists(value)
+                                return !result
+                            }
+                        })}
+                    />
+                    {errors2.registerEmail?.type === "required" && <Tooltip>Email is required</Tooltip>}
+                    {errors2.registerEmail?.type === "validate" && <Tooltip>Email is not available</Tooltip>}
+                    <button className={styles.registerSubmitBtn} type="submit">Register</button>
                 </BasicContainer>
             </form>
             <div id="spectator" className={styles.formContainer}>
                 <BasicContainer>
-                    <button className={styles.spectatorBtn} type="button" onClick={handleLoginAsSpectator}>Continue as Spectator</button><br />
+                    <button className={styles.spectatorBtn} type="button" onClick={handleLoginAsSpectator}>Continue as Spectator</button>
                 </BasicContainer>
             </div>
         </div>
