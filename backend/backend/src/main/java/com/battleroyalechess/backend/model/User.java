@@ -19,6 +19,9 @@ public class User {
     private String password;
 
     @Column()
+    private String chessCom;
+
+    @Column()
     private Boolean enabled;
 
     @Column(unique = true)
@@ -44,6 +47,11 @@ public class User {
     public String getUsername() { return username; }
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getChessCom() { return chessCom; }
+    public void setChessCom(String chessCom) {
+        this.chessCom = chessCom;
     }
     public String getPassword() {
         return password;

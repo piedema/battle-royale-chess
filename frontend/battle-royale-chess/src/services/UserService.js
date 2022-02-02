@@ -94,7 +94,7 @@ export async function doUpdateUser(updatedUser){
 
 }
 
-export async function doRegister(username, password, email){
+export async function doRegister(username, password, email, chessCom){
 
     const options = {
         url:'/register',
@@ -105,7 +105,8 @@ export async function doRegister(username, password, email){
         data:{
             username,
             password,
-            email
+            email,
+            chessCom
         }
     }
 
@@ -113,7 +114,7 @@ export async function doRegister(username, password, email){
 
 }
 
-export async function doCreateUser(username, password, email, authorities){
+export async function doCreateUser(username, password, email, authorities, chessCom){
 
     const options = {
         url:'/admin/user',
@@ -126,7 +127,8 @@ export async function doCreateUser(username, password, email, authorities){
             username,
             password,
             email,
-            authorities:authorities
+            authorities,
+            chessCom
         }
     }
 
@@ -169,5 +171,29 @@ export async function usernameExists(username){
     let result = await axios(options)
 
     return result.data
+
+}
+
+export async function chessComAccountExists(username){
+
+    const options = {
+        url:`https://api.chess.com/pub/player/${username}`,
+        method:'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    try {
+
+        await axios(options)
+
+        return true
+
+    } catch (error) {
+
+        return false
+
+    }
 
 }

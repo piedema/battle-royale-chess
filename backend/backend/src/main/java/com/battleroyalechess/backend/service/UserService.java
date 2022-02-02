@@ -17,7 +17,7 @@ import java.util.*;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -97,6 +97,7 @@ public class UserService {
         String email = updatedUser.getEmail();
         String password = updatedUser.getPassword();
         Set<Authority> authorities = updatedUser.getAuthorities();
+        String chessCom = updatedUser.getChessCom();
 
         Optional<User> userWithThisEmailOptional = userRepository.findByEmail(email);
 
@@ -136,6 +137,12 @@ public class UserService {
             if (!email.isEmpty()) {
 
                 user.setEmail(email);
+
+            }
+
+            if (!chessCom.isEmpty()) {
+
+                user.setChessCom(chessCom);
 
             }
 

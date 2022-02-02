@@ -7,7 +7,7 @@ import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 import BasicContainer from '../../components/basicContainer/BasicContainer.js'
 import Tooltip from '../../components/form/tooltip/Tooltip'
 
-import { usernameExists, emailExists } from '../../services/UserService'
+import { usernameExists, emailExists, chessComAccountExists } from '../../services/UserService'
 
 import containsDigit from '../../helpers/containsDigit'
 
@@ -24,14 +24,15 @@ export default function Login() {
     const { authenticate, registerUser, continueAsSpectator } = useContext(AuthenticationContext)
 
     const [resultStatus, setResultStatus] = useState(undefined)
+    const [registerChessCom, setRegisterChessCom] = useState(false)
 
     async function handleLogin({ loginUsername, loginPassword }){
         const result = await authenticate(loginUsername, loginPassword)
         setResultStatus(result?.response?.status)
     }
 
-    function handleRegister({ registerUsername, registerPassword, registerEmail }){
-        registerUser(registerUsername, registerPassword, registerEmail)
+    function handleRegister({ registerUsername, registerPassword, registerEmail, registerChessCom }){
+        registerUser(registerUsername, registerPassword, registerEmail, registerChessCom)
     }
 
     function handleLoginAsSpectator(){
@@ -84,7 +85,6 @@ export default function Login() {
                         className={styles.input}
                         {...register2('registerUsername', {
                             required: true,
-                            minLength: 8,
                             validate: async value => {
                                 const result = await usernameExists(value)
                                 return !result
@@ -92,7 +92,6 @@ export default function Login() {
                         })}
                     />
                     {errors2.registerUsername?.type === "required" && <Tooltip>Username is required</Tooltip>}
-                    {errors2.registerUsername?.type === "minLength" && <Tooltip>Username needs to be at least 8 characters</Tooltip>}
                     {errors2.registerUsername?.type === "validate" && <Tooltip>Username is not available</Tooltip>}
                     <input
                         name="registerPassword"
@@ -133,6 +132,37 @@ export default function Login() {
                     />
                     {errors2.registerEmail?.type === "required" && <Tooltip>Email is required</Tooltip>}
                     {errors2.registerEmail?.type === "validate" && <Tooltip>Email is not available</Tooltip>}
+                    <div className={styles.checkbox}>
+                        <input
+                            id="registerChessCom"
+                            type="checkbox"
+                            checked={registerChessCom}
+                            onChange={() => setRegisterChessCom(prev => { return !prev })}
+                            className={styles.checkbox}
+                        />
+                        <label htmlFor="registerChessCom">Link with Chess.com account</label>
+                        {
+                            registerChessCom === true
+                            ? (
+                                <>
+                                    <input
+                                        name="registerChessCom"
+                                        type="text"
+                                        placeholder="chess.com username"
+                                        className={styles.input}
+                                        {...register2('registerChessCom', {
+                                            validate: async value => {
+                                                const result = await chessComAccountExists(value)
+                                                return result
+                                            }
+                                        })}
+                                    />
+                                    {errors2.registerChessCom?.type === "validate" && <Tooltip>Chess.com username does not exist</Tooltip>}
+                                </>
+                            )
+                            : null
+                        }
+                    </div>
                     <button className={styles.registerSubmitBtn} type="submit">Register</button>
                 </BasicContainer>
             </form>

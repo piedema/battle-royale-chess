@@ -4,12 +4,12 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Login from './views/login/Login'
 import Lobby from './views/lobby/Lobby'
 import Games from './views/games/Games'
-import Highscores from './views/highscores/Highscores'
 import Settings from './views/settings/Settings'
 import Rules from './views/rules/Rules'
 import Game from './views/game/Game'
 import Users from './views/users/Users'
 import Gametypes from './views/gametypes/Gametypes'
+import Players from './views/players/Players'
 
 import { AuthenticationContext } from './contexts/AuthenticationContext'
 
@@ -31,9 +31,6 @@ export default function App() {
                             <Route path="/games">
                                 <Games />
                             </Route>
-                            <Route path="/highscores">
-                                <Highscores />
-                            </Route>
                             <Route path="/settings">
                                 <Settings />
                             </Route>
@@ -48,6 +45,9 @@ export default function App() {
                             </Route>
                             <Route path="/gametypes">
                                 <Gametypes />
+                            </Route>
+                            <Route path="/players">
+                                <Players />
                             </Route>
                         </Switch>
                     </Router>

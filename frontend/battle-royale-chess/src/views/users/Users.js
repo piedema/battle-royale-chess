@@ -13,7 +13,7 @@ import Tooltip from '../../components/form/tooltip/Tooltip'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 import { SettingsContext } from '../../contexts/SettingsContext'
 
-import { doCreateUser, doUpdateUser, getAllUserdata, usernameExists, emailExists } from '../../services/UserService'
+import { doCreateUser, doUpdateUser, getAllUserdata, usernameExists, emailExists, chessComAccountExists } from '../../services/UserService'
 
 import containsDigit from '../../helpers/containsDigit'
 
@@ -66,7 +66,8 @@ export default function Users() {
                 emailInput:selectedUser.email,
                 passwordInput:'',
                 passwordCheck:'',
-                authoritiesSelect:selectedUser.authorities.find(u => u.authority === "ROLE_ADMIN") ? "ADMIN" : "USER"
+                authoritiesSelect:selectedUser.authorities.find(u => u.authority === "ROLE_ADMIN") ? "ADMIN" : "USER",
+                chessComInput:selectedUser.chessCom
             })
         }
 
@@ -75,7 +76,8 @@ export default function Users() {
                 emailInput:'',
                 passwordInput:'',
                 passwordCheck:'',
-                authoritiesSelect:"USER"
+                authoritiesSelect:"USER",
+                chessComInput:''
             })
         }
 
@@ -107,6 +109,10 @@ export default function Users() {
                             .sort((a, b) => a.localeCompare(b))
                             .join(', '),
                     },
+                    {
+                        Header: 'Chess.com username',
+                        accessor: 'chessCom',
+                    }
                 ],
             }
         ],
@@ -139,11 +145,11 @@ export default function Users() {
 
     async function onFormSubmit(data){
 
-        const { usernameInput, passwordInput,  emailInput, authoritiesSelect } = data
+        const { usernameInput, passwordInput,  emailInput, authoritiesSelect, chessComInput } = data
 
         if(selectedUser === "new user"){
 
-            await doCreateUser(usernameInput, passwordInput, emailInput, [authoritiesSelect])
+            await doCreateUser(usernameInput, passwordInput, emailInput, [authoritiesSelect], chessComInput)
 
         } else {
 
@@ -169,13 +175,19 @@ export default function Users() {
 
             }
 
+            if(chessComInput){
+
+                updatedUser.chessCom = chessComInput
+
+            }
+
             await doUpdateUser(updatedUser)
 
         }
 
         const result = await getAllUserdata()
 
-        setUsers(result)
+        setUsers(result.data)
         userDeselected()
 
     }
@@ -318,6 +330,27 @@ export default function Users() {
                                             <option value="USER">USER</option>
                                             <option value="ADMIN">ADMIN</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div className={styles.pair}>
+                                    <div className={styles.name}>
+                                        <div>
+                                            Chess.com username
+                                        </div>
+                                    </div>
+                                    <div className={styles.value}>
+                                        <input
+                                            type="text"
+                                            id="chessComInput"
+                                            name="chessComInput"
+                                            {...register('chessComInput', {
+                                                validate: async value => {
+                                                    const result = await chessComAccountExists(value)
+                                                    return result
+                                                }
+                                            })}
+                                        />
+                                        {errors.chessComInput?.type === "validate" && <Tooltip>Chess.com username does not exist</Tooltip>}
                                     </div>
                                 </div>
                             </div>

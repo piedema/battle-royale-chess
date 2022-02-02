@@ -9,7 +9,7 @@ import Tooltip from '../../components/form/tooltip/Tooltip'
 import { UserContext } from '../../contexts/UserContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
 
-import { usernameExists, emailExists, doUpdateUser } from '../../services/UserService'
+import { usernameExists, emailExists, doUpdateUser, chessComAccountExists } from '../../services/UserService'
 
 import containsDigit from '../../helpers/containsDigit'
 
@@ -17,7 +17,7 @@ import styles from './Settings.module.css'
 
 export default function Settings() {
 
-    const { username, email } = useContext(UserContext)
+    const { username, email, chessCom } = useContext(UserContext)
     const { refreshUser } = useContext(AuthenticationContext)
 
     const { register, handleSubmit, reset, watch, formState:{ errors } } = useForm()
@@ -28,6 +28,7 @@ export default function Settings() {
     useEffect(() => {
         reset({
             emailInput:email,
+            chessComInput:chessCom,
             languageSelect:localStorage.getItem('language') || 'EN',
             dateTimeSelect:localStorage.getItem('dateTime') || 'DD-MM-YYYY HH:mm:ss',
             boardViewSelect:localStorage.getItem('boardView') || '3d',
@@ -41,6 +42,7 @@ export default function Settings() {
             emailInput,
             passwordInput,
             passwordCheck,
+            chessComInput,
             languageSelect,
             dateTimeSelect,
             boardViewSelect,
@@ -51,6 +53,7 @@ export default function Settings() {
 
         if(emailInput) updatedUser.email = emailInput
         if(passwordInput.length > 0 && passwordInput === passwordCheck) updatedUser.password = passwordInput
+        if(chessComInput) updatedUser.chessCom = chessComInput
 
         localStorage.setItem('language', languageSelect)
         localStorage.setItem('dateTime', dateTimeSelect)
@@ -151,6 +154,27 @@ export default function Settings() {
                                     })}
                                 />
                                 {errors.passwordCheck?.type === "validate" && <Tooltip>Second password does not match first password</Tooltip>}
+                            </div>
+                        </div>
+                        <div className={styles.pair}>
+                            <div className={styles.name}>
+                                <div>
+                                    Chess.com username
+                                </div>
+                            </div>
+                            <div className={styles.value}>
+                                <input
+                                    type="text"
+                                    id="chessComInput"
+                                    name="chessComInput"
+                                    {...register('chessComInput', {
+                                        validate: async value => {
+                                            const result = await chessComAccountExists(value)
+                                            return result
+                                        }
+                                    })}
+                                />
+                                {errors.chessComInput?.type === "validate" && <Tooltip>Chess.com username does not exist</Tooltip>}
                             </div>
                         </div>
                     </div>

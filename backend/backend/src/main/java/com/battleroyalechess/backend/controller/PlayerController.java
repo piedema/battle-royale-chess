@@ -15,7 +15,7 @@ public class PlayerController {
     private PlayerService playerService;
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getUsers() {
+    public ResponseEntity<Object> getPlayers() {
         return ResponseEntity.ok().body(playerService.getPlayers());
     }
 

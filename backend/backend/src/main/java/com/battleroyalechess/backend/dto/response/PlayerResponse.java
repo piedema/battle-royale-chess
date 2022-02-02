@@ -5,6 +5,7 @@ public class PlayerResponse {
     private String username;
     private Integer score;
     private Integer gamesPlayed;
+    private String chessCom;
 
     public String getUsername() {
         return username;
@@ -28,5 +29,13 @@ public class PlayerResponse {
 
     public void setGamesPlayed(Integer gamesPlayed) {
         this.gamesPlayed = gamesPlayed;
+    }
+
+    public String getChessCom() {
+        return chessCom;
+    }
+
+    public void setChessCom(String chessCom) {
+        this.chessCom = chessCom;
     }
 }

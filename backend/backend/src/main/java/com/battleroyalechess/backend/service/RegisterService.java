@@ -32,9 +32,11 @@ public class RegisterService {
             String username = userPostRequest.getUsername();
             String email = userPostRequest.getEmail();
             Set<String> authorities = userPostRequest.getAuthorities();
+            String chessCom = userPostRequest.getChessCom();
 
             if(userService.userExists(username)) throw new UsernameNotAvailableException();
             if(userService.emailExists(email)) throw new EmailNotAvailableException();
+//            if(!userService.chessComExists(email)) throw new ChessComNotExistsException();
 
             String encryptedPassword = passwordEncoder.encode(userPostRequest.getPassword());
 
@@ -44,6 +46,7 @@ public class RegisterService {
             user.setEmail(userPostRequest.getEmail());
             user.setEnabled(true);
             user.addAuthority("ROLE_USER");
+            user.setChessCom(userPostRequest.getChessCom());
 
             if(creatorIsAdmin && authorities.contains("ADMIN")){
                 user.addAuthority("ROLE_ADMIN");

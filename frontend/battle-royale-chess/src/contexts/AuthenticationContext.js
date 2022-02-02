@@ -12,7 +12,7 @@ export default function AuthenticationContextProvider({ children }){
     const history = useHistory()
 
     const [authState, setAuthState] = useState("pending")
-    const { setUsername, setEmail, setRole } = useContext(UserContext)
+    const { setUsername, setEmail, setRole, setChessCom } = useContext(UserContext)
 
     const contextData = {
         authState,
@@ -60,8 +60,8 @@ export default function AuthenticationContextProvider({ children }){
         }
     }
 
-    async function register(username, password, email){
-        await doRegister(username, password, email)
+    async function register(username, password, email, chessCom){
+        await doRegister(username, password, email, chessCom)
         authenticate(username, password)
     }
 
@@ -71,7 +71,7 @@ export default function AuthenticationContextProvider({ children }){
 
             const userdata = await getUserdata()
 
-            setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities))
+            setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities), userdata.data.chessCom)
 
         } catch (error) {
 
@@ -90,10 +90,11 @@ export default function AuthenticationContextProvider({ children }){
         unsetUser()
     }
 
-    function setUser(username, email, role){
+    function setUser(username, email, role, chessCom){
         setUsername(username)
         setEmail(email)
         setRole(role)
+        setChessCom(chessCom)
         setAuthState("success")
     }
 
@@ -101,6 +102,7 @@ export default function AuthenticationContextProvider({ children }){
         setUsername(undefined)
         setEmail(undefined)
         setRole(undefined)
+        setChessCom(undefined)
         setAuthState("failed")
     }
 

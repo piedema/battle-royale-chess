@@ -17,5 +17,6 @@ public class UserPostRequest {
     private String password;
     private String email;
     private Set<String> authorities;
+    private String chessCom;
 
 }
