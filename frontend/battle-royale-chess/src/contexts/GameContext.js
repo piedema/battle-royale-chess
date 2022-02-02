@@ -4,6 +4,8 @@ export const GameContext = createContext({})
 
 export default function GameContextProvider({ children }){
 
+    // store all values used while playing the game itself
+
     const [gameId, setGameId] = useState(undefined)
     const [board, setBoard] = useState(undefined)
     const [players, setPlayers] = useState([])

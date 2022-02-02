@@ -6,6 +6,9 @@ export default function Menu({ title, buttons }){
 
     const history = useHistory()
 
+    // this menu is for the pages
+    // the button blueprints ({ text:<String>, onClick:<function> }) are used to create the buttons in this menu
+
     return (
         <div className={styles.container}>
             <div className={styles.menuOuter}>

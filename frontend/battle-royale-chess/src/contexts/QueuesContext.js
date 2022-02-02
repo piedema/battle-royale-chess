@@ -9,6 +9,10 @@ export const QueuesContext = createContext({})
 
 export default function QueuesContextProvider({ children }){
 
+    // keep a global collection of the queues which are loaded from the server.
+    // the view which uses them decides when to update the data by calling fetchQueues
+    // the spectator role does not need queue info
+
     const { authState } = useContext(AuthenticationContext)
     const { role } = useContext(UserContext)
 

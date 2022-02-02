@@ -4,6 +4,8 @@ export const UserContext = createContext({})
 
 export default function UserContextProvider({ children }){
 
+    // store userdata
+
     const [username, setUsername] = useState(null)
     const [email, setEmail] = useState(null)
     const [role, setRole] = useState()

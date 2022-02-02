@@ -14,21 +14,22 @@ export default function GameMenu(){
 
     const [countdown, setCountdown] = useState('')
 
+    // this useEffect is the timer which shows the time left before the game starts or the board shrinks
     useEffect(() => {
 
         let countdownInterval
 
         countdownInterval = setInterval(() => {
 
-            let timeLeft = (nextRoundAt - Date.now()) / 1000
+            let timeLeft = (nextRoundAt - Date.now()) / 1000                    // get the time left until the next round
 
-            if(timeLeft === 0) timeLeft = Math.abs(timeLeft)
-            if(timeLeft < 0) timeLeft = 0
+            if(timeLeft === 0) timeLeft = Math.abs(timeLeft)                    // after calculating time left the 0 value can be -0, so always transform to positive 0
+            if(timeLeft < 0) timeLeft = 0                                       // the timeLeft can be a little bit lower than 0 because of the gamedata api call taking some time. In that case make timeLeft 0 again
 
-            const timeLeftFixed = timeLeft.toFixed(1)
+            const timeLeftFixed = timeLeft.toFixed(1)                           // we only want 1 decimal and make it a string to split later
             setCountdown(timeLeftFixed)
 
-            if(finished === true) clearInterval(countdownInterval)
+            if(finished === true) clearInterval(countdownInterval)              // stop the interval when the game is finished
 
         }, 100)
 
@@ -37,7 +38,7 @@ export default function GameMenu(){
     }, [round, nextRoundAt, finished])
 
     function exitGame(){
-        history.push('/')
+        history.push('/')                                                       // exit the game. triggered by exit game button
     }
 
     return (

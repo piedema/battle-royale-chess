@@ -1,5 +1,8 @@
 module.exports = inObject => {
 
+    // copy an object and copy all it's children
+    // to end up with a completely new object without any references
+
     function deepCopy(inObj){
 
         let outObj, value, key

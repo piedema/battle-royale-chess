@@ -23,6 +23,8 @@ export default function AuthenticationContextProvider({ children }){
         refreshUser
     }
 
+    // check if a token is present. if so try to fetch userdata
+    // otherwise set auth state to return to login
     useEffect(() => {
 
         const token = localStorage.getItem('token')
@@ -41,6 +43,8 @@ export default function AuthenticationContextProvider({ children }){
 
     }, [])
 
+    // function gets called to authenticate on login attempt
+    // set token when it is retrieved and retrieve userdata
     async function authenticate(username, password){
 
         try {
@@ -60,11 +64,14 @@ export default function AuthenticationContextProvider({ children }){
         }
     }
 
+    // registers and then authenticates/login user
     async function register(username, password, email, chessCom){
         await doRegister(username, password, email, chessCom)
         authenticate(username, password)
     }
 
+    // refreshUser retrieves userdata and sets it in the context
+    // if failed delete user context data and they are automatically redirected to login
     async function refreshUser(){
 
         try {
@@ -81,15 +88,18 @@ export default function AuthenticationContextProvider({ children }){
 
     }
 
+    // for logging in as spectator. userdata retrieval is not neccessary
     function continueAsSpectator(){
         setUser("Spectator", undefined, "SPECTATOR")
     }
 
+    // log out a user and remove token to enforce relogin
     function logout(){
         localStorage.removeItem('token')
         unsetUser()
     }
 
+    // setting values to this context
     function setUser(username, email, role, chessCom){
         setUsername(username)
         setEmail(email)
@@ -98,6 +108,7 @@ export default function AuthenticationContextProvider({ children }){
         setAuthState("success")
     }
 
+    // remove all values from this context
     function unsetUser(){
         setUsername(undefined)
         setEmail(undefined)

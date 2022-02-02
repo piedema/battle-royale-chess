@@ -1,5 +1,14 @@
 export default function Piece({ type, styling, color, w, h, vB }){
 
+    // this component returns the right svg with the right styling to be used throughout the game
+
+    // type = King, Queen etc
+    // styling is the style of the piece. we now have filled and outlined
+    // color is an object containing a fill and stroke color
+    // w = the desired width of the svg
+    // h = the desired height of the svg
+    // vB = the desired viewBox. may need to be given to position the svg within its boundaries after resizing
+
     const pieces = {
         outlined:{
             King:(

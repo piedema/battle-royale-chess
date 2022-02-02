@@ -8,6 +8,9 @@ export const GametypesContext = createContext({})
 
 export default function GametypesContextProvider({ children }){
 
+    // keep a global collection of the gametypes which are loaded from the server.
+    // the view which uses them decides when to update the data by calling fetchGametypes
+
     const { authState } = useContext(AuthenticationContext)
 
     const [gametypes, setGametypes] = useState(undefined)
@@ -26,6 +29,7 @@ export default function GametypesContextProvider({ children }){
 
     }, [authState])
 
+    // get a certain gametype from the collection of gametypes
     function getGametypeByName(name){
 
         return gametypes.find(g => g.gametype === name)

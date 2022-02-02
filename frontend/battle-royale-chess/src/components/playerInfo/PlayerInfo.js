@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react'
 
 import { UserContext } from '../../contexts/UserContext'
 import { GameContext } from '../../contexts/GameContext'
+import { SettingsContext } from '../../contexts/SettingsContext.js'
 
 import Piece from '../piece/Piece'
 
@@ -13,19 +14,20 @@ export default function PlayerInfo({ playerName }){
 
     const { username } = useContext(UserContext)
     const { board, players, scores, moves, moveFrom, moveTo } = useContext(GameContext)
+    const { piecesStyle } = useContext(SettingsContext)
 
-    const [index, setIndex] = useState(undefined)
+    const [index, setIndex] = useState(undefined)                               // which number player is this in this game (1, 2, 3 etc)
     const [stroke, setStroke] = useState(undefined)
     const [fill, setFill] = useState(undefined)
     const [score, setScore] = useState(0)
     const [currentMove, setCurrentMove] = useState('-')
     const [previousMove, setPreviousMove] = useState('-')
-    const [piecesLeft, setPiecesLeft] = useState([])
+    const [piecesLeft, setPiecesLeft] = useState([])                            // an array containing the pieces this player has left
     const [color, setColor] = useState({})
-    const [position, setPosition] = useState(undefined)
+    const [position, setPosition] = useState(undefined)                         // position of this playerInfo component on the screen
 
-    const piecesStyle = localStorage.getItem('piecesStyle') || 'outlined'
-
+    // set some states based on which player this is.
+    // like color, position of the playerInfo screen
     useEffect(() => {
 
         const index = players.indexOf(playerName)
@@ -41,12 +43,14 @@ export default function PlayerInfo({ playerName }){
 
     }, [players, playerName])
 
+    // when the scores update, reflect in setting this players score
     useEffect(() => {
 
         setScore(scores[index] || 0)
 
     }, [scores, index])
 
+    // set the current players move which hasnt been performed yet. only visible for the playerInfo of the player that plays in this instance
     useEffect(() => {
 
         if(moveFrom === undefined) setCurrentMove('-')
@@ -55,33 +59,46 @@ export default function PlayerInfo({ playerName }){
 
     }, [moveFrom, moveTo])
 
+    // set the previousMove for all players to show them in the playerInfo component.
     useEffect(() => {
 
+        // get the highest round data in the moves object
+        // we only want data from the previous round
         const highestRound = Object.keys(moves).sort((a, b) => b - a)[0]
 
+        // return if there is no round played yet
         if(moves[highestRound] === undefined) return
+        // return if this person is not a player (for example a spectator)
         if(index === undefined) return
 
+        // get all moves this round
         const movesThisRound = moves[highestRound]
+        // filter this players move
         const move = movesThisRound[index]
 
+        // set previous move if player has made a move last round
         if(move !== undefined && move !== null){
             setPreviousMove(move.replace('>', ' > '))
         }
 
+        // otherwist clear prvious row by putting it to a dash
         if(move === undefined || move === null){
             setPreviousMove('-')
         }
 
     }, [moves, index])
 
+    // get all pieces of this player which still exist
     useEffect(() => {
 
         const allAlivePiecesOfPlayer = []
 
+        // so loop gameboard
         for(let tile in board){
 
+            // get tilestate to only count pieces which are not on faded tiles
             const tileState = board[tile][0]
+            // get playerIndex to only count pieces of this player
             const playerIndex = board[tile][1] - 1
             const piece = board[tile][2]
 
@@ -91,18 +108,22 @@ export default function PlayerInfo({ playerName }){
                 piece !== undefined
             ){
 
+                // add piece to array to show in playerInfo
                 allAlivePiecesOfPlayer.push(piece)
 
             }
 
         }
 
+        // sort the alive pieces array by their value
         const allAlivePiecesOfPlayerSorted = allAlivePiecesOfPlayer.sort((a, b) => getPieceWorth(b) - getPieceWorth(a))
 
         setPiecesLeft(allAlivePiecesOfPlayerSorted)
 
     }, [board, index])
 
+    // get position of playerInfo on the screen by index and amount of players
+    // this position is styled in the css
     function getPosition(numberOfPlayers, index){
 
         switch (numberOfPlayers) {
@@ -118,6 +139,7 @@ export default function PlayerInfo({ playerName }){
 
     }
 
+    // get value of a piece
     function getPieceWorth(piece){
 
         switch (piece){
@@ -169,7 +191,7 @@ export default function PlayerInfo({ playerName }){
                     </div>
                     <div className={styles.subjectContainer} style={{ display:"flex", justifyContent:"center"}}>
                         <div className={styles.piecesContainer}>
-                            { piecesLeft.map((p, i) => <div key={p+i}><Piece key={p+i} type={p} styling={piecesStyle} color={color} w={50} h={50} /></div>) }
+                            { piecesLeft.map((p, i) => <div key={p+i}><Piece key={p+i} type={p} styling={piecesStyle()} color={color} w={50} h={50} /></div>) }
                         </div>
                     </div>
                 </div>

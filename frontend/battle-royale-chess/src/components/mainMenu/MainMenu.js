@@ -5,27 +5,26 @@ import { useHistory, NavLink } from 'react-router-dom'
 import Piece from '../../components/piece/Piece'
 
 import { UserContext } from '../../contexts/UserContext'
+import { SettingsContext } from '../../contexts/SettingsContext.js'
 
 import colors from '../../assets/js/colors'
-import buttons from './buttons.js'
 
 import styles from './MainMenu.module.css'
 
-export default function MainMenu(){
+export default function MainMenu({ buttons }){
 
     const history = useHistory()
 
     const { role } = useContext(UserContext)
-
-    const boardView = localStorage.getItem('boardView') || '3d'
-    const piecesStyle = localStorage.getItem('piecesStyle') || 'filled'
+    const { piecesStyle, boardView } = useContext(SettingsContext)
 
     const [tileSize, setTileSize] = useState(100)
     const [nRows, setNRows] = useState()
     const [nCols, setNCols] = useState()
     const [boardJSX, setBoardJSX] = useState([])
-    const [perspective, setPerspective] = useState(boardView)
+    const [perspective, setPerspective] = useState(boardView())
 
+    // this eventListener sets the number of rows and cols for the menu and registeres a resize listener which does the same
     useEffect(() => {
 
         setRowAndColLength()
@@ -34,27 +33,31 @@ export default function MainMenu(){
 
     }, [])
 
+    // if role, nRows or nCols changes recreate the menu chessboard
     useEffect(() => {
 
         setBoardJSX(createBoard(nRows, nCols))
 
     }, [nRows, nCols, role])
 
+    // calculate new number of rows and columns according to window size
+    // we want minimum of 3 rows and 3 cols
     function setRowAndColLength(){
 
         const newHeight = Math.min(window.innerHeight - 600, 600)
         const newWidth = Math.min(window.innerWidth - 200, 1000)
 
-        setNRows(Math.max(Math.floor(newHeight / tileSize), 2))
+        setNRows(Math.max(Math.floor(newHeight / tileSize), 3))
         setNCols(Math.max(Math.floor(newWidth / tileSize), 3))
 
     }
 
+    // create the menu chess board
     function createBoard(nRows, nCols){
 
         if(nRows === undefined || nCols === undefined) return
 
-        // create shuffled button
+        // create shuffled button array and filter buttons on user role
         const buttonsFilteredByRole = buttons.filter(b => {
 
             b.element = "button"
@@ -67,10 +70,12 @@ export default function MainMenu(){
 
         })
 
+        // get available amount of tiles
         let nTilesAvailableForPieces = nRows * nCols
 
         const boardElements = {}
 
+        // add all buttons to the boardElements object with random keys. so random row and column
         while(buttonsFilteredByRole.length !== 0){
 
             const randomX = Math.ceil((Math.random() * nCols))
@@ -80,7 +85,7 @@ export default function MainMenu(){
             if(boardElements[key] === undefined){
 
                 boardElements[key] = buttonsFilteredByRole.shift()
-                nTilesAvailableForPieces--
+                nTilesAvailableForPieces--                                      // remove an available tile to place pieces on
 
             }
 
@@ -90,10 +95,11 @@ export default function MainMenu(){
         const numberOfPiecesWanted = Math.min(Math.ceil((nRows * nCols) / 3), nTilesAvailableForPieces)
         const piecesWanted = []
 
+        // for each piece wanted, create a new piece blueprint and add to array
         for(let i = 0; i < numberOfPiecesWanted; i++){
 
             const types = ["King", "Queen", "Tower", "Bishop", "Knight", "Pawn"]
-            const style = piecesStyle
+            const style = piecesStyle()
             const pieceIndex = Math.ceil(Math.random() * 5) - 1
             const colorIndex = Math.ceil(Math.random() * 8) - 1
 
@@ -106,6 +112,7 @@ export default function MainMenu(){
 
         }
 
+        // place all wanted pieces on an available tile in boardElements
         while(piecesWanted.length !== 0){
 
             const randomX = Math.ceil((Math.random() * nCols))
@@ -119,17 +126,23 @@ export default function MainMenu(){
         // generate board
         const rows = []
 
+        // loop all wanted rows
         for(let i = 1; i <= nRows; i++){
 
             const tiles = []
 
+            // loop all wanted columns
             for(let j = 1; j <= nCols; j++){
 
+                // create a key for this tile
                 const key = i + '' + j
 
+                // get the wanted element for this tile
                 const el = boardElements[key]
+                // if element exists style accordingly to being a button or piece
                 const className = el !== undefined && el.element === "button" ? styles.tileMenuitem : styles.tile
 
+                // if the element is a button then add a navlink to the tiles array containing button info
                 if(el !== undefined && el.element === 'button'){
 
                     tiles.push(
@@ -144,6 +157,7 @@ export default function MainMenu(){
                     )
                 }
 
+                // if the element is a piece then add a peice component with the right style and color
                 if(el !== undefined && el.element === 'piece'){
 
                     tiles.push(
@@ -153,6 +167,7 @@ export default function MainMenu(){
                     )
                 }
 
+                // if the boardElements does not hold a blueprint for this tile just add an empty tile
                 if(el === undefined){
 
                     tiles.push(
@@ -163,6 +178,7 @@ export default function MainMenu(){
                 }
             }
 
+            // add the row to rows array
             rows.push(
                 <div key={i} className={styles.row}>
                     {tiles}

@@ -10,6 +10,9 @@ export const GamesContext = createContext({})
 
 export default function GamesContextProvider({ children }){
 
+    // keep a global collection of the games which are loaded from the server.
+    // the view which uses them decides when to update the data by calling fetchGames
+
     const { authState } = useContext(AuthenticationContext)
     const { role } = useContext(UserContext)
 
