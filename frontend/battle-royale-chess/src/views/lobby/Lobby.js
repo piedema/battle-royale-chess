@@ -65,8 +65,7 @@ export default function Lobby() {
                     {
                         Header: 'Played at',
                         accessor: data => {
-                            moment(data.gameStartedAt).format(dateFormat)
-
+                            return moment(data.gameStartedAt).format(dateFormat())
                         },
                     },
                 ],

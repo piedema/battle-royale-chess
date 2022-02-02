@@ -61,7 +61,7 @@ public class GametypeService {
     }
 
     public void updateGametype(GametypePostRequest updatedGametype){
-        System.out.println(updatedGametype);
+
         try {
 
             Optional<Gametype> gametypeOptional = gametypeRepository.findById(updatedGametype.getGametype());

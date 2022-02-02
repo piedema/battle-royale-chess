@@ -1,148 +1,27 @@
 {
 	"info": {
-		"_postman_id": "36c49e22-8c54-4e4b-a489-e3cac5ace0bc",
+		"_postman_id": "8ec4677d-5efa-4582-9cad-19b5a1f334bd",
 		"name": "BattleRoyaleChess",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "/users",
+			"name": "/admin",
 			"item": [
 				{
-					"name": "/{username}",
+					"name": "/users",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users/peter",
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/users",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"users",
-								"peter"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/{username}/authorities",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users/peter/authorities",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"users",
-								"peter",
-								"authorities"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/{username}/authorities",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"authority\":\"ROLE_ADMIN\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users/peter/authorities",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"users",
-								"peter",
-								"authorities"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/{username}/authorities/{authority}",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"authority\":\"ROLE_ADMIN\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users/peter/authorities/ROLE_ADMIN",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"users",
-								"peter",
-								"authorities",
-								"ROLE_ADMIN"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/{username}",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users/peter",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"users",
-								"peter"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
+								"admin",
 								"users"
 							]
 						}
@@ -150,13 +29,55 @@
 					"response": []
 				},
 				{
-					"name": "/",
+					"name": "/user/{username}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/user/peterpeter",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"admin",
+								"user",
+								"peterpeter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/{username}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/user/peterpeter",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"admin",
+								"user",
+								"peterpeter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"Peter\",\r\n    \"password\":\"password\",\r\n    \"email\":\"peter@email.com\",\r\n    \"authorities\":[\"ADMIN\"]\r\n}",
+							"raw": "{\r\n    \"username\":\"peterpeter34\",\r\n    \"password\":\"password1\",\r\n    \"email\":\"peigowe@dsjfglk.com\",\r\n    \"authorities\":[\"ADMIN\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -164,27 +85,28 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users",
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/user",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"users"
+								"admin",
+								"user"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "/",
+					"name": "/gametype",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"user\",\r\n    \"password\":\"password\",\r\n    \"email\":\"peter@email.com\"\r\n}",
+							"raw": "{\r\n    \"gametype\":\"testgame\",\r\n    \"numberOfPlayers\":2,\r\n    \"circleShrinkAfterNRounds\":10,\r\n    \"circleShrinkOffset\":20,\r\n    \"timePerRound\":20,\r\n    \"initialDelay\":30,\r\n    \"board\":{\r\n        \"1:1\":[\"normal\", \"1\", \"King\"],\r\n        \"1:2\":[\"normal\"],\r\n        \"1:3\":[\"normal\", \"2\", \"King\"]\r\n    },\r\n    \"playerDirections\":[\"east\", \"west\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -192,62 +114,28 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users",
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/gametype",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"users"
+								"admin",
+								"gametype"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "/{username}/password",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "newpasswordA1@f",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users/user/password",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"users",
-								"user",
-								"password"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "/lobby",
-			"item": [
-				{
-					"name": "/addInQueue",
+					"name": "/gametype",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"peter\",\r\n    \"gametype\":\"gametype1\"\r\n}",
+							"raw": "{\r\n    \"gametype\":\"testgame\",\r\n    \"numberOfPlayers\":2,\r\n    \"circleShrinkAfterNRounds\":10,\r\n    \"circleShrinkOffset\":20,\r\n    \"timePerRound\":20,\r\n    \"initialDelay\":30,\r\n    \"board\":{\r\n        \"1:1\":[\"normal\", \"1\", \"King\"],\r\n        \"1:2\":[\"normal\"],\r\n        \"1:3\":[\"normal\", \"2\", \"King\"]\r\n    },\r\n    \"playerDirections\":[\"east\", \"west\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -255,31 +143,28 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/lobby/addInQueue",
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/gametype",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"lobby",
-								"addInQueue"
+								"admin",
+								"gametype"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "/getPlayerGameStatus/{username}",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "/gametype/{gametype}",
 					"request": {
-						"method": "GET",
+						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"peter\",\r\n    \"gametype\":\"1\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -287,74 +172,16 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/lobby/getPlayerGameStatus/peter",
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/gametype/testgame",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"lobby",
-								"getPlayerGameStatus",
-								"peter"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "/highscores",
-			"item": [
-				{
-					"name": "/",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/highscores",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"highscores"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "/game",
-			"item": [
-				{
-					"name": "/:id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/game/:id",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"game",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
+								"admin",
+								"gametype",
+								"testgame"
 							]
 						}
 					},
@@ -366,7 +193,7 @@
 			"name": "/games",
 			"item": [
 				{
-					"name": "/:id",
+					"name": "/getGameIdForPlayer/{username}",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -374,7 +201,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/games/:id",
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/getGameIdForPlayer/bartbart",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
@@ -382,13 +209,8 @@
 							"port": "{{port}}",
 							"path": [
 								"games",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
+								"getGameIdForPlayer",
+								"bartbart"
 							]
 						}
 					},
@@ -416,11 +238,276 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/{gameId}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/4",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"games",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/{gameId}/newMove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\":\"3:3\",\r\n    \"to\":\"3:4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/4/newMove",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"games",
+								"4",
+								"newMove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/{gameId}/cancelMove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/4/cancelMove",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"games",
+								"4",
+								"cancelMove"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "/admin",
+			"name": "/gametypes",
+			"item": [
+				{
+					"name": "/",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/gametypes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"gametypes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/lobby",
+			"item": [
+				{
+					"name": "/queue/{gametype}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/lobby/queue/2Player",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"lobby",
+								"queue",
+								"2Player"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/queue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/lobby/queue",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"lobby",
+								"queue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/queue",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"peter\",\r\n    \"gametype\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/lobby/queue",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"lobby",
+								"queue"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/players",
+			"item": [
+				{
+					"name": "/players",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/players",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/register",
+			"item": [
+				{
+					"name": "/",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"peterpeter45\",\r\n    \"password\":\"password1\",\r\n    \"email\":\"testemail@email.com\",\r\n    \"authorities\":[\"USER\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/users",
 			"item": [
 				{
 					"name": "/",
@@ -428,14 +515,62 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/admin",
+							"raw": "{{protocol}}://{{url}}:{{port}}/users",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"admin"
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"adminadmin\",\r\n    \"password\":\"password2\",\r\n    \"email\":\"pet333er@email.com\",\r\n    \"authorities\":[\"ADMIN\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/{username}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/users/bartbart",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users",
+								"bartbart"
 							]
 						}
 					},
@@ -464,25 +599,13 @@
 			],
 			"request": {
 				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "password",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "user",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"user\",\r\n    \"password\":\"password\"\r\n}",
+					"raw": "{\r\n    \"username\":\"maaikemaaike\",\r\n    \"password\":\"password1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

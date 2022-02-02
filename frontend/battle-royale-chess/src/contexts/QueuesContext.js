@@ -21,19 +21,17 @@ export default function QueuesContextProvider({ children }){
 
     useEffect(() => {
 
-        if(
-            authState !== 'success'
-            || (
-                role !== 'USER'
-                && role !== 'ADMIN'
-            )
-        ) return
+        if(authState !== 'success') return
+        if(role === 'SPECTATOR') return
 
         fetchQueues()
 
     }, [authState, role])
 
     async function fetchQueues(){
+
+        if(authState !== 'success') return
+        if(role === 'SPECTATOR') return
 
         try {
 

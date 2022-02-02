@@ -30,25 +30,31 @@ public class AdminController {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
-    @GetMapping(value = "/gametypes")
-    public ResponseEntity<Object> getGametypes() {
-        return ResponseEntity.ok().body(gametypeService.getGametypes());
-    }
+//    @GetMapping(value = "/gametypes")
+//    public ResponseEntity<Object> getGametypes() {
+//        return ResponseEntity.ok().body(gametypeService.getGametypes());
+//    }
 
     @GetMapping(value = "/user/{username}")
     public ResponseEntity<Object> getUser(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getUser(username));
     }
 
-    @GetMapping(value = "/gametype/{gametype}")
-    public ResponseEntity<Object> getGametype(@PathVariable String gametype) {
-        return ResponseEntity.ok().body(gametypeService.getGametype(gametype));
+    @DeleteMapping(value = "/user/{username}")
+    public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
+        userService.deleteUser(username);
+        return ResponseEntity.noContent().build();
     }
+
+//    @GetMapping(value = "/gametype/{gametype}")
+//    public ResponseEntity<Object> getGametype(@PathVariable String gametype) {
+//        return ResponseEntity.ok().body(gametypeService.getGametype(gametype));
+//    }
 
     @PostMapping(value = "/user")
     public ResponseEntity<Object> createUser(@RequestBody UserPostRequest userPostRequest) {
         String newUsername = registerService.create(true, userPostRequest);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/user/{username}")
                 .buildAndExpand(newUsername).toUri();
         return ResponseEntity.created(location).build();
     }
@@ -62,12 +68,6 @@ public class AdminController {
     @PutMapping(value = "/gametype")
     public ResponseEntity<Object> updateGametype(@RequestBody GametypePostRequest gametypePostRequest) {
         gametypeService.updateGametype(gametypePostRequest);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping(value = "/user/{username}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
-        userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 

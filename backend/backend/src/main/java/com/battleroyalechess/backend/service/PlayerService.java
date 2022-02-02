@@ -41,20 +41,4 @@ public class PlayerService {
         return players;
 
     }
-
-    public PlayerResponse getPlayer() {
-
-        String username = userService.getCurrentUserName();
-
-        Optional<User> user = userRepository.findById(username);
-
-        return modelMapper.map(user, PlayerResponse.class);
-    }
-
-    public PlayerResponse getPlayer(String username) {
-
-        Optional<User> user = userRepository.findById(username);
-
-        return modelMapper.map(user, PlayerResponse.class);
-    }
 }

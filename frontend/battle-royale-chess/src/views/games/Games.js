@@ -9,6 +9,7 @@ import BasicTable from '../../components/basicTable/BasicTable'
 
 import { SettingsContext } from '../../contexts/SettingsContext'
 import { GameContext } from '../../contexts/GameContext'
+import { GamesContext } from '../../contexts/GamesContext'
 
 import { getGames } from '../../services/GamesService'
 
@@ -19,20 +20,20 @@ export default function Games() {
     const history = useHistory()
 
     const [finished, setFinished] = useState(true)
-    const [games, setGames] = useState([])
 
     const { dateFormat } = useContext(SettingsContext)
     const { gameId, setGameId, resetGameContext } = useContext(GameContext)
+    const { games, fetchGames } = useContext(GamesContext)
 
     useEffect(() => {
 
-        ;(async () => {
+        const dataRefreshInterval = setInterval(() => {
 
-            const result = await getGames()
+            fetchGames()
 
-            setGames(result.data)
+        }, 5000)
 
-        })()
+        return () => clearInterval(dataRefreshInterval)
 
     }, [])
 
@@ -65,7 +66,7 @@ export default function Games() {
                     },
                     {
                         Header: 'Played at',
-                        accessor: data => moment(data.gameStartedAt).format(dateFormat),
+                        accessor: data => moment(data.gameStartedAt).format(dateFormat()),
                     },
                 ],
             }

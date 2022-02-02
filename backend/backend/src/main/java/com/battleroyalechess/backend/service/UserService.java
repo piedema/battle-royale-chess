@@ -81,14 +81,14 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public void deleteUser() {
-        String currentUserName = getCurrentUserName();
-        deleteUser(currentUserName);
-    }
-
     public void deleteUser(String username) {
-        if (userExists(username)) userRepository.deleteById(username);
-        else throw new UserNotFoundException(username);
+
+        if (!userExists(username)) {
+            throw new UserNotFoundException(username);
+        }
+
+        userRepository.deleteById(username);
+
     }
 
     public void updateUser(User updatedUser) {

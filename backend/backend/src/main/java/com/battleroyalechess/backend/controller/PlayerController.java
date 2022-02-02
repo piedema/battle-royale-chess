@@ -14,21 +14,9 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
-    @GetMapping(value = "/all")
+    @GetMapping(value = "")
     public ResponseEntity<Object> getUsers() {
         return ResponseEntity.ok().body(playerService.getPlayers());
-    }
-
-    @GetMapping(value = "")
-    public ResponseEntity<Object> getUser() {
-        PlayerResponse player = playerService.getPlayer();
-        System.out.println(player);
-        return ResponseEntity.ok(player);
-    }
-
-    @GetMapping(value = "/{username}")
-    public ResponseEntity<Object> getUser(@PathVariable String username) {
-        return ResponseEntity.ok().body(playerService.getPlayer(username));
     }
 
 }
