@@ -40,8 +40,6 @@ export async function doNewMove(gameId, from, to){
         data:{ from, to }
     }
 
-    console.log(options)
-
     return await axios(options)
 
 }

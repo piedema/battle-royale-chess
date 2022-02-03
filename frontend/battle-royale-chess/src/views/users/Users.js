@@ -40,51 +40,6 @@ export default function Users() {
         }
     ])
 
-    useEffect(() => {
-
-        (async () => {
-
-            try {
-
-                const result = await getAllUserdata()
-                setUsers(result.data)
-
-            } catch (error){
-
-            }
-
-        })()
-
-    }, [])
-
-    useEffect(() => {
-
-        if(selectedUser === undefined) return
-
-        if(selectedUser.username && selectedUser.email){
-            reset({
-                emailInput:selectedUser.email,
-                passwordInput:'',
-                passwordCheck:'',
-                authoritiesSelect:selectedUser.authorities.find(u => u.authority === "ROLE_ADMIN") ? "ADMIN" : "USER",
-                chessComInput:selectedUser.chessCom
-            })
-        }
-
-        if(selectedUser === "new user"){
-            reset({
-                emailInput:'',
-                passwordInput:'',
-                passwordCheck:'',
-                authoritiesSelect:"USER",
-                chessComInput:''
-            })
-        }
-
-    }, [selectedUser])
-
-
-
     const columns = useMemo(
         () => [
             {
@@ -119,6 +74,51 @@ export default function Users() {
         []
     )
 
+    // load users to show in table
+    useEffect(() => {
+
+        (async () => {
+
+            try {
+
+                const result = await getAllUserdata()
+                setUsers(result.data)
+
+            } catch (error){
+
+            }
+
+        })()
+
+    }, [])
+
+    // set input fields bast on type of action
+    useEffect(() => {
+
+        if(selectedUser === undefined) return
+
+        if(selectedUser.username && selectedUser.email){
+            reset({
+                emailInput:selectedUser.email,
+                passwordInput:'',
+                passwordCheck:'',
+                authoritiesSelect:selectedUser.authorities.find(u => u.authority === "ROLE_ADMIN") ? "ADMIN" : "USER",
+                chessComInput:selectedUser.chessCom
+            })
+        }
+
+        if(selectedUser === "new user"){
+            reset({
+                emailInput:'',
+                passwordInput:'',
+                passwordCheck:'',
+                authoritiesSelect:"USER",
+                chessComInput:''
+            })
+        }
+
+    }, [selectedUser])
+
     function userSelected(user){
 
         setSelectedUser(user.original || "new user")
@@ -143,6 +143,7 @@ export default function Users() {
 
     }
 
+    // adjust which values to send to server when the form is submitted
     async function onFormSubmit(data){
 
         const { usernameInput, passwordInput,  emailInput, authoritiesSelect, chessComInput } = data
@@ -181,14 +182,30 @@ export default function Users() {
 
             }
 
-            await doUpdateUser(updatedUser)
+            try {
+
+                await doUpdateUser(updatedUser)
+
+            } catch (error) {
+
+
+
+            }
 
         }
 
-        const result = await getAllUserdata()
+        try {
 
-        setUsers(result.data)
-        userDeselected()
+            const result = await getAllUserdata()
+
+            setUsers(result.data)
+            userDeselected()
+
+        } catch (error) {
+
+            setUsers([])
+
+        }
 
     }
 

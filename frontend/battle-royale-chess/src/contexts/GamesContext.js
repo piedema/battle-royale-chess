@@ -16,7 +16,7 @@ export default function GamesContextProvider({ children }){
     const { authState } = useContext(AuthenticationContext)
     const { role } = useContext(UserContext)
 
-    const [games, setGames] = useState([])
+    const [games, setGames] = useState(undefined)
 
     const contextData = {
         games,

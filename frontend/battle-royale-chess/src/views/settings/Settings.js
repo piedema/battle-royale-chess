@@ -8,6 +8,7 @@ import Tooltip from '../../components/form/tooltip/Tooltip'
 
 import { UserContext } from '../../contexts/UserContext'
 import { AuthenticationContext } from '../../contexts/AuthenticationContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 
 import { usernameExists, emailExists, doUpdateUser, chessComAccountExists } from '../../services/UserService'
 
@@ -19,9 +20,11 @@ export default function Settings() {
 
     const { username, email, chessCom } = useContext(UserContext)
     const { refreshUser } = useContext(AuthenticationContext)
+    const { language, dateFormat, boardView, piecesStyle, setLanguage, setDateFormat, setBoardView, setPiecesStyle } = useContext(SettingsContext)
 
     const { register, handleSubmit, reset, watch, formState:{ errors } } = useForm()
 
+    // used to check if second entered password === first one
     const password = useRef({})
     password.current = watch('passwordInput', '')
 
@@ -29,13 +32,14 @@ export default function Settings() {
         reset({
             emailInput:email,
             chessComInput:chessCom,
-            languageSelect:localStorage.getItem('language') || 'EN',
-            dateTimeSelect:localStorage.getItem('dateTime') || 'DD-MM-YYYY HH:mm:ss',
-            boardViewSelect:localStorage.getItem('boardView') || '3d',
-            piecesStyleSelect:localStorage.getItem('piecesStyle') || 'outlined'
+            languageSelect:language(),
+            dateTimeSelect:dateFormat(),
+            boardViewSelect:boardView(),
+            piecesStyleSelect:piecesStyle()
         })
     }, [username, email])
 
+    // set new settings
     async function onFormSubmit(data){
 
         const {
@@ -55,10 +59,10 @@ export default function Settings() {
         if(passwordInput.length > 0 && passwordInput === passwordCheck) updatedUser.password = passwordInput
         if(chessComInput) updatedUser.chessCom = chessComInput
 
-        localStorage.setItem('language', languageSelect)
-        localStorage.setItem('dateTime', dateTimeSelect)
-        localStorage.setItem('boardView', boardViewSelect)
-        localStorage.setItem('piecesStyle', piecesStyleSelect)
+        setLanguage(languageSelect)
+        setDateFormat(dateTimeSelect)
+        setBoardView(boardViewSelect)
+        setPiecesStyle(piecesStyleSelect)
 
         // send new values
         await doUpdateUser(updatedUser)

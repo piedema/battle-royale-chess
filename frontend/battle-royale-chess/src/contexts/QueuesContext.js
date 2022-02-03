@@ -30,12 +30,9 @@ export default function QueuesContextProvider({ children }){
 
         fetchQueues()
 
-    }, [authState, role])
+    }, [authState])
 
     async function fetchQueues(){
-
-        if(authState !== 'success') return
-        if(role === 'SPECTATOR') return
 
         try {
 

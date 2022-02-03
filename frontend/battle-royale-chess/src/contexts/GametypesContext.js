@@ -29,13 +29,6 @@ export default function GametypesContextProvider({ children }){
 
     }, [authState])
 
-    // get a certain gametype from the collection of gametypes
-    function getGametypeByName(name){
-
-        return gametypes.find(g => g.gametype === name)
-
-    }
-
     async function fetchGametypes(){
 
         try {
@@ -48,6 +41,13 @@ export default function GametypesContextProvider({ children }){
             setGametypes([])
 
         }
+
+    }
+
+    // get a certain gametype from the collection of gametypes
+    function getGametypeByName(name){
+
+        return gametypes.find(g => g.gametype === name)
 
     }
 

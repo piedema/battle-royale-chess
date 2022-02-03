@@ -18,6 +18,7 @@ export default function Login() {
     const { handleSubmit, register, formState: { errors } } = useForm()
     const { handleSubmit: handleSubmit2, register: register2, watch, formState: { errors: errors2 } } = useForm()
 
+    // needed for checking if double password === password
     const registerPassword = useRef({})
     registerPassword.current = watch('registerPassword', '')
 
@@ -26,15 +27,18 @@ export default function Login() {
     const [resultStatus, setResultStatus] = useState(undefined)
     const [registerChessCom, setRegisterChessCom] = useState(false)
 
+    // try to login
     async function handleLogin({ loginUsername, loginPassword }){
         const result = await authenticate(loginUsername, loginPassword)
-        setResultStatus(result?.response?.status)
+        setResultStatus(result?.response?.status)                               // needed to show if a login has failed
     }
 
+    // try to register
     function handleRegister({ registerUsername, registerPassword, registerEmail, registerChessCom }){
         registerUser(registerUsername, registerPassword, registerEmail, registerChessCom)
     }
 
+    // login as spectator
     function handleLoginAsSpectator(){
         continueAsSpectator()
     }

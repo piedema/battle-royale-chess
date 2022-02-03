@@ -43,7 +43,6 @@ export default function GameContextProvider({ children }){
 
     function resetGameContext(){
 
-        setGameId(undefined)
         setBoard(undefined)
         setPlayers([])
         setScores(undefined)

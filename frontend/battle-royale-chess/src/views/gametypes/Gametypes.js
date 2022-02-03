@@ -5,6 +5,8 @@ import moment from 'moment'
 
 import { getGametypes, doCreateGametype, doUpdateGametype } from '../../services/GametypesService'
 
+import { GametypesContext } from '../../contexts/GametypesContext'
+
 import Menu from '../../components/menu/Menu'
 import BasicContainer from '../../components/basicContainer/BasicContainer'
 import BasicTable from '../../components/basicTable/BasicTable'
@@ -16,7 +18,8 @@ import colors from '../../assets/js/colors'
 
 export default function Gametypes(){
 
-    const [gametypes, setGametypes] = useState([])
+    const { gametypes, fetchGametypes } = useContext(GametypesContext)
+
     const [gameBoard, setGameBoard] = useState(undefined)
     const [playerDirections, setPlayerDirections] = useState([])
     const [selectedGametype, setSelectedGametype] = useState(undefined)
@@ -62,6 +65,8 @@ export default function Gametypes(){
         []
     )
 
+    // if board or direction changes then check if a new player is added
+    // if that is the case then add a new playerDirection
     useEffect(() => {
 
         const allPlayersOnBoard = getAllPlayersOnBoard()
@@ -84,28 +89,22 @@ export default function Gametypes(){
 
     }, [gameBoard, playerDirections])
 
+    // fetch gametypes data from gametypescontext
     useEffect(() => {
 
-        (async () => {
+        try {
 
-            try {
+            fetchGametypes()
 
-                const response = await getGametypes()
-                setGametypes(response.data)
+        } catch (error) {
 
-            } catch (error) {
-
-                console.log(error)
-                setGametypes([])
-
-            }
-
-        })()
+        }
 
     }, [])
 
     useEffect(() => {
 
+        // set the form and the detailed view
         if(selectedGametype === undefined){
 
             reset({
@@ -157,6 +156,7 @@ export default function Gametypes(){
 
     }, [selectedGametype])
 
+    // a gametype is selected so move to the detailed view
     function gametypeSelected(gametype){
 
         setSelectedGametype(gametype.original || "new gametype")
@@ -169,6 +169,7 @@ export default function Gametypes(){
 
     }
 
+    // a gametype is deselected to move to overview table view
     function gametypeDeselected(){
 
         setSelectedGametype(undefined)
@@ -181,6 +182,7 @@ export default function Gametypes(){
 
     }
 
+    // the submit of the form
     async function onFormSubmit(data){
 
         const {
@@ -191,6 +193,7 @@ export default function Gametypes(){
             initialDelayInput
         } = data
 
+        // if a gametype is selected then we want to update that gametype with only the values specified
         if(selectedGametype.gametype){
 
             const updatedGametype = {
@@ -207,6 +210,8 @@ export default function Gametypes(){
 
             try {
 
+                console.log(updatedGametype)
+
                 await doUpdateGametype(updatedGametype)
 
             } catch (error) {
@@ -217,6 +222,7 @@ export default function Gametypes(){
 
         }
 
+        // if we want to create a new gametype then all values must be send
         if(selectedGametype === "new gametype"){
 
             const createdGametype = {
@@ -244,12 +250,9 @@ export default function Gametypes(){
 
         try {
 
-            const response = await getGametypes()
-            setGametypes(response.data)
+            getGametypes()
 
         } catch (error) {
-
-            setGametypes([])
 
         }
 
@@ -257,6 +260,7 @@ export default function Gametypes(){
 
     }
 
+    // get an array with all the players on the board and sort the result
     function getAllPlayersOnBoard(){
 
         const resultArray = []
@@ -275,6 +279,7 @@ export default function Gametypes(){
 
     }
 
+    // get the corresponding array for a players direction to reflect in which way the pawns may be moved
     function getCorrespondingArrow(p){
 
         switch(p) {
@@ -294,6 +299,9 @@ export default function Gametypes(){
 
     }
 
+    // this function checks the current playing direction for a certain player (index i in the players array)
+    // get the previous playing direction and set state to the next playing direction
+    // clockwise ofcourse
     function switchPlayerDirection(e, i){
 
         e.preventDefault()
@@ -343,7 +351,7 @@ export default function Gametypes(){
                     <div className={styles.gametypesList}>
                         <BasicTable
                             columns={columns}
-                            data={gametypes}
+                            data={gametypes !== undefined ? gametypes : []}
                             getRowProps={row => ({
                                 style:{
                                     cursor:"pointer"

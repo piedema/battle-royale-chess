@@ -25,28 +25,11 @@ export default function Games() {
     const { gameId, setGameId, resetGameContext } = useContext(GameContext)
     const { games, fetchGames } = useContext(GamesContext)
 
-    useEffect(() => {
-
-        const dataRefreshInterval = setInterval(() => {
-
-            fetchGames()
-
-        }, 5000)
-
-        return () => clearInterval(dataRefreshInterval)
-
-    }, [])
-
-    useEffect(() => {
-
-        if(gameId) history.push('/game')
-
-    }, [gameId])
-
+    // the columns for the table showing the games
     const columns = useMemo(
         () => [
             {
-                Header: finished ? 'Finished Games' : 'Active Games',
+                Header: 'Games',
                 columns: [
                     {
                         Header: 'Game id',
@@ -65,7 +48,7 @@ export default function Games() {
                         accessor: data => data.players.map((p, i) => { return p + ' ' + data.scores[i] }).join(', ')
                     },
                     {
-                        Header: 'Played at',
+                        Header: 'Game started at',
                         accessor: data => moment(data.gameStartedAt).format(dateFormat()),
                     },
                 ],
@@ -74,6 +57,21 @@ export default function Games() {
         []
     )
 
+    // refresh the games context data every 5 seconds
+    useEffect(() => {
+
+        const dataRefreshInterval = setInterval(() => {
+
+            fetchGames()
+
+        }, 5000)
+
+        return () => clearInterval(dataRefreshInterval)
+
+    }, [])
+
+    // set game id after clicking on a game
+    // this triggers the gameId useEffect to move to the game view
     function gameSelected(row){
 
         const gameId = row.original.gameId
@@ -81,6 +79,14 @@ export default function Games() {
         setGameId(gameId)
 
     }
+
+    // clicking on a game sets the gameId to a game number
+    // then move to game view so we can spectate that game
+    useEffect(() => {
+
+        if(gameId) history.push('/game')
+
+    }, [gameId])
 
     return (
         <div className={styles.container}>
@@ -100,7 +106,7 @@ export default function Games() {
             <div className={styles.gamesList}>
                 <BasicTable
                     columns={columns}
-                    data={games.filter(g => g.finished === finished)}
+                    data={games !== undefined ? games.filter(g => g.finished === finished) : []}
                     getRowProps={row => ({
                         style:{
                             cursor:"pointer"

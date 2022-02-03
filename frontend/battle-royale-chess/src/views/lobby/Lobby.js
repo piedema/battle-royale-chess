@@ -74,7 +74,7 @@ export default function Lobby() {
                         accessor: data => data.players.map((p, i) => { return p + ' ' + data.scores[i] }).join(', ')
                     },
                     {
-                        Header: 'Played at',
+                        Header: 'Game started at',
                         accessor: data => {
                             return moment(data.gameStartedAt).format(dateFormat())
                         },
@@ -85,6 +85,7 @@ export default function Lobby() {
         [dateFormat]
     )
 
+    // set interval to refresh all neccessary data
     useEffect(() => {
 
         const dataRefreshInterval = setInterval(() => {
@@ -99,16 +100,19 @@ export default function Lobby() {
 
     }, [])
 
+    // useEffect switches between showing the "isalreadyIngame" thing and the lobby cards to queue for a game
     useEffect(() => {
 
         if(games === undefined) return
 
+        // if a game is found then user is in a game
         const game = games.find(g => g.players.includes(username) && g.finished === false)
 
-        // if user is a game and isInGame === false then user jsut entered game and should move to game screen
+        // if user is in a game and isInGame === false then user jsut entered game and should move to game screen
         if(game !== undefined && isInGame === false){
 
             setIsInGame(true)
+            setGameId(game.gameId)
             history.push('/game')
 
         }
@@ -117,6 +121,7 @@ export default function Lobby() {
         if(game !== undefined && isInGame === undefined){
 
             setIsInGame(true)
+            setGameId(game.gameId)
 
         }
 
@@ -124,6 +129,7 @@ export default function Lobby() {
         if(game === undefined && isInGame === true){
 
             setIsInGame(false)
+            setGameId(undefined)
 
         }
 
@@ -131,11 +137,13 @@ export default function Lobby() {
         if(game === undefined && isInGame === undefined){
 
             setIsInGame(false)
+            setGameId(undefined)
 
         }
 
     }, [games, username, isInGame])
 
+    // clicking on a lobby card places user in queue
     async function enterQueue(gametype){
 
         try {
@@ -148,6 +156,7 @@ export default function Lobby() {
 
     }
 
+    // clicking on a lobby card for which you are in queue then remove queue
     async function leaveQueue(){
 
         try {
@@ -160,9 +169,21 @@ export default function Lobby() {
 
     }
 
-    async function enterGame(isAlreadyInGame){
+    // setting isInGame to false triggers the useEffect on line 104
+    // this sees you are in a game and not in the game view so it switches you to that
+    async function enterGame(){
 
         setIsInGame(false)
+
+    }
+
+    // if a game row is selected (when you are a spectator) then load this gameview and gameview data bij gameId
+    function gameSelected(row){
+
+        const gameId = row.original.gameId
+
+        setGameId(gameId)
+        history.push('/game')
 
     }
 
@@ -206,7 +227,16 @@ export default function Lobby() {
                         )
                     : (
                         <div className={styles.gamesContainer}>
-                            <BasicTable columns={columns} data={games} />
+                            <BasicTable
+                            columns={columns}
+                            data={games !== undefined ? games : []}
+                            getRowProps={row => ({
+                                style:{
+                                    cursor:"pointer"
+                                },
+                                onClick:() => gameSelected(row)
+                            })}
+                            />
                         </div>
                     )
                 }

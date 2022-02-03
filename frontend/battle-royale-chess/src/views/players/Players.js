@@ -25,21 +25,6 @@ export default function Players() {
         }
     ])
 
-    useEffect(() => {
-
-        (async () => {
-
-            const players = await getAllPlayersdata()
-            const rankedPlayers = [...players.data]
-            const rankedPlayersSorted = sortPlayers(rankedPlayers)
-            const rankedPlayersWithScore = addRank(rankedPlayersSorted)
-
-            setPlayers(rankedPlayers)
-
-        })()
-
-    }, [])
-
     const columns = useMemo(
         () => [
           {
@@ -75,12 +60,40 @@ export default function Players() {
         []
     )
 
+    // get all players and sort by their rank
+    useEffect(() => {
+
+        (async () => {
+
+            try {
+
+                const players = await getAllPlayersdata()
+                const rankedPlayers = [...players.data]
+                const rankedPlayersSorted = sortPlayers(rankedPlayers)
+                const rankedPlayersWithScore = addRank(rankedPlayersSorted)
+
+                setPlayers(rankedPlayers)
+
+            } catch (error) {
+
+                setPlayers([])
+
+            }
+
+        })()
+
+    }, [])
+
+    // sort players by their score
     function sortPlayers(array){
 
         return array.sort((a, b) => b.score - a.score)
 
     }
 
+    // add their rank to the loaded data
+    // this gives them the same number as the person above them with same score
+    // and counts on with people with next score, like (1, 2, 2, 2, 5, 5, 7, 8, 9 )
     function addRank(rankedPlayersSorted){
 
         return rankedPlayersSorted.map((p, i, a) => {
@@ -95,6 +108,7 @@ export default function Players() {
 
     }
 
+    // fetch the needed data from chess.com to show in de detailed view
     async function fetchChessComData(username){
 
         Promise.all([
@@ -113,15 +127,6 @@ export default function Players() {
         }).catch(error => {
 
         })
-
-        // const profile = await getChessComProfile(username)
-        // const stats = await getChessComStats(username)
-        //
-        //
-        // console.log(profile)
-        // console.log(stats)
-
-        // setChessComUserdata(JSON.stringify(stats))
 
     }
 

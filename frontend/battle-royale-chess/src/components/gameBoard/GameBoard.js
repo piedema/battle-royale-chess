@@ -151,11 +151,14 @@ export default function GameBoard({ makeMove }){
                         }
 
                         // add the tile to our row
+                        // if there is a piece on the tile, add it here by using the Piece component
+                        // add the key/id of the tile (shown in topleft)
+                        // show the number of rounds left before the tile fades in bottom right
                         row.push(
                             <td key={key} className={classListJoined} onClick={() => makeMove(key) }>
-                                { pieceOnTile !== undefined ? <Piece type={pieceOnTile} styling={pieceStyle} color={color}/> : null }   // if there is a piece on the tile, add it here by using the Piece component
-                                <div className={styles.tileId}>{rowInChar + j}</div>                                                    // add the key/id of the tile (shown in topleft)
-                                { tileFadesSoon !== null && <div className={styles.tileFadesSoon}>{tileFadesSoon}</div> }               // show the number of rounds left before the tile fades in bottom right
+                                { pieceOnTile !== undefined ? <Piece type={pieceOnTile} styling={pieceStyle} color={color}/> : null }
+                                <div className={styles.tileId}>{rowInChar + j}</div>
+                                { tileFadesSoon !== null && <div className={styles.tileFadesSoon}>{tileFadesSoon}</div> }
                             </td>
                         )
 
