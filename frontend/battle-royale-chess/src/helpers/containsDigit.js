@@ -1,4 +1,4 @@
-export default function containsDigit(v){
+module.exports = v => {
 
     // check if a string has a digit in it. Used for password input fields
 
