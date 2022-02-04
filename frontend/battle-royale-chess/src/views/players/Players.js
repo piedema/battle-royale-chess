@@ -47,11 +47,19 @@ export default function Players() {
                     accessor: 'gamesPlayed',
                 },
                 {
-                    Header: 'Chess.com stats',
+                    Header: 'Chess.com stats?',
                     accessor: data => {
 
-                        if(data.chessCom) return <button className={styles.button} onClick={() => fetchChessComData(data.chessCom)}>View</button>
+                        if(data.chessCom){
 
+                            return (
+                                <button
+                                    className={styles.button}
+                                    onClick={() => fetchChessComData(data.chessCom)}>
+                                    View
+                                </button>
+                            )
+                        }
                     },
                 }
             ],
@@ -121,7 +129,6 @@ export default function Players() {
                 stats:values[1]
             }
 
-            console.log(data)
             setChessComUserdata(data)
 
         }).catch(error => {
@@ -146,7 +153,7 @@ export default function Players() {
                                 <div className={styles.title}>
                                     Chess.com player info
                                 </div>
-                                <img src={chessComUserdata.profile.avatar} className={styles.img} />
+                                <img src={chessComUserdata.profile?.avatar} className={styles.img} />
                                 <div className={styles.title}>
                                     Profile
                                 </div>
@@ -157,7 +164,7 @@ export default function Players() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        { chessComUserdata.profile.username }
+                                        { chessComUserdata.profile?.username }
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -167,7 +174,7 @@ export default function Players() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        { chessComUserdata.profile.name }
+                                        { chessComUserdata.profile?.name || 'unknown' }
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -177,7 +184,7 @@ export default function Players() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        { chessComUserdata.profile.country.split('/').at(-1) }
+                                        { chessComUserdata.profile?.country.split('/').at(-1) }
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -187,7 +194,7 @@ export default function Players() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        { moment(chessComUserdata.profile.joined * 1000).format(dateFormat()) }
+                                        { moment(chessComUserdata.profile?.joined * 1000).format(dateFormat()) }
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -197,7 +204,7 @@ export default function Players() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        { moment(chessComUserdata.profile.last_online * 1000).format(dateFormat()) }
+                                        { moment(chessComUserdata.profile?.last_online * 1000).format(dateFormat()) }
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -207,7 +214,7 @@ export default function Players() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        { chessComUserdata.profile.followers }
+                                        { chessComUserdata.profile?.followers }
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -217,7 +224,7 @@ export default function Players() {
                                         </div>
                                     </div>
                                     <div className={styles.value}>
-                                        { chessComUserdata.profile.is_streamer ? 'yes' : 'no' }
+                                        { chessComUserdata.profile?.is_streamer ? 'yes' : 'no' }
                                     </div>
                                 </div>
                             </div>
@@ -232,7 +239,7 @@ export default function Players() {
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            Win: { chessComUserdata.stats.chess_blitz?.record?.win } Draw: { chessComUserdata.stats.chess_blitz?.record?.draw } Loss: { chessComUserdata.stats.chess_blitz?.record?.loss }
+                                            Win: { chessComUserdata.stats?.chess_blitz?.record?.win || 0 } Draw: { chessComUserdata.stats?.chess_blitz?.record?.draw || 0 } Loss: { chessComUserdata.stats?.chess_blitz?.record?.loss || 0 }
                                         </div>
                                     </div>
                                     <div className={styles.pair}>
@@ -242,7 +249,7 @@ export default function Players() {
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            Win: { chessComUserdata.stats.chess_bullet?.record?.win } Draw: { chessComUserdata.stats.chess_bullet?.record?.draw } Loss: { chessComUserdata.stats.chess_bullet?.record?.loss }
+                                            Win: { chessComUserdata.stats?.chess_bullet?.record?.win || 0 } Draw: { chessComUserdata.stats?.chess_bullet?.record?.draw || 0 } Loss: { chessComUserdata.stats?.chess_bullet?.record?.loss || 0 }
                                         </div>
                                     </div>
                                     <div className={styles.pair}>
@@ -252,7 +259,7 @@ export default function Players() {
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            Win: { chessComUserdata.stats.chess_daily?.record?.win } Draw: { chessComUserdata.stats.chess_daily?.record?.draw } Loss: { chessComUserdata.stats.chess_daily?.record?.loss }
+                                            Win: { chessComUserdata.stats?.chess_daily?.record?.win || 0 } Draw: { chessComUserdata.stats?.chess_daily?.record?.draw || 0 } Loss: { chessComUserdata.stats?.chess_daily?.record?.loss || 0 }
                                         </div>
                                     </div>
                                     <div className={styles.pair}>
@@ -262,7 +269,7 @@ export default function Players() {
                                             </div>
                                         </div>
                                         <div className={styles.value}>
-                                            Win: { chessComUserdata.stats.chess_rapid?.record?.win } Draw: { chessComUserdata.stats.chess_rapid?.record?.draw } Loss: { chessComUserdata.stats.chess_rapid?.record?.loss }
+                                            Win: { chessComUserdata.stats?.chess_rapid?.record?.win || 0 } Draw: { chessComUserdata.stats?.chess_rapid?.record?.draw || 0 } Loss: { chessComUserdata.stats?.chess_rapid?.record?.loss || 0 }
                                         </div>
                                     </div>
                                 </div>

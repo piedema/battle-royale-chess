@@ -25,13 +25,13 @@ export default function GamesContextProvider({ children }){
 
     useEffect(() => {
 
-        if(authState !== 'success') return
-
         fetchGames()
 
     }, [authState])
 
     async function fetchGames(){
+
+        if(authState !== 'success') return
 
         try {
 

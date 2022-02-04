@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>F:/Full Stack Developer/Eindopdracht/battle-royale-chess/backend</OriginalElement>
+  <nodes>
+    <node x="0.0" y="1126.0">com.battleroyalechess.backend.service.GamesService</node>
+    <node x="1095.0" y="1381.0">com.battleroyalechess.backend.service.LobbyService</node>
+    <node x="1234.0" y="1126.0">com.battleroyalechess.backend.service.GametypeService</node>
+    <node x="0.0" y="2290.0">com.battleroyalechess.backend.repository.GametypeRepository</node>
+    <node x="1465.0" y="1592.0">com.battleroyalechess.backend.dto.response.AuthenticationResponse</node>
+    <node x="1126.0" y="1925.0">com.battleroyalechess.backend.controller.GametypeController</node>
+    <node x="1094.0" y="2169.0">com.battleroyalechess.backend.exception.NotAuthorizedException</node>
+    <node x="289.0" y="1592.0">com.battleroyalechess.backend.model.QueuedPlayer</node>
+    <node x="1722.0" y="1781.0">com.battleroyalechess.backend.service.UserAuthenticateService</node>
+    <node x="405.0" y="1381.0">com.battleroyalechess.backend.dto.request.AuthenticationRequest</node>
+    <node x="0.0" y="1925.0">com.battleroyalechess.backend.service.RegisterService</node>
+    <node x="1703.0" y="1381.0">com.battleroyalechess.backend.dto.response.CancelMoveResponse</node>
+    <node x="279.0" y="2169.0">com.battleroyalechess.backend.exception.InvalidAuthorityException</node>
+    <node x="402.0" y="2290.0">com.battleroyalechess.backend.model.AuthorityKey</node>
+    <node x="335.0" y="0.0">com.battleroyalechess.backend.model.User</node>
+    <node x="807.0" y="1925.0">com.battleroyalechess.backend.service.PlayerService</node>
+    <node x="869.0" y="718.0">com.battleroyalechess.backend.controller.ExceptionController</node>
+    <node x="1628.0" y="718.0">com.battleroyalechess.backend.dto.response.PlayerResponse</node>
+    <node x="1832.0" y="718.0">com.battleroyalechess.backend.security.JwtUtil</node>
+    <node x="882.0" y="2047.0">com.battleroyalechess.backend.exception.GametypeNotFoundException</node>
+    <node x="1572.0" y="1126.0">com.battleroyalechess.backend.controller.GamesController</node>
+    <node x="699.0" y="1381.0">com.battleroyalechess.backend.security.WebSecurityConfiguration</node>
+    <node x="818.0" y="1592.0">com.battleroyalechess.backend.config.PopulateDbWithGametypes</node>
+    <node x="1235.0" y="1781.0">com.battleroyalechess.backend.security.JwtRequestFilter</node>
+    <node x="1625.0" y="2169.0">com.battleroyalechess.backend.exception.BadRequestException</node>
+    <node x="1429.0" y="1925.0">com.battleroyalechess.backend.controller.PlayerController</node>
+    <node x="978.0" y="1126.0">com.battleroyalechess.backend.model.Authority</node>
+    <node x="478.0" y="1592.0">com.battleroyalechess.backend.controller.LobbyController</node>
+    <node x="584.0" y="2290.0">com.battleroyalechess.backend.gameEngine.pieces.Piece</node>
+    <node x="532.0" y="1126.0">com.battleroyalechess.backend.controller.AdminController</node>
+    <node x="428.0" y="1925.0">com.battleroyalechess.backend.controller.RegisterController</node>
+    <node x="347.0" y="1781.0">MavenWrapperDownloader</node>
+    <node x="0.0" y="2169.0">com.battleroyalechess.backend.exception.RecordNotFoundException</node>
+    <node x="0.0" y="1781.0">com.battleroyalechess.backend.config.PopulateDbWithUsers</node>
+    <node x="230.0" y="2047.0">com.battleroyalechess.backend.repository.GameRepository</node>
+    <node x="0.0" y="0.0">com.battleroyalechess.backend.model.Game</node>
+    <node x="1330.0" y="718.0">com.battleroyalechess.backend.dto.request.NewMovePostRequest</node>
+    <node x="825.0" y="2169.0">com.battleroyalechess.backend.exception.GameNotFoundException</node>
+    <node x="0.0" y="2047.0">com.battleroyalechess.backend.BackendApplication</node>
+    <node x="0.0" y="1592.0">com.battleroyalechess.backend.dto.response.NewMoveResponse</node>
+    <node x="567.0" y="2047.0">com.battleroyalechess.backend.exception.UsernameNotAvailableException</node>
+    <node x="650.0" y="1781.0">com.battleroyalechess.backend.controller.AuthenticationController</node>
+    <node x="1730.0" y="1592.0">com.battleroyalechess.backend.config.JwtSecret</node>
+    <node x="1260.0" y="0.0">com.battleroyalechess.backend.model.Gametype</node>
+    <node x="1360.0" y="2169.0">com.battleroyalechess.backend.exception.UserNotFoundException</node>
+    <node x="1757.0" y="2047.0">com.battleroyalechess.backend.repository.UserRepository</node>
+    <node x="1471.0" y="2047.0">com.battleroyalechess.backend.exception.EmailNotAvailableException</node>
+    <node x="0.0" y="718.0">com.battleroyalechess.backend.gameEngine.GameEngine</node>
+    <node x="1957.0" y="1925.0">com.battleroyalechess.backend.config.MyConfiguration</node>
+    <node x="526.0" y="718.0">com.battleroyalechess.backend.service.UserService</node>
+    <node x="1694.0" y="1925.0">com.battleroyalechess.backend.BackendApplicationTests</node>
+    <node x="603.0" y="0.0">com.battleroyalechess.backend.dto.request.GametypePostRequest</node>
+    <node x="0.0" y="1381.0">com.battleroyalechess.backend.controller.UserController</node>
+    <node x="1178.0" y="2047.0">com.battleroyalechess.backend.exception.UserInGameAlreadyException</node>
+    <node x="552.0" y="2169.0">com.battleroyalechess.backend.exception.InvalidPasswordException</node>
+    <node x="1585.0" y="0.0">com.battleroyalechess.backend.dto.request.UserPostRequest</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic" zoom="1.2669204737732658" showDependencies="false" x="807.6915932045766" y="1012.2717863105174" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

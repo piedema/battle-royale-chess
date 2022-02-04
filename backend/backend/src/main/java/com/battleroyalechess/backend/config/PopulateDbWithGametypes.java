@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Component
-@Profile("development")
+@Profile("development")         // only run when in development mode
 public class PopulateDbWithGametypes implements CommandLineRunner {
+
+    // create new gametypes to fill database and test the game
 
     @Autowired
     GametypeService gametypeService;
