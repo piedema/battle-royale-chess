@@ -11,7 +11,7 @@ Battle Royale Chess is a game designed to take chess to the next level. It featu
 
 # Index
 
-    - [Prerequisites](#Prerequisites)
+    - Prerequisites
     - Installation
         - Frontend
         - Backend
