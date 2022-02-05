@@ -8,13 +8,33 @@ Battle Royale Chess is a game designed to take chess to the next level. It featu
      style="float: center; margin: auto;" />
 
 
-## Prerequisites
+
+# Index
+
+    - [Prerequisites](#Prerequisites)
+    - Installation
+        - Frontend
+        - Backend
+    - Credentials
+    - API Endpoints
+        - Authentication
+        - Admin
+        - Games
+        - Gametypes
+        - Lobby
+        - Players
+        - Register
+        - Users
+    - NPM Commandos
+
+
+# Prerequisites
 
 - NodeJS
 - PostgreSQL
 - IntelliJ
 
-## Installation
+# Installation
 
 ##### Frontend
 
@@ -63,7 +83,19 @@ The following credentials can be used to log in to Battle Royale Chess frontend
 
 ## API endpoints
 
-### /admin
+
+### Authentication
+http://localhost:8080/authenticate
+
+The authenticate endpoint reply's with a token to use for protected endpoints.
+This token should be send as Bearer token in format: "Bearer {token}"
+
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| /authenticate | POST | no | - | { "username":"peter", "password":"password1" } | Endpoint to authenticate and retrieve a token to use protected routes |
+
+### Admin
+http://localhost:8080/admin
 
 | Endpoint | Method | Protected | Role | Example Body | Description |
 | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -71,11 +103,12 @@ The following credentials can be used to log in to Battle Royale Chess frontend
 | /user/{username} | DEL | yes | ADMIN | - | Delete a user |
 | /user/{username} | GET | yes | ADMIN | - | Get userdata of a specific user |
 | /user/{username} | POST | yes | ADMIN | { "username":"peter3", "password":"password1", "email":"peter3@email.com", "authorities":["ADMIN"], "chessCom":"peter" } | Create a new user |
-| /gametype | PUT | yes | ADMIN | {"gametype":"testgame", "numberOfPlayers":2, "circleShrinkAfterNRounds":10, "circleShrinkOffset":20, "timePerRound":20, "initialDelay":30, "board":{"1:1":["normal", "1", "King"],"1:2":["normal"],"1:3":["normal", "2", "King"]}, "playerDirections":["east", "west"]} | Update a gametype |
-| /gametype | POST | yes | ADMIN | {"gametype":"testgame", "numberOfPlayers":2, "circleShrinkAfterNRounds":10, "circleShrinkOffset":20, "timePerRound":20, "initialDelay":30, "board":{"1:1":["normal", "1", "King"],"1:2":["normal"],"1:3":["normal", "2", "King"]}, "playerDirections":["east", "west"]} | Create a gametype |
+| /gametype | PUT | yes | ADMIN | { "gametype":"testgame", "numberOfPlayers":2, "circleShrinkAfterNRounds":10, "circleShrinkOffset":20, "timePerRound":20, "initialDelay":30, "board":{ "1:1":["normal", "1", "King"], "1:2":["normal"], "1:3":["normal", "2", "King"] }, "playerDirections":["east", "west"] } | Update a gametype |
+| /gametype | POST | yes | ADMIN | { "gametype":"testgame", "numberOfPlayers":2, "circleShrinkAfterNRounds":10, "circleShrinkOffset":20, "timePerRound":20, "initialDelay":30, "board":{ "1:1":["normal", "1", "King"], "1:2":["normal"], "1:3":["normal", "2", "King"] }, "playerDirections":["east", "west"] } | Create a gametype |
 | /gametype/{gametype} | DEL | yes | ADMIN | - | Delete a gametype |
 
-### /games
+### Games
+http://localhost:8080/games
 
 | Endpoint | Method | Protected | Role | Example Body | Description |
 | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -85,13 +118,15 @@ The following credentials can be used to log in to Battle Royale Chess frontend
 | /{gameId}/newMove | POST | yes | USER, ADMIN | { "from":"1:3", "to":"1:4" } | A player can post a move. Only for himself and only when he is in a game |
 | /{gameId}/cancelMove | GET | yes | USER, ADMIN | - | A player can cencel his move
 
-### /gametypes
+### Gametypes
+http://localhost:8080/gametypes
 
 | Endpoint | Method | Protected | Role | Example Body | Description |
 | ------ | ------ | ------ | ------ | ------ | ------ |
 | / | GET | no | SPECTATOR, USER, ADMIN | - | Get all available gametypes |
 
-### /lobby
+### Lobby
+http://localhost:8080/lobby
 
 | Endpoint | Method | Protected | Role | Example Body | Description |
 | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -99,19 +134,22 @@ The following credentials can be used to log in to Battle Royale Chess frontend
 | /queue/{gametype} | GET | yes | USER, ADMIN | - | Place yourself in queue for specified gametype |
 | /queue/ | DEL | yes | USER, ADMIN | - | Remove yourself from the queue you are in |
 
-### /players
+### Players
+http://localhost:8080/players
 
 | Endpoint | Method | Protected | Role | Example Body | Description |
 | ------ | ------ | ------ | ------ | ------ | ------ |
 | / | GET | no | SPECTATOR, USER, ADMIN | - | Get a list with all players and their scores. No sensitive data |
 
-### /register
+### Register
+http://localhost:8080/register
 
 | Endpoint | Method | Protected | Role | Example Body | Description |
 | ------ | ------ | ------ | ------ | ------ | ------ |
 | / | POST | no | SPECTATOR, USER, ADMIN | { "username":"peter2", "password":"password1", "email":"peter2@email.com", "authorities":["USER"], "chessCom":"peter" } | Register yourself as a user |
 
-### /users
+### Users
+http://localhost:8080/users
 
 | Endpoint | Method | Protected | Role | Example Body | Description |
 | ------ | ------ | ------ | ------ | ------ | ------ |
