@@ -3,13 +3,16 @@
 
 Battle Royale Chess is a game designed to take chess to the next level. It features chess piece movement but with some additional rules on an ever decreasing gameboard size. Pieces will need to move to the middle to survive and the last King standing takes the win!
 
-<img src="markdownmonstericon.png"
-     alt="Markdown Monster icon"
-     style="float: left; margin-right: 10px;" />
+<img src="./lobby.png"
+     alt="Battle Royale Chess Lobby"
+     style="float: center; margin: auto;" />
 
 
-## Necessities
+## Prerequisites
 
+- NodeJS
+- PostgreSQL
+- IntelliJ
 
 ## Installation
 
@@ -60,7 +63,61 @@ The following credentials can be used to log in to Battle Royale Chess frontend
 
 ## API endpoints
 
+### /admin
 
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| /users | GET | yes | ADMIN | - | Shows a list of all the registered users of the application |
+| /user/{username} | DEL | yes | ADMIN | - | Delete a user |
+| /user/{username} | GET | yes | ADMIN | - | Get userdata of a specific user |
+| /user/{username} | POST | yes | ADMIN | { "username":"peter3", "password":"password1", "email":"peter3@email.com", "authorities":["ADMIN"], "chessCom":"peter" } | Create a new user |
+| /gametype | PUT | yes | ADMIN | {"gametype":"testgame", "numberOfPlayers":2, "circleShrinkAfterNRounds":10, "circleShrinkOffset":20, "timePerRound":20, "initialDelay":30, "board":{"1:1":["normal", "1", "King"],"1:2":["normal"],"1:3":["normal", "2", "King"]}, "playerDirections":["east", "west"]} | Update a gametype |
+| /gametype | POST | yes | ADMIN | {"gametype":"testgame", "numberOfPlayers":2, "circleShrinkAfterNRounds":10, "circleShrinkOffset":20, "timePerRound":20, "initialDelay":30, "board":{"1:1":["normal", "1", "King"],"1:2":["normal"],"1:3":["normal", "2", "King"]}, "playerDirections":["east", "west"]} | Create a gametype |
+| /gametype/{gametype} | DEL | yes | ADMIN | - | Delete a gametype |
+
+### /games
+
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| / | GET | no | SPECTATOR, USER, ADMIN | - | Get a list of all finished and unfinished games |
+| /getGameIdForPlayer/{username} | GET | no | SPECTATOR, USER, ADMIN | - | Get a gameId for the game the current player is playing in |
+| /{gameId} | GET | no | SPECTATOR, USER, ADMIN | - | Get gamedata for the specified gameId |
+| /{gameId}/newMove | POST | yes | USER, ADMIN | { "from":"1:3", "to":"1:4" } | A player can post a move. Only for himself and only when he is in a game |
+| /{gameId}/cancelMove | GET | yes | USER, ADMIN | - | A player can cencel his move
+
+### /gametypes
+
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| / | GET | no | SPECTATOR, USER, ADMIN | - | Get all available gametypes |
+
+### /lobby
+
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| /queue | GET | yes | USER, ADMIN | - | Get the full queue with queued players |
+| /queue/{gametype} | GET | yes | USER, ADMIN | - | Place yourself in queue for specified gametype |
+| /queue/ | DEL | yes | USER, ADMIN | - | Remove yourself from the queue you are in |
+
+### /players
+
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| / | GET | no | SPECTATOR, USER, ADMIN | - | Get a list with all players and their scores. No sensitive data |
+
+### /register
+
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| / | POST | no | SPECTATOR, USER, ADMIN | { "username":"peter2", "password":"password1", "email":"peter2@email.com", "authorities":["USER"], "chessCom":"peter" } | Register yourself as a user |
+
+### /users
+
+| Endpoint | Method | Protected | Role | Example Body | Description |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+| / | GET | yes | USER, ADMIN | - | Get your own userdata |
+| / | PUT | yes | USER, ADMIN | { "username":"admin", "password":"password2", "email":"admin2@email.com", "authorities":["ADMIN"], "chessCom":"admin" } | Update your own userdata |
+| /{username} | DEL | yes | USER, ADMIN | - | Delete your own userdata |
 
 
 ## NPM commandos
