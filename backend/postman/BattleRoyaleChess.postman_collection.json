@@ -34,7 +34,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/admin/user/peterpeter",
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/user/peter",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
@@ -43,7 +43,7 @@
 							"path": [
 								"admin",
 								"user",
-								"peterpeter"
+								"peter"
 							]
 						}
 					},
@@ -55,7 +55,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/admin/user/peterpeter",
+							"raw": "{{protocol}}://{{url}}:{{port}}/admin/user/peter",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
@@ -64,7 +64,7 @@
 							"path": [
 								"admin",
 								"user",
-								"peterpeter"
+								"peter"
 							]
 						}
 					},
@@ -77,7 +77,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"peterpeter34\",\r\n    \"password\":\"password1\",\r\n    \"email\":\"peigowe@dsjfglk.com\",\r\n    \"authorities\":[\"ADMIN\"]\r\n}",
+							"raw": "{\r\n    \"username\":\"peter3\",\r\n    \"password\":\"password1\",\r\n    \"email\":\"peter3@email.com\",\r\n    \"authorities\":[\"ADMIN\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -193,30 +193,6 @@
 			"name": "/games",
 			"item": [
 				{
-					"name": "/getGameIdForPlayer/{username}",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/games/getGameIdForPlayer/bartbart",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{url}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"games",
-								"getGameIdForPlayer",
-								"bartbart"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "/",
 					"request": {
 						"auth": {
@@ -240,6 +216,30 @@
 					"response": []
 				},
 				{
+					"name": "/getGameIdForPlayer/{username}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/getGameIdForPlayer/bart",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"games",
+								"getGameIdForPlayer",
+								"bart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/{gameId}",
 					"request": {
 						"auth": {
@@ -248,7 +248,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/games/4",
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
@@ -256,7 +256,7 @@
 							"port": "{{port}}",
 							"path": [
 								"games",
-								"4"
+								"1"
 							]
 						}
 					},
@@ -287,7 +287,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/games/4/newMove",
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/1/newMove",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
@@ -295,7 +295,7 @@
 							"port": "{{port}}",
 							"path": [
 								"games",
-								"4",
+								"1",
 								"newMove"
 							]
 						}
@@ -318,7 +318,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/games/4/cancelMove",
+							"raw": "{{protocol}}://{{url}}:{{port}}/games/1/cancelMove",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
@@ -326,7 +326,7 @@
 							"port": "{{port}}",
 							"path": [
 								"games",
-								"4",
+								"1",
 								"cancelMove"
 							]
 						}
@@ -413,7 +413,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"peter\",\r\n    \"gametype\":\"1\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -446,6 +446,9 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -479,11 +482,14 @@
 				{
 					"name": "/",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"peterpeter45\",\r\n    \"password\":\"password1\",\r\n    \"email\":\"testemail@email.com\",\r\n    \"authorities\":[\"USER\"]\r\n}",
+							"raw": "{\r\n    \"username\":\"peter2\",\r\n    \"password\":\"password1\",\r\n    \"email\":\"peter2@email.com\",\r\n    \"authorities\":[\"USER\"],\r\n    \"chessCom\":\"peter\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -533,15 +539,6 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"adminadmin\",\r\n    \"password\":\"password2\",\r\n    \"email\":\"pet333er@email.com\",\r\n    \"authorities\":[\"ADMIN\"]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{protocol}}://{{url}}:{{port}}/users",
 							"protocol": "{{protocol}}",
@@ -562,7 +559,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{url}}:{{port}}/users/bartbart",
+							"raw": "{{protocol}}://{{url}}:{{port}}/users/bart",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{url}}"
@@ -570,7 +567,7 @@
 							"port": "{{port}}",
 							"path": [
 								"users",
-								"bartbart"
+								"bart"
 							]
 						}
 					},
@@ -605,7 +602,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"maaikemaaike\",\r\n    \"password\":\"password1\"\r\n}",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"password1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
