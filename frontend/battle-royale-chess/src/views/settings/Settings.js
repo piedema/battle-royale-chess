@@ -112,16 +112,8 @@ export default function Settings() {
                                     type="email"
                                     id="emailInput"
                                     name="emailInput"
-                                    {...register('emailInput', {
-                                        required: true,
-                                        validate: async value => {
-                                            const result = await emailExists(value)
-                                            return !result
-                                        }
-                                    })}
+                                    {...register('emailInput')}
                                 />
-                                {errors.emailInput?.type === "required" && <Tooltip>Email is required</Tooltip>}
-                                {errors.emailInput?.type === "validate" && <Tooltip>Email is not available</Tooltip>}
                             </div>
                         </div>
                         <div className={styles.pair}>
@@ -137,15 +129,8 @@ export default function Settings() {
                                     type="password"
                                     placeholder="password"
                                     className={styles.input}
-                                    {...register('passwordInput', {
-                                        required: true,
-                                        minLength: 8,
-                                        validate: containsDigit
-                                    })}
+                                    {...register('passwordInput')}
                                 />
-                                {errors.password?.type === "required" && <Tooltip>Password is required</Tooltip>}
-                                {errors.password?.type === "minLength" && <Tooltip>Password needs to be at least 8 characters</Tooltip>}
-                                {errors.password?.type === "validate" && <Tooltip>Password needs at least 1 digit</Tooltip>}
                             </div>
                         </div>
                         <div className={styles.pair}>
@@ -162,7 +147,13 @@ export default function Settings() {
                                     placeholder="password"
                                     className={styles.input}
                                     {...register('passwordCheck', {
-                                        validate: pw => pw === password.current
+                                        validate: pw => {
+
+                                            if(password.current === undefined && pw === '') return true
+
+                                            return pw === password.current
+
+                                        }
                                     })}
                                 />
                                 {errors.passwordCheck?.type === "validate" && <Tooltip>Second password does not match first password</Tooltip>}
@@ -181,6 +172,7 @@ export default function Settings() {
                                     name="chessComInput"
                                     {...register('chessComInput', {
                                         validate: async value => {
+                                            if(value === '') return true
                                             const result = await chessComAccountExists(value)
                                             return result
                                         }

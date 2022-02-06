@@ -7,7 +7,7 @@ export default function SettingsContextProvider({ children }){
     // store and retrieve some settings in localStorage
 
     if(!getLanguage()) setLanguage('EN')
-    if(!getDateFormat()) setDateFormat('DD-MM-YYYY HH:mm')
+    if(!getDateFormat()) setDateFormat('DD-MM-YYYY HH:mm:ss')
     if(!getBoardView()) setBoardView('3d')
     if(!getPiecesStyle()) setPiecesStyle('filled')
 

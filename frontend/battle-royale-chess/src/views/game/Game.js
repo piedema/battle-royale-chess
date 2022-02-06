@@ -80,6 +80,8 @@ export default function Game() {
         // normal behaviour, load gamedata a second after round is planned to finish
         if(Date.now() < nextRoundAt && finished === false) loadDataTimeout = setTimeout(loadGamedata, (nextRoundAt - Date.now()) + 1000)
 
+        if(finished === true) loadGamedata()
+
     }, [nextRoundAt])
 
     // check if moveTo is not undefined because we only send complete moves to the server
@@ -114,6 +116,8 @@ export default function Game() {
 
             const result = await getGamedata(gameId)
             const gamedata = result.data
+
+            console.log(gamedata)
 
             setMoveFrom(undefined)
             setMoveTo(undefined)

@@ -46,15 +46,18 @@
     height: 300px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
 }
 
-/* // TODO fix dat de cards normaal scrollen vanaf het begin */
 .lobbyContainer {
-    display: flex;
-    justify-content: center;
+    min-height: fit-content;
+    max-height: 300px;
     overflow-x: auto;
-    overflow-y: hidden;
+    white-space: nowrap;
     width: 100%;
+    margin: 5px;
 }
 
 .alreadyInGameContainer {

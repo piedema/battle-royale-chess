@@ -1,6 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useAlert } from 'react-alert'
 
 import { UserContext } from './UserContext'
 
@@ -11,7 +10,6 @@ export const AuthenticationContext = createContext({})
 export default function AuthenticationContextProvider({ children }){
 
     const history = useHistory()
-    // const alert = useAlert()
 
     const [authState, setAuthState] = useState("pending")
     const { setUsername, setEmail, setRole, setChessCom } = useContext(UserContext)
@@ -83,6 +81,8 @@ export default function AuthenticationContextProvider({ children }){
             setUser(userdata.data.username, userdata.data.email, extractRole(userdata.data.authorities), userdata.data.chessCom)
 
         } catch (error) {
+
+            console.log('Could not fetch userdata')
 
             unsetUser()
 

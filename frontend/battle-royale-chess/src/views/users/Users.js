@@ -288,16 +288,8 @@ export default function Users() {
                                             type="email"
                                             id="emailInput"
                                             name="emailInput"
-                                            {...register('emailInput', {
-                                                required: true,
-                                                validate: async value => {
-                                                    const result = await emailExists(value)
-                                                    return !result
-                                                }
-                                            })}
+                                            {...register('emailInput')}
                                         />
-                                        {errors.emailInput?.type === "required" && <Tooltip>Email is required</Tooltip>}
-                                        {errors.emailInput?.type === "validate" && <Tooltip>Email is not available</Tooltip>}
                                     </div>
                                 </div>
                                 <div className={styles.pair}>
@@ -311,15 +303,8 @@ export default function Users() {
                                             type="password"
                                             id="passwordInput"
                                             name="passwordInput"
-                                            {...register('passwordInput', {
-                                                required: true,
-                                                minLength: 8,
-                                                validate: containsDigit
-                                            })}
+                                            {...register('passwordInput')}
                                         />
-                                        {errors.password?.type === "required" && <Tooltip>Password is required</Tooltip>}
-                                        {errors.password?.type === "minLength" && <Tooltip>Password needs to be at least 8 characters</Tooltip>}
-                                        {errors.password?.type === "validate" && <Tooltip>Password needs at least 1 digit</Tooltip>}
                                     </div>
                                 </div>
                                 <div className={styles.pair}>

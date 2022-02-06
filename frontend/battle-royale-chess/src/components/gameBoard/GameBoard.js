@@ -118,7 +118,7 @@ export default function GameBoard({ makeMove }){
                                 leftTile === undefined || leftTile[0] === 'faded' ||
                                 rightTile === undefined || rightTile[0] === 'faded'
                             )
-                            ? roundsLeft                                        // tile fades soon, show rounds left ion tile
+                            ? roundsLeft                                        // tile fades soon, show rounds left on tile
                             : null
                         )
 
