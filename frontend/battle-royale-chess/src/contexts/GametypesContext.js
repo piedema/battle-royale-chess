@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react'
+import { useAlert } from 'react-alert'
 
 import { AuthenticationContext } from './AuthenticationContext'
 
@@ -7,6 +8,8 @@ import { getGametypes } from '../services/GametypesService'
 export const GametypesContext = createContext({})
 
 export default function GametypesContextProvider({ children }){
+
+    // const alert = useAlert()
 
     // keep a global collection of the gametypes which are loaded from the server.
     // the view which uses them decides when to update the data by calling fetchGametypes
@@ -40,6 +43,7 @@ export default function GametypesContextProvider({ children }){
         } catch (error) {
 
             setGametypes([])
+            console.log('Error getting gametypes')
 
         }
 

@@ -3,7 +3,7 @@ import { useEffect, useContext, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import moment from 'moment'
 
-import { getGametypes, doCreateGametype, doUpdateGametype } from '../../services/GametypesService'
+import { doCreateGametype, doUpdateGametype } from '../../services/GametypesService'
 
 import { GametypesContext } from '../../contexts/GametypesContext'
 
@@ -89,16 +89,16 @@ export default function Gametypes(){
 
     }, [gameBoard, playerDirections])
 
-    // fetch gametypes data from gametypescontext
+    // refresh the gametypes context data every 5 seconds
     useEffect(() => {
 
-        try {
+        const dataRefreshInterval = setInterval(() => {
 
             fetchGametypes()
 
-        } catch (error) {
+        }, 5000)
 
-        }
+        return () => clearInterval(dataRefreshInterval)
 
     }, [])
 
@@ -210,13 +210,11 @@ export default function Gametypes(){
 
             try {
 
-                console.log(updatedGametype)
-
                 await doUpdateGametype(updatedGametype)
 
             } catch (error) {
 
-                console.log('Could not update gametype', error)
+                console.log('Could not update gametype' + error.message)
 
             }
 
@@ -242,17 +240,9 @@ export default function Gametypes(){
 
             } catch (error) {
 
-                console.log('Could not create gametype', error)
+                console.log('Could not create gametype' + error.message)
 
             }
-
-        }
-
-        try {
-
-            getGametypes()
-
-        } catch (error) {
 
         }
 

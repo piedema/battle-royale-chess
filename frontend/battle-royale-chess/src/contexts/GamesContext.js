@@ -41,6 +41,7 @@ export default function GamesContextProvider({ children }){
         } catch (error) {
 
             setGames([])
+            console.log('Error getting games')
 
         }
 

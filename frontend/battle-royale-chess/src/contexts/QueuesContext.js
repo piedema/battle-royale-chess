@@ -42,6 +42,7 @@ export default function QueuesContextProvider({ children }){
         } catch (error) {
 
             setQueues([])
+            console.log('Error getting queue')
 
         }
 

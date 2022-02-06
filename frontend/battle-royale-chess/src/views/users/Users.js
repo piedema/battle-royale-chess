@@ -86,6 +86,8 @@ export default function Users() {
 
             } catch (error){
 
+                console.log('Error getting user data')
+
             }
 
         })()
@@ -188,7 +190,7 @@ export default function Users() {
 
             } catch (error) {
 
-
+                console.log('Error updating user')
 
             }
 
@@ -204,6 +206,8 @@ export default function Users() {
         } catch (error) {
 
             setUsers([])
+
+            console.log('Error getting userdata')
 
         }
 

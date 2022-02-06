@@ -151,6 +151,8 @@ export default function Lobby() {
 
         } catch (error) {
 
+            console.log('Error getting in queue')
+
         }
 
     }
@@ -163,6 +165,8 @@ export default function Lobby() {
             await doRemoveFromQueue()
 
         } catch (error) {
+
+            console.log('Error leaving queue')
 
         }
 

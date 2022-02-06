@@ -64,8 +64,16 @@ export default function Settings() {
         setBoardView(boardViewSelect)
         setPiecesStyle(piecesStyleSelect)
 
-        // send new values
-        await doUpdateUser(updatedUser)
+        try {
+
+            // send new values
+            await doUpdateUser(updatedUser)
+
+        } catch (error) {
+
+            console.log('Error updating user')
+
+        }
 
         // load new data
         refreshUser()

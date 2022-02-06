@@ -97,6 +97,8 @@ export default function Game() {
 
                 } catch (error) {
 
+                    console.log('Error scheduling move')
+
                 }
 
             })()
@@ -127,6 +129,8 @@ export default function Game() {
             setGameEndedAt(gamedata.gameEndedAt)
 
         } catch (error) {
+
+            console.log('Error getting gamedata from server')
 
         }
 
@@ -193,6 +197,8 @@ export default function Game() {
                 doCancelMove(gameId, username)
 
             } catch (error) {
+
+                console.log('Error cancelling move')
 
             }
 

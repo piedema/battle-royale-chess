@@ -85,6 +85,7 @@ export default function Players() {
             } catch (error) {
 
                 setPlayers([])
+                console.log('Error getting player data')
 
             }
 

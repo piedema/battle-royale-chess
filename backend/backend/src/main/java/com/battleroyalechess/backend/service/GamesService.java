@@ -59,8 +59,6 @@ public class GamesService {
 
     public void createGame(String gametype, ArrayList<String> players){
 
-        System.out.println("Create a new game with gametype " + gametype + " and players " + players);
-
         GameEngine game = new GameEngine(userService, gameRepository, userRepository, gametypeRepository);
         Long gameId = game.initialize(gametype, players, this);
 

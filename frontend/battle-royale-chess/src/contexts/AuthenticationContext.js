@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useAlert } from 'react-alert'
 
 import { UserContext } from './UserContext'
 
@@ -10,6 +11,7 @@ export const AuthenticationContext = createContext({})
 export default function AuthenticationContextProvider({ children }){
 
     const history = useHistory()
+    // const alert = useAlert()
 
     const [authState, setAuthState] = useState("pending")
     const { setUsername, setEmail, setRole, setChessCom } = useContext(UserContext)
@@ -57,7 +59,7 @@ export default function AuthenticationContextProvider({ children }){
 
         } catch (error) {
 
-            return error
+            console.log('Could not log in with provided username and password')
 
             unsetUser()
 
